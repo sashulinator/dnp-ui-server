@@ -25,6 +25,8 @@
     "@nestjs/core": "10.0.0",
     "@nestjs/mapped-types": "true2.0.5",
     "@nestjs/platform-express": "10.0.0",
+    "@prisma/client": "true5.13.0",
+    "prisma": "5.13.0",
     "reflect-metadata": "0.2.0",
     "rxjs": "7.8.1"
   },
