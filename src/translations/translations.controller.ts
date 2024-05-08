@@ -22,7 +22,7 @@ export class TranslationsController {
 
   @Get(':id')
   getById(@Param('id') id: string) {
-    return this.translationsService.findOne({ id: Number(id) });
+    return this.translationsService.getUniq({ id: Number(id) });
   }
 
   @Put(':id')
