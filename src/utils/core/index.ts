@@ -14,6 +14,7 @@ export * from './is/nil'
 export * from './is/null'
 export * from './is/string'
 export * from './is/undefined'
+export * from './is/instance-of'
 
 export * from './types/any'
 export * from './types/dictionary'

@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { Prisma, Translation } from '@prisma/client'
 import { PrismaService } from '../prisma.service'
+import { isInstanceOf } from 'src/utils/core'
 
 const TAKE = 100
 
@@ -13,15 +14,25 @@ export class TranslationsService {
    */
 
   async getFirst(translationWhereUniqInput: Prisma.TranslationWhereUniqueInput): Promise<Translation> {
-    return this.prisma.translation.findFirstOrThrow({
-      where: translationWhereUniqInput,
-    })
+    return this.prisma.translation
+      .findFirstOrThrow({
+        where: translationWhereUniqInput,
+      })
+      .catch((error) => {
+        if (!isInstanceOf(error, Prisma.PrismaClientKnownRequestError) || error.code !== 'P2025') throw error
+        throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+      })
   }
 
   async getUniq(translationWhereUniqInput: Prisma.TranslationWhereUniqueInput): Promise<Translation> {
-    return this.prisma.translation.findUniqueOrThrow({
-      where: translationWhereUniqInput,
-    })
+    return this.prisma.translation
+      .findUniqueOrThrow({
+        where: translationWhereUniqInput,
+      })
+      .catch((error) => {
+        if (!isInstanceOf(error, Prisma.PrismaClientKnownRequestError) || error.code !== 'P2025') throw error
+        throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+      })
   }
 
   /**
