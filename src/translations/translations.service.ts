@@ -5,24 +5,24 @@ import { isInstanceOf } from 'src/utils/core'
 
 const TAKE = 100
 
-export type TranslationWhereUniqueInput = Prisma.TranslationWhereUniqueInput
-export type TranslationWhereInput = Prisma.TranslationWhereInput
-export type TranslationOrderByWithRelationInput = Prisma.TranslationOrderByWithRelationInput
-export type TranslationCreateInput = Prisma.TranslationCreateInput
-export type TranslationUpdateInput = Prisma.TranslationUpdateInput
+export type WhereUniqueInput = Prisma.TranslationWhereUniqueInput
+export type WhereInput = Prisma.TranslationWhereInput
+export type OrderByWithRelationInput = Prisma.TranslationOrderByWithRelationInput
+export type CreateInput = Prisma.TranslationCreateInput
+export type UpdateInput = Prisma.TranslationUpdateInput
 
 @Injectable()
-export class TranslationsService {
+export class Service {
   constructor(private prisma: PrismaService) {}
 
   /**
    * GET
    */
 
-  async getFirst(translationWhereUniqInput: TranslationWhereUniqueInput): Promise<Translation> {
+  async getFirst(whereUniqInput: WhereUniqueInput): Promise<Translation> {
     return this.prisma.translation
       .findFirstOrThrow({
-        where: translationWhereUniqInput,
+        where: whereUniqInput,
       })
       .catch((error) => {
         if (!isInstanceOf(error, Prisma.PrismaClientKnownRequestError) || error.code !== 'P2025') throw error
@@ -30,7 +30,7 @@ export class TranslationsService {
       })
   }
 
-  async getUniq(translationWhereUniqInput: TranslationWhereUniqueInput): Promise<Translation> {
+  async getUniq(translationWhereUniqInput: WhereUniqueInput): Promise<Translation> {
     return this.prisma.translation
       .findUniqueOrThrow({
         where: translationWhereUniqInput,
@@ -45,15 +45,15 @@ export class TranslationsService {
    * FIND
    */
 
-  async findFirst(translationWhereInput: TranslationWhereInput): Promise<Translation | null> {
+  async findFirst(whereInput: WhereInput): Promise<Translation | null> {
     return this.prisma.translation.findFirst({
-      where: translationWhereInput,
+      where: whereInput,
     })
   }
 
-  async findUnique(translationWhereUniqInput: TranslationWhereUniqueInput): Promise<Translation | null> {
+  async findUnique(whereUniqInput: WhereUniqueInput): Promise<Translation | null> {
     return this.prisma.translation.findUnique({
-      where: translationWhereUniqInput,
+      where: whereUniqInput,
     })
   }
 
@@ -61,9 +61,9 @@ export class TranslationsService {
     params: {
       skip?: number
       take?: number
-      cursor?: TranslationWhereUniqueInput
-      where?: TranslationWhereInput
-      orderBy?: TranslationOrderByWithRelationInput
+      cursor?: WhereUniqueInput
+      where?: WhereInput
+      orderBy?: OrderByWithRelationInput
     } = {}
   ): Promise<Translation[]> {
     const { skip, take = TAKE, cursor, where, orderBy } = params
@@ -91,9 +91,9 @@ export class TranslationsService {
     params: {
       skip?: number
       take?: number
-      cursor?: TranslationWhereUniqueInput
-      where?: TranslationWhereInput
-      orderBy?: TranslationOrderByWithRelationInput
+      cursor?: WhereUniqueInput
+      where?: WhereInput
+      orderBy?: OrderByWithRelationInput
     } = {}
   ): Promise<[Translation[], number]> {
     const { skip, take = TAKE, cursor, where, orderBy } = params
@@ -112,26 +112,38 @@ export class TranslationsService {
     ])
   }
 
-  async create(data: TranslationCreateInput) {
-    const translation = await this.prisma.translation.findFirst({
+  /**
+   * CREATE
+   */
+
+  async create(data: CreateInput) {
+    const item = await this.prisma.translation.findFirst({
       where: { key: data.key, AND: { locale: data.locale, AND: { ns: data.ns } } },
     })
 
-    if (translation) throw new HttpException('Already exists', HttpStatus.CONFLICT)
+    if (item) throw new HttpException('Already exists', HttpStatus.CONFLICT)
 
     return this.prisma.translation.create({
       data,
     })
   }
 
-  async update(where: TranslationWhereUniqueInput, data: TranslationUpdateInput): Promise<Translation> {
+  /**
+   * UPDATE
+   */
+
+  async update(where: WhereUniqueInput, data: UpdateInput): Promise<Translation> {
     return this.prisma.translation.update({
       data,
       where,
     })
   }
 
-  async remove(where: TranslationWhereUniqueInput): Promise<Translation> {
+  /**
+   * REMOVE
+   */
+
+  async remove(where: WhereUniqueInput): Promise<Translation> {
     return this.prisma.translation.delete({
       where,
     })

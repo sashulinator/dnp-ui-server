@@ -1,17 +1,17 @@
-import { Controller, Post, Body, Put, Param, Delete, Get } from '@nestjs/common'
+import { Controller as NestJSController, Post, Body, Put, Param, Delete, Get } from '@nestjs/common'
 import {
-  TranslationOrderByWithRelationInput,
-  TranslationWhereInput,
-  TranslationWhereUniqueInput,
-  TranslationsService,
-  TranslationUpdateInput,
-  TranslationCreateInput,
+  OrderByWithRelationInput,
+  WhereInput,
+  WhereUniqueInput,
+  Service,
+  UpdateInput,
+  CreateInput,
 } from './translations.service'
 import { Translation } from '@prisma/client'
 
-@Controller('api/v1/translations')
-export class TranslationsController {
-  constructor(private readonly translationsService: TranslationsService) {}
+@NestJSController('api/v1/translations')
+export class Controller {
+  constructor(private readonly translationsService: Service) {}
 
   @Get(':id')
   getById(@Param('id') id: string) {
@@ -24,9 +24,9 @@ export class TranslationsController {
     params: {
       skip?: number
       take?: number
-      cursor?: TranslationWhereUniqueInput
-      where?: TranslationWhereInput
-      orderBy?: TranslationOrderByWithRelationInput
+      cursor?: WhereUniqueInput
+      where?: WhereInput
+      orderBy?: OrderByWithRelationInput
     } = {}
   ): Promise<{ data: Translation[]; total: number }> {
     const [data, total] = await this.translationsService.findAndCountMany(params)
@@ -40,12 +40,12 @@ export class TranslationsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() translationUpdateInput: TranslationUpdateInput) {
+  update(@Param('id') id: string, @Body() translationUpdateInput: UpdateInput) {
     return this.translationsService.update({ id: Number(id) }, translationUpdateInput)
   }
 
   @Post()
-  create(@Body() translationCreateInput: TranslationCreateInput) {
+  create(@Body() translationCreateInput: CreateInput) {
     return this.translationsService.create(translationCreateInput)
   }
 }
