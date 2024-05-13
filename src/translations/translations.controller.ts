@@ -1,59 +1,51 @@
+import { Controller, Post, Body, Put, Param, Delete, Get } from '@nestjs/common'
 import {
-  Controller,
-  Post,
-  Body,
-  Put,
-  Param,
-  Delete,
-  Search,
-  Get,
-} from '@nestjs/common';
-import { TranslationsService } from './translations.service';
-import { Prisma, Translation } from '@prisma/client';
+  TranslationOrderByWithRelationInput,
+  TranslationWhereInput,
+  TranslationWhereUniqueInput,
+  TranslationsService,
+  TranslationUpdateInput,
+  TranslationCreateInput,
+} from './translations.service'
+import { Translation } from '@prisma/client'
 
 @Controller('api/v1/translations')
 export class TranslationsController {
   constructor(private readonly translationsService: TranslationsService) {}
 
-  @Post()
-  create(@Body() TranslationCreateInput: Prisma.TranslationCreateInput) {
-    return this.translationsService.create(TranslationCreateInput);
-  }
-
   @Get(':id')
   getById(@Param('id') id: string) {
-    return this.translationsService.getUniq({ id: Number(id) });
+    return this.translationsService.getUniq({ id: Number(id) })
   }
 
-  @Put(':id')
-  update(
-    @Param('id') id: string,
-    @Body() translationUpdateInput: Prisma.TranslationUpdateInput,
-  ) {
-    return this.translationsService.update(
-      { id: Number(id) },
-      translationUpdateInput,
-    );
-  }
-
-  @Search()
-  async findAll(
+  @Get()
+  async findAndCountMany(
     @Body()
     params: {
-      skip?: number;
-      take?: number;
-      cursor?: Prisma.TranslationWhereUniqueInput;
-      where?: Prisma.TranslationWhereInput;
-      orderBy?: Prisma.TranslationOrderByWithRelationInput;
-    } = {},
+      skip?: number
+      take?: number
+      cursor?: TranslationWhereUniqueInput
+      where?: TranslationWhereInput
+      orderBy?: TranslationOrderByWithRelationInput
+    } = {}
   ): Promise<{ data: Translation[]; total: number }> {
-    const [data, total] = await this.translationsService.findAll(params);
+    const [data, total] = await this.translationsService.findAndCountMany(params)
 
-    return { data, total };
+    return { data, total }
   }
 
   @Delete(':id')
   remove(@Param('id') id: number) {
-    return this.translationsService.remove({ id });
+    return this.translationsService.remove({ id })
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() translationUpdateInput: TranslationUpdateInput) {
+    return this.translationsService.update({ id: Number(id) }, translationUpdateInput)
+  }
+
+  @Post()
+  create(@Body() translationCreateInput: TranslationCreateInput) {
+    return this.translationsService.create(translationCreateInput)
   }
 }
