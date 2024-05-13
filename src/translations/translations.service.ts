@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { Prisma, Translation } from '@prisma/client'
 
-import { isInstanceOf } from 'src/utils/core'
+import { isInstanceOf } from 'utils/core'
 
 import { PrismaService } from '../prisma.service'
 
