@@ -1,11 +1,12 @@
 import {
-  ExceptionFilter as NestJSExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
   HttpException,
   HttpStatus,
+  ExceptionFilter as NestJSExceptionFilter,
 } from '@nestjs/common'
 import { HttpAdapterHost } from '@nestjs/core'
+
 import { assertError, isCausable } from './utils/error'
 
 export type ErrorBody = {

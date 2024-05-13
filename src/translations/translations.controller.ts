@@ -1,13 +1,14 @@
-import { Controller as NestJSController, Post, Body, Put, Param, Delete, Get } from '@nestjs/common'
+import { Body, Delete, Get, Controller as NestJSController, Param, Post, Put } from '@nestjs/common'
+import { Translation } from '@prisma/client'
+
 import {
+  CreateInput,
   OrderByWithRelationInput,
-  WhereInput,
-  WhereUniqueInput,
   Service,
   UpdateInput,
-  CreateInput,
+  WhereInput,
+  WhereUniqueInput,
 } from './translations.service'
-import { Translation } from '@prisma/client'
 
 @NestJSController('api/v1/translations')
 export class Controller {

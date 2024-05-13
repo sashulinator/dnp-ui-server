@@ -9,5 +9,6 @@ module.exports = {
   endOfLine: 'auto',
   importOrder: ['reset.css$', 'css$', '^@', '^[a-z]', '^~', '^.'],
   importOrderSeparation: true,
+  importOrderParserPlugins: ["typescript", "decorators-legacy"],
   importOrderSortSpecifiers: true,
 }
