@@ -6,9 +6,10 @@ import {
   HttpStatus,
 } from '@nestjs/common'
 import { HttpAdapterHost } from '@nestjs/core'
-import { isCausable } from './utils/error'
+import { assertError, isCausable } from './utils/error'
 
 export type ErrorBody = {
+  message: string
   status: number
   timestamp: string
   path: string
@@ -26,6 +27,7 @@ export class ExceptionFilter implements NestJSExceptionFilter {
     // In certain situations `httpAdapter` might not be available in the
     // constructor method, thus we should resolve it here.
     const { httpAdapter } = this.httpAdapterHost
+    assertError(exception)
 
     const ctx = host.switchToHttp()
 
@@ -33,6 +35,7 @@ export class ExceptionFilter implements NestJSExceptionFilter {
 
     const responseBody: ErrorBody = {
       status: httpStatus,
+      message: exception.message,
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
     }
