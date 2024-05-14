@@ -1,4 +1,4 @@
-import { Body, Delete, Get, Controller as NestJSController, Param, Post, Put } from '@nestjs/common'
+import { Body, Delete, Get, Controller as NestJSController, Param, Post, Put, Search } from '@nestjs/common'
 import { Translation } from '@prisma/client'
 
 import {
@@ -26,7 +26,7 @@ export class Controller {
     return this.translationsService.getUniq({ id: Number(id) })
   }
 
-  @Get()
+  @Search()
   /**
    * Find many translations and return the total count of the results
    *
