@@ -14,6 +14,37 @@ import {
 export class Controller {
   constructor(private readonly translationsService: Service) {}
 
+  @Delete(':id')
+  /**
+   * Delete a translation by its ID
+   *
+   * @param {string} id The ID of the translation to delete
+   * @returns {Promise<Translation>} A promise that resolves when the translation is deleted
+   */
+  remove(@Param('id') id: number): Promise<Translation> {
+    return this.translationsService.remove({ id })
+  }
+
+  @Put(':id')
+  /**
+   * Update a translation by its ID
+   *
+   * @param {string} id The ID of the translation to update
+   * @param {UpdateInput} updateInput The new data for the translation
+   * @returns A promise that resolves when the translation is updated
+   */
+  update(@Param('id') id: string, @Body() updateInput: UpdateInput): Promise<Translation> {
+    return this.translationsService.update(
+      { id: Number(id) }, // The unique identifier of the translation to update
+      updateInput // The new data for the translation
+    )
+  }
+
+  @Post()
+  create(@Body() createInput: CreateInput) {
+    return this.translationsService.create(createInput)
+  }
+
   @Get(':id')
   /**
    * Find a translation by its ID
@@ -46,40 +77,9 @@ export class Controller {
       where?: WhereInput
       orderBy?: OrderByWithRelationInput
     } = {}
-  ): Promise<{ data: Translation[]; total: number }> {
-    const [data, total] = await this.translationsService.findAndCountMany(params)
+  ): Promise<{ items: Translation[]; total: number }> {
+    const [items, total] = await this.translationsService.findAndCountMany(params)
 
-    return { data, total }
-  }
-
-  @Delete(':id')
-  /**
-   * Delete a translation by its ID
-   *
-   * @param {string} id The ID of the translation to delete
-   * @returns {Promise<Translation>} A promise that resolves when the translation is deleted
-   */
-  remove(@Param('id') id: number): Promise<Translation> {
-    return this.translationsService.remove({ id })
-  }
-
-  @Put(':id')
-  /**
-   * Update a translation by its ID
-   *
-   * @param {string} id The ID of the translation to update
-   * @param {UpdateInput} updateInput The new data for the translation
-   * @returns A promise that resolves when the translation is updated
-   */
-  update(@Param('id') id: string, @Body() updateInput: UpdateInput): Promise<Translation> {
-    return this.translationsService.update(
-      { id: Number(id) }, // The unique identifier of the translation to update
-      updateInput // The new data for the translation
-    )
-  }
-
-  @Post()
-  create(@Body() createInput: CreateInput) {
-    return this.translationsService.create(createInput)
+    return { items, total }
   }
 }

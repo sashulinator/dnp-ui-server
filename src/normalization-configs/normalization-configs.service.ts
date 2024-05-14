@@ -5,13 +5,14 @@ import { isInstanceOf } from 'utils/core'
 
 import { PrismaService } from '../prisma.service'
 
-const TAKE = 100
-
 export type WhereUniqueInput = Prisma.NormalizationConfigWhereUniqueInput
 export type WhereInput = Prisma.NormalizationConfigWhereInput
 export type OrderByWithRelationInput = Prisma.NormalizationConfigOrderByWithRelationInput
 export type CreateInput = Prisma.NormalizationConfigCreateInput
 export type UpdateInput = Prisma.NormalizationConfigUpdateInput
+
+const TAKE = 100
+const ORDER_BY: OrderByWithRelationInput = { updatedAt: 'asc' }
 
 @Injectable()
 export class Service {
@@ -107,7 +108,7 @@ export class Service {
       orderBy?: OrderByWithRelationInput
     } = {}
   ): Promise<NormalizationConfig[]> {
-    const { skip, take = TAKE, cursor, where, orderBy } = params
+    const { skip, take = TAKE, cursor, where, orderBy = { updatedAt: 'asc' } } = params
 
     return this.prisma.normalizationConfig.findMany({
       skip,
@@ -137,19 +138,17 @@ export class Service {
       orderBy?: OrderByWithRelationInput
     } = {}
   ): Promise<[NormalizationConfig[], number]> {
-    const { skip, take = TAKE, cursor, where, orderBy } = params
+    const { skip, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
 
-    const args = {
-      skip,
-      take,
+    const commonArgs = {
       cursor,
       where,
       orderBy,
     }
 
     return this.prisma.$transaction([
-      this.prisma.normalizationConfig.findMany(args), // Find the normalizationConfigs
-      this.prisma.normalizationConfig.count(args), // Count the total number of results
+      this.prisma.normalizationConfig.findMany({ ...commonArgs, take, skip }), // Find the normalizationConfigs
+      this.prisma.normalizationConfig.count(commonArgs), // Count the total number of results
     ])
   }
 
