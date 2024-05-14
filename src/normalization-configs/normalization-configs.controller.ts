@@ -14,6 +14,37 @@ import {
 export class Controller {
   constructor(private readonly normalizationConfigsService: Service) {}
 
+  @Delete(':id')
+  /**
+   * Delete a normalizationConfig by its ID
+   *
+   * @param {string} id The ID of the normalizationConfig to delete
+   * @returns {Promise<NormalizationConfig>} A promise that resolves when the normalizationConfig is deleted
+   */
+  remove(@Param('id') id: string): Promise<NormalizationConfig> {
+    return this.normalizationConfigsService.remove({ id })
+  }
+
+  @Put(':id')
+  /**
+   * Update a normalizationConfig by its ID
+   *
+   * @param {string} id The ID of the normalizationConfig to update
+   * @param {UpdateInput} updateInput The new data for the normalizationConfig
+   * @returns A promise that resolves when the normalizationConfig is updated
+   */
+  update(@Param('id') id: string, @Body() updateInput: UpdateInput): Promise<NormalizationConfig> {
+    return this.normalizationConfigsService.update(
+      { id }, // The unique identifier of the normalizationConfig to update
+      updateInput // The new data for the normalizationConfig
+    )
+  }
+
+  @Post()
+  create(@Body() createInput: CreateInput) {
+    return this.normalizationConfigsService.create(createInput)
+  }
+
   @Get(':id')
   /**
    * Find a normalizationConfig by its ID
@@ -46,40 +77,9 @@ export class Controller {
       where?: WhereInput
       orderBy?: OrderByWithRelationInput
     } = {}
-  ): Promise<{ data: NormalizationConfig[]; total: number }> {
-    const [data, total] = await this.normalizationConfigsService.findAndCountMany(params)
+  ): Promise<{ items: NormalizationConfig[]; total: number }> {
+    const [items, total] = await this.normalizationConfigsService.findAndCountMany(params)
 
-    return { data, total }
-  }
-
-  @Delete(':id')
-  /**
-   * Delete a normalizationConfig by its ID
-   *
-   * @param {string} id The ID of the normalizationConfig to delete
-   * @returns {Promise<NormalizationConfig>} A promise that resolves when the normalizationConfig is deleted
-   */
-  remove(@Param('id') id: string): Promise<NormalizationConfig> {
-    return this.normalizationConfigsService.remove({ id })
-  }
-
-  @Put(':id')
-  /**
-   * Update a normalizationConfig by its ID
-   *
-   * @param {string} id The ID of the normalizationConfig to update
-   * @param {UpdateInput} updateInput The new data for the normalizationConfig
-   * @returns A promise that resolves when the normalizationConfig is updated
-   */
-  update(@Param('id') id: string, @Body() updateInput: UpdateInput): Promise<NormalizationConfig> {
-    return this.normalizationConfigsService.update(
-      { id }, // The unique identifier of the normalizationConfig to update
-      updateInput // The new data for the normalizationConfig
-    )
-  }
-
-  @Post()
-  create(@Body() createInput: CreateInput) {
-    return this.normalizationConfigsService.create(createInput)
+    return { items, total }
   }
 }
