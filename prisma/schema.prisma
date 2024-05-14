@@ -20,3 +20,12 @@ model Translation {
   locale String
   data   String
 }
+
+model NormalizationConfig {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdBy String   @db.Uuid
+  updatedBy String   @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  data      Json
+}
