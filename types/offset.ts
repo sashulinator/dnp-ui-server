@@ -1,4 +1,4 @@
 export interface Offset {
-  top: number
-  left: number
+  top: number;
+  left: number;
 }
