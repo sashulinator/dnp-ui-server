@@ -12,7 +12,7 @@ export type CreateInput = Prisma.NormalizationConfigCreateInput
 export type UpdateInput = Prisma.NormalizationConfigUpdateInput
 
 const TAKE = 100
-const ORDER_BY: OrderByWithRelationInput = { updatedAt: 'asc' }
+const ORDER_BY: OrderByWithRelationInput = { updatedAt: 'desc' }
 
 @Injectable()
 export class Service {
@@ -108,7 +108,7 @@ export class Service {
       orderBy?: OrderByWithRelationInput
     } = {}
   ): Promise<NormalizationConfig[]> {
-    const { skip, take = TAKE, cursor, where, orderBy = { updatedAt: 'asc' } } = params
+    const { skip, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
 
     return this.prisma.normalizationConfig.findMany({
       skip,
@@ -159,13 +159,17 @@ export class Service {
   /**
    * Create a new normalizationConfig
    *
-   * @param {CreateInput} data The data to create the normalizationConfig with
+   * @param {CreateInput} createInput The data to create the normalizationConfig with
    * @returns {Promise<NormalizationConfig>} A promise containing the created normalizationConfig
    * @throws {HttpException} HttpException with status code 409 if the normalizationConfig already exists
    */
-  async create(data: CreateInput): Promise<NormalizationConfig> {
+  async create(createInput: CreateInput): Promise<NormalizationConfig> {
     return this.prisma.normalizationConfig.create({
-      data,
+      data: {
+        ...createInput,
+        createdBy: '3422b448-2460-4fd2-9183-8000de6f8343',
+        updatedBy: '3422b448-2460-4fd2-9183-8000de6f8343',
+      },
     })
   }
 

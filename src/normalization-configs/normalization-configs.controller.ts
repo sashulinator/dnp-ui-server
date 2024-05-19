@@ -33,16 +33,16 @@ export class Controller {
    * @param {UpdateInput} updateInput The new data for the normalizationConfig
    * @returns A promise that resolves when the normalizationConfig is updated
    */
-  update(@Param('id') id: string, @Body() updateInput: UpdateInput): Promise<NormalizationConfig> {
+  update(@Param('id') id: string, @Body() body: { input: UpdateInput }): Promise<NormalizationConfig> {
     return this.normalizationConfigsService.update(
       { id }, // The unique identifier of the normalizationConfig to update
-      updateInput // The new data for the normalizationConfig
+      body.input // The new data for the normalizationConfig
     )
   }
 
   @Post()
-  create(@Body() createInput: CreateInput) {
-    return this.normalizationConfigsService.create(createInput)
+  create(@Body() body: { input: CreateInput }) {
+    return this.normalizationConfigsService.create(body.input)
   }
 
   @Get(':id')
