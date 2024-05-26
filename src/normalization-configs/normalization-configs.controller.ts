@@ -4,6 +4,7 @@ import { NormalizationConfig } from '@prisma/client'
 import {
   CreateInput,
   OrderByWithRelationInput,
+  Select,
   Service,
   UpdateInput,
   WhereInput,
@@ -76,6 +77,7 @@ export class Controller {
       cursor?: WhereUniqueInput
       where?: WhereInput
       orderBy?: OrderByWithRelationInput
+      select?: Select
     } = {}
   ): Promise<{ items: NormalizationConfig[]; total: number }> {
     const [items, total] = await this.normalizationConfigsService.findAndCountMany(params)

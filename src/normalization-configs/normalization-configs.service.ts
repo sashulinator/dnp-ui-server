@@ -10,6 +10,7 @@ export type WhereInput = Prisma.NormalizationConfigWhereInput
 export type OrderByWithRelationInput = Prisma.NormalizationConfigOrderByWithRelationInput
 export type CreateInput = Prisma.NormalizationConfigCreateInput
 export type UpdateInput = Prisma.NormalizationConfigUpdateInput
+export type Select = Prisma.NormalizationConfigSelect
 
 const TAKE = 100
 const ORDER_BY: OrderByWithRelationInput = { updatedAt: 'desc' }
@@ -106,6 +107,7 @@ export class Service {
       cursor?: WhereUniqueInput
       where?: WhereInput
       orderBy?: OrderByWithRelationInput
+      select?: Select
     } = {}
   ): Promise<NormalizationConfig[]> {
     const { skip, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
@@ -136,9 +138,10 @@ export class Service {
       cursor?: WhereUniqueInput
       where?: WhereInput
       orderBy?: OrderByWithRelationInput
+      select?: Select
     } = {}
   ): Promise<[NormalizationConfig[], number]> {
-    const { skip, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
+    const { skip, select, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
 
     const commonArgs = {
       cursor,
@@ -147,7 +150,7 @@ export class Service {
     }
 
     return this.prisma.$transaction([
-      this.prisma.normalizationConfig.findMany({ ...commonArgs, take, skip }), // Find the normalizationConfigs
+      this.prisma.normalizationConfig.findMany({ ...commonArgs, take, skip, select }), // Find the normalizationConfigs
       this.prisma.normalizationConfig.count(commonArgs), // Count the total number of results
     ])
   }
