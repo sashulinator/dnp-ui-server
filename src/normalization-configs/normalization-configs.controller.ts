@@ -46,6 +46,11 @@ export class Controller {
     return this.normalizationConfigsService.create(body.input)
   }
 
+  @Post(':id/run')
+  run(@Param('id') id: string): Promise<void> {
+    return this.normalizationConfigsService.run({ id })
+  }
+
   @Get(':id')
   /**
    * Find a normalizationConfig by its ID

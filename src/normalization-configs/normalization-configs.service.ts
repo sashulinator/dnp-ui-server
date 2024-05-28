@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { NormalizationConfig, Prisma } from '@prisma/client'
 
+import { MinioService } from 'src/minio.service'
 import { isInstanceOf } from 'utils/core'
 
 import { PrismaService } from '../prisma.service'
@@ -17,7 +18,10 @@ const ORDER_BY: OrderByWithRelationInput = { updatedAt: 'desc' }
 
 @Injectable()
 export class Service {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private minio: MinioService
+  ) {}
 
   /**
    * GET
@@ -208,5 +212,44 @@ export class Service {
     return this.prisma.normalizationConfig.delete({
       where, // A WHERE clause for the query
     })
+  }
+
+  /**
+   * RUN
+   *
+   * Run a normalizationConfig. This involves uploading the config to minio and triggering a
+   * dag run in airflow
+   *
+   * @param {object} props The props for the run function
+   * @param {string} props.id The id of the normalizationConfig to run
+   * @returns {Promise<void>} A promise that resolves when the normalizationConfig has been run
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async run(props: { id: string }): Promise<any> {
+    // Get the normalizationConfig from the database
+    const normalizationConfig = await this.getUniq({ id: props.id })
+
+    // Upload the normalizationConfig to minio
+    const fileName = `${normalizationConfig.name}.json`
+    const buffer = JSON.stringify(normalizationConfig.data)
+
+    await this.minio.putObject('dnp-common', fileName, buffer)
+
+    const headers = new Headers()
+    headers.set('Authorization', 'Basic ' + Buffer.from('airflow:airflow').toString('base64'))
+    headers.set('Content-Type', 'application/json;charset=UTF-8')
+
+    // Trigger airflow dag run
+    const response = await fetch('http://10.4.40.30:8080/api/v1/dags/dnp_rest_api_trigger/dagRuns', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        conf: {
+          dnp_s3_config_path: `dnp-common/${fileName}`,
+        },
+      }),
+    })
+
+    return response.json()
   }
 }
