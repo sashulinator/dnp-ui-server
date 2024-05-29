@@ -1,0 +1,5 @@
+export { add } from './add'
+export { addSubtree } from './add-subtree'
+export { commit } from './commit'
+export { removeSubtree } from './remove-subtree'
+export { getCurrentBranch } from './get-current-branch'
