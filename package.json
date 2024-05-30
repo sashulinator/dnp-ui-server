@@ -35,7 +35,8 @@
     "module-alias": "2.2.3",
     "prisma": "5.13.0",
     "reflect-metadata": "0.2.0",
-    "rxjs": "7.8.1"
+    "rxjs": "7.8.1",
+    "valibot": "0.31.0-rc.6"
   },
   "devDependencies": {
     "@commitlint/cli": "19.3.0",

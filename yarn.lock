@@ -3563,6 +3563,7 @@ __metadata:
     ts-node: "npm:10.9.1"
     tsconfig-paths: "npm:4.2.0"
     typescript: "npm:5.1.3"
+    valibot: "npm:0.31.0-rc.6"
   languageName: unknown
   linkType: soft
 
@@ -8343,6 +8344,13 @@ __metadata:
     "@types/istanbul-lib-coverage": "npm:^2.0.1"
     convert-source-map: "npm:^2.0.0"
   checksum: 10c0/e691ba4dd0dea4a884e52c37dbda30cce6f9eeafe9b26721e449429c6bb0f4b6d1e33fabe7711d0f67f7a34c3bfd56c873f7375bba0b1534e6a2843ce99550e5
+  languageName: node
+  linkType: hard
+
+"valibot@npm:0.31.0-rc.6":
+  version: 0.31.0-rc.6
+  resolution: "valibot@npm:0.31.0-rc.6"
+  checksum: 10c0/bdd0671cc84cfd4cdb07a12f997ee57def9fdfd4b5e0b2ad5bca604e171bd54baf730db821283d0a4c11ebd96cd8f7b8c08a35e426a413d3ad2a887014346d5e
   languageName: node
   linkType: hard
 
