@@ -1,16 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { NormalizationConfig, Prisma } from '@prisma/client'
+import { type NormalizationConfig, Prisma } from '@prisma/client'
 
 import { MinioService } from 'src/minio.service'
 import { isInstanceOf } from 'utils/core'
 
 import { PrismaService } from '../prisma.service'
+import { type CreateNormalizationConfig, type UpdateNormalizationConfig } from './normalization-configs.dto'
 
 export type WhereUniqueInput = Prisma.NormalizationConfigWhereUniqueInput
 export type WhereInput = Prisma.NormalizationConfigWhereInput
 export type OrderByWithRelationInput = Prisma.NormalizationConfigOrderByWithRelationInput
-export type CreateInput = Prisma.NormalizationConfigCreateInput
-export type UpdateInput = Prisma.NormalizationConfigUpdateInput
 export type Select = Prisma.NormalizationConfigSelect
 
 const TAKE = 100
@@ -28,7 +27,7 @@ export class Service {
    */
 
   /**
-   * Find the first normalizationConfig that matches the given `whereUniqueInput`.
+   * Get the first normalizationConfig that matches the given `whereUniqueInput`.
    * If no normalizationConfig is found, throw a `HttpException` with status `NOT_FOUND`.
    *
    * @param {WhereUniqueInput} whereUniqInput The `whereUniqueInput` to match
@@ -47,7 +46,7 @@ export class Service {
   }
 
   /**
-   * Find the unique normalizationConfig that matches the given `whereUniqueInput`.
+   * Get the unique normalizationConfig that matches the given `whereUniqueInput`.
    * If no normalizationConfig is found, throw a `HttpException` with status `NOT_FOUND`.
    *
    * @param {WhereUniqueInput} whereUniqInput The `whereUniqueInput` to match
@@ -72,13 +71,18 @@ export class Service {
   /**
    * Find the first normalizationConfig that matches the given `whereInput`
    *
-   * @param {WhereInput} whereInput The `whereInput` to match
-   * @returns {Promise<NormalizationConfig | null>} The found normalizationConfig or `null` if no normalizationConfig is found
+   * @param {Object} params - The parameters for the query
+   * @param {WhereInput} params.where - A WHERE clause for the query
+   * @param {Select} params.select - A SELECT clause for the query
+   * @returns {Promise<NormalizationConfig | null>} - The found normalizationConfig or `null` if no normalizationConfig is found
    */
-  async findFirst(whereInput: WhereInput): Promise<NormalizationConfig | null> {
-    return this.prisma.normalizationConfig.findFirst({
-      where: whereInput,
-    })
+  async findFirst(
+    params: {
+      where?: WhereInput
+      select?: Select
+    } = {}
+  ): Promise<NormalizationConfig | null> {
+    return this.prisma.normalizationConfig.findFirst(params)
   }
 
   /**
@@ -154,8 +158,8 @@ export class Service {
     }
 
     return this.prisma.$transaction([
-      this.prisma.normalizationConfig.findMany({ ...commonArgs, take, skip, select }), // Find the normalizationConfigs
-      this.prisma.normalizationConfig.count(commonArgs), // Count the total number of results
+      this.prisma.normalizationConfig.findMany({ ...commonArgs, take, skip, select }),
+      this.prisma.normalizationConfig.count(commonArgs),
     ])
   }
 
@@ -170,7 +174,7 @@ export class Service {
    * @returns {Promise<NormalizationConfig>} A promise containing the created normalizationConfig
    * @throws {HttpException} HttpException with status code 409 if the normalizationConfig already exists
    */
-  async create(createInput: CreateInput): Promise<NormalizationConfig> {
+  async create(createInput: CreateNormalizationConfig): Promise<NormalizationConfig> {
     return this.prisma.normalizationConfig.create({
       data: {
         ...createInput,
@@ -191,10 +195,10 @@ export class Service {
    * @param {UpdateInput} data The data to update the normalizationConfig with
    * @returns {Promise<NormalizationConfig>} A promise containing the updated normalizationConfig
    */
-  async update(where: WhereUniqueInput, data: UpdateInput): Promise<NormalizationConfig> {
+  async update(where: WhereUniqueInput, data: UpdateNormalizationConfig): Promise<NormalizationConfig> {
     return this.prisma.normalizationConfig.update({
-      data, // The data to update the normalizationConfig with
-      where, // A WHERE clause for the query
+      data,
+      where,
     })
   }
 
@@ -210,13 +214,15 @@ export class Service {
    */
   async remove(where: WhereUniqueInput): Promise<NormalizationConfig> {
     return this.prisma.normalizationConfig.delete({
-      where, // A WHERE clause for the query
+      where,
     })
   }
 
   /**
    * RUN
-   *
+   */
+
+  /**
    * Run a normalizationConfig. This involves uploading the config to minio and triggering a
    * dag run in airflow
    *

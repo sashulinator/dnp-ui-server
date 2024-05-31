@@ -1,12 +1,13 @@
 import {
-  ArgumentsHost,
+  type ArgumentsHost,
   Catch,
   HttpException,
   HttpStatus,
-  ExceptionFilter as NestJSExceptionFilter,
+  type ExceptionFilter as NestJSExceptionFilter,
 } from '@nestjs/common'
 import { HttpAdapterHost } from '@nestjs/core'
 
+import { has } from './utils/core'
 import { assertError, isCausable } from './utils/error'
 
 export type ErrorBody = {
@@ -15,6 +16,7 @@ export type ErrorBody = {
   timestamp: string
   path: string
   cause?: Error
+  errors?: unknown
 }
 
 /**
@@ -43,6 +45,9 @@ export class ExceptionFilter implements NestJSExceptionFilter {
 
     if (isCausable(exception)) {
       responseBody.cause = exception.cause
+    }
+    if (has(exception, 'response') && has(exception.response, 'errors')) {
+      responseBody.errors = exception.response.errors
     }
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus)

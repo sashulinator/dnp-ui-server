@@ -1,69 +1,103 @@
-import { Body, Delete, Get, Controller as NestJSController, Param, Post, Put, Search } from '@nestjs/common'
-import { NormalizationConfig } from '@prisma/client'
+import { Body, Delete, Get, Controller as NestJSController, Param, Post, Put, Search, UsePipes } from '@nestjs/common'
+import { type NormalizationConfig } from '@prisma/client'
+
+import * as v from 'valibot'
+
+import { ValibotPipe } from '~/valibot-pipe'
 
 import {
-  CreateInput,
-  OrderByWithRelationInput,
-  Select,
+  type CreateNormalizationConfig,
+  type UpdateNormalizationConfig,
+  createNormalizationConfigSchema,
+  updateNormalizationConfigSchema,
+} from './normalization-configs.dto'
+import {
+  type OrderByWithRelationInput,
+  type Select,
   Service,
-  UpdateInput,
-  WhereInput,
-  WhereUniqueInput,
+  type WhereInput,
+  type WhereUniqueInput,
 } from './normalization-configs.service'
 
 @NestJSController('api/v1/normalization-configs')
 export class Controller {
   constructor(private readonly normalizationConfigsService: Service) {}
 
-  @Delete(':id')
   /**
    * Delete a normalizationConfig by its ID
    *
    * @param {string} id The ID of the normalizationConfig to delete
    * @returns {Promise<NormalizationConfig>} A promise that resolves when the normalizationConfig is deleted
    */
+  @Delete(':id')
   remove(@Param('id') id: string): Promise<NormalizationConfig> {
     return this.normalizationConfigsService.remove({ id })
   }
 
-  @Put(':id')
   /**
    * Update a normalizationConfig by its ID
    *
-   * @param {string} id The ID of the normalizationConfig to update
-   * @param {UpdateInput} updateInput The new data for the normalizationConfig
+   * @param {{ input: UpdateNormalizationConfig }} body The new data for the normalizationConfig
    * @returns A promise that resolves when the normalizationConfig is updated
    */
-  update(@Param('id') id: string, @Body() body: { input: UpdateInput }): Promise<NormalizationConfig> {
-    return this.normalizationConfigsService.update(
-      { id }, // The unique identifier of the normalizationConfig to update
-      body.input // The new data for the normalizationConfig
-    )
+  @Put()
+  @UsePipes(new ValibotPipe(v.object({ input: updateNormalizationConfigSchema })))
+  update(@Body() body: { input: UpdateNormalizationConfig }): Promise<NormalizationConfig> {
+    return this.normalizationConfigsService.update({ id: body.input.id }, body.input)
   }
 
+  /**
+   * Create a new normalizationConfig
+   *
+   * @param {{ input: CreateNormalizationConfig }} body - The data for the new normalizationConfig
+   * @returns {Promise<NormalizationConfig>} A promise that resolves to the created normalizationConfig
+   */
   @Post()
-  create(@Body() body: { input: CreateInput }) {
-    return this.normalizationConfigsService.create(body.input)
+  @UsePipes(new ValibotPipe(v.object({ test: createNormalizationConfigSchema })))
+  create(@Body() body: { test: CreateNormalizationConfig }): Promise<NormalizationConfig> {
+    return this.normalizationConfigsService.create(body.test)
   }
 
+  /**
+   * Run a normalizationConfig by its ID
+   *
+   * @param {string} id - The ID of the normalizationConfig to run
+   * @return {Promise<void>} A promise that resolves when the normalizationConfig is run
+   */
   @Post(':id/run')
   run(@Param('id') id: string): Promise<void> {
     return this.normalizationConfigsService.run({ id })
   }
 
-  @Get(':id')
   /**
-   * Find a normalizationConfig by its ID
+   * Get a normalizationConfig by its ID
    *
    * @param {string} id The ID of the normalizationConfig to find
    * @returns {Promise<NormalizationConfig>} The found normalizationConfig
    * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no normalizationConfig is found
    */
+  @Get(':id')
   getById(@Param('id') id: string): Promise<NormalizationConfig> {
     return this.normalizationConfigsService.getUniq({ id })
   }
 
-  @Search()
+  /**
+   * Find the first normalizationConfig that matches the given query parameters
+   *
+   * @param {{ where?: WhereInput; select?: Select }} params - The query parameters
+   * @returns {Promise<NormalizationConfig>} A promise that resolves to the found normalizationConfig
+   */
+  @Search('first')
+  findFirst(
+    @Body()
+    params: {
+      where?: WhereInput
+      select?: Select
+    } = {}
+  ): Promise<NormalizationConfig> {
+    return this.normalizationConfigsService.findFirst(params)
+  }
+
   /**
    * Find many normalizationConfigs and return the total count of the results
    *
@@ -74,6 +108,7 @@ export class Controller {
    * @param {OrderByWithRelationInput} params.orderBy An ORDER BY clause for the query
    * @returns {Promise<{ data: NormalizationConfig[]; total: number }>} A promise containing the normalizationConfigs and the total count of the results
    */
+  @Search()
   async findAndCountMany(
     @Body()
     params: {
