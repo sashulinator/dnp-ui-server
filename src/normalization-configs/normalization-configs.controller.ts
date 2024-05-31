@@ -53,9 +53,9 @@ export class Controller {
    * @returns {Promise<NormalizationConfig>} A promise that resolves to the created normalizationConfig
    */
   @Post()
-  @UsePipes(new ValibotPipe(v.object({ test: createNormalizationConfigSchema })))
-  create(@Body() body: { test: CreateNormalizationConfig }): Promise<NormalizationConfig> {
-    return this.normalizationConfigsService.create(body.test)
+  @UsePipes(new ValibotPipe(v.object({ input: createNormalizationConfigSchema })))
+  create(@Body() body: { input: CreateNormalizationConfig }): Promise<NormalizationConfig> {
+    return this.normalizationConfigsService.create(body.input)
   }
 
   /**
