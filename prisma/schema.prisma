@@ -22,11 +22,21 @@ model Translation {
 }
 
 model NormalizationConfig {
-  id        String   @id @default(uuid()) @db.Uuid
-  createdBy String   @db.Uuid
-  updatedBy String   @db.Uuid
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String    @id @default(uuid()) @db.Uuid
+  createdBy String    @db.Uuid
+  updatedBy String    @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   name      String
+  v         Int       @default(autoincrement())
   data      Json
+  processes Process[]
+}
+
+model Process {
+  id                    String              @id @default(uuid()) @db.Uuid
+  createdBy             String              @db.Uuid
+  createdAt             DateTime            @default(now())
+  normalizationConfig   NormalizationConfig @relation(fields: [normalizationConfigId], references: [id])
+  normalizationConfigId String              @db.Uuid
 }
