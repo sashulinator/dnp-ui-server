@@ -23,10 +23,8 @@ export class Service {
   ) {}
 
   /**
-   * GET
-   */
-
-  /**
+   * ------------ GET FIRST------------
+   *
    * Get the first normalizationConfig that matches the given `whereUniqueInput`.
    * If no normalizationConfig is found, throw a `HttpException` with status `NOT_FOUND`.
    *
@@ -46,6 +44,8 @@ export class Service {
   }
 
   /**
+   * ------------ GET UNIQUE ------------
+   *
    * Get the unique normalizationConfig that matches the given `whereUniqueInput`.
    * If no normalizationConfig is found, throw a `HttpException` with status `NOT_FOUND`.
    *
@@ -53,7 +53,7 @@ export class Service {
    * @returns {Promise<NormalizationConfig>} The found normalizationConfig
    * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no normalizationConfig is found
    */
-  async getUniq(whereUniqInput: WhereUniqueInput): Promise<NormalizationConfig> {
+  async getUnique(whereUniqInput: WhereUniqueInput): Promise<NormalizationConfig> {
     return this.prisma.normalizationConfig
       .findUniqueOrThrow({
         where: whereUniqInput,
@@ -65,10 +65,8 @@ export class Service {
   }
 
   /**
-   * FIND
-   */
-
-  /**
+   * ------------ FIND FIRST ------------
+   *
    * Find the first normalizationConfig that matches the given `whereInput`
    *
    * @param {Object} params - The parameters for the query
@@ -86,6 +84,8 @@ export class Service {
   }
 
   /**
+   * ------------ FIND UNIQUE ------------
+   *
    * Find the unique normalizationConfig that matches the given `whereUniqueInput`.
    * If no normalizationConfig is found, return `null`.
    *
@@ -99,6 +99,8 @@ export class Service {
   }
 
   /**
+   * ------------ FIND MANY ------------
+   *
    * Find many normalizationConfigs based on the given query parameters
    *
    * @param {number} params.skip The number of results to skip
@@ -130,6 +132,8 @@ export class Service {
   }
 
   /**
+   * ------------ FIND AND COUNT MANY ------------
+   *
    * Find many normalizationConfigs and return the total count of the results
    *
    * @param {number} params.skip The number of results to skip
@@ -164,10 +168,8 @@ export class Service {
   }
 
   /**
-   * CREATE
-   */
-
-  /**
+   * ------------ CREATE ------------
+   *
    * Create a new normalizationConfig
    *
    * @param {CreateInput} createInput The data to create the normalizationConfig with
@@ -185,10 +187,8 @@ export class Service {
   }
 
   /**
-   * UPDATE
-   */
-
-  /**
+   * ------------ UPDATE ------------
+   *
    * Update a normalizationConfig
    *
    * @param {WhereUniqueInput} where A WHERE clause for the query
@@ -203,10 +203,8 @@ export class Service {
   }
 
   /**
-   * REMOVE
-   */
-
-  /**
+   * ------------ REMOVE ------------
+   *
    * Remove a normalizationConfig
    *
    * @param {WhereUniqueInput} where A WHERE clause for the query
@@ -219,10 +217,8 @@ export class Service {
   }
 
   /**
-   * RUN
-   */
-
-  /**
+   * ------------ RUN ------------
+   *
    * Run a normalizationConfig. This involves uploading the config to minio and triggering a
    * dag run in airflow
    *
@@ -233,7 +229,7 @@ export class Service {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async run(props: { id: string }): Promise<any> {
     // Get the normalizationConfig from the database
-    const normalizationConfig = await this.getUniq({ id: props.id })
+    const normalizationConfig = await this.getUnique({ id: props.id })
 
     // Upload the normalizationConfig to minio
     const fileName = `${normalizationConfig.name}.json`

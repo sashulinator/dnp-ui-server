@@ -24,6 +24,8 @@ export class Controller {
   constructor(private readonly normalizationConfigsService: Service) {}
 
   /**
+   * ------------ DELETE ------------
+   *
    * Delete a normalizationConfig by its ID
    *
    * @param {string} id The ID of the normalizationConfig to delete
@@ -35,6 +37,8 @@ export class Controller {
   }
 
   /**
+   * ------------ UPDATE ------------
+   *
    * Update a normalizationConfig by its ID
    *
    * @param {{ input: UpdateNormalizationConfig }} body The new data for the normalizationConfig
@@ -47,6 +51,8 @@ export class Controller {
   }
 
   /**
+   * ------------ CREATE ------------
+   *
    * Create a new normalizationConfig
    *
    * @param {{ input: CreateNormalizationConfig }} body - The data for the new normalizationConfig
@@ -59,6 +65,8 @@ export class Controller {
   }
 
   /**
+   * ------------ RUN ------------
+   *
    * Run a normalizationConfig by its ID
    *
    * @param {string} id - The ID of the normalizationConfig to run
@@ -70,6 +78,8 @@ export class Controller {
   }
 
   /**
+   * ------------ GET BY ID ------------
+   *
    * Get a normalizationConfig by its ID
    *
    * @param {string} id The ID of the normalizationConfig to find
@@ -78,10 +88,12 @@ export class Controller {
    */
   @Get(':id')
   getById(@Param('id') id: string): Promise<NormalizationConfig> {
-    return this.normalizationConfigsService.getUniq({ id })
+    return this.normalizationConfigsService.getUnique({ id })
   }
 
   /**
+   * ------------ FIND FIRST ------------
+   *
    * Find the first normalizationConfig that matches the given query parameters
    *
    * @param {{ where?: WhereInput; select?: Select }} params - The query parameters
@@ -99,6 +111,8 @@ export class Controller {
   }
 
   /**
+   * ------------ FIND AND COUNT MANY ------------
+   *
    * Find many normalizationConfigs and return the total count of the results
    *
    * @param {number} params.skip The number of results to skip
