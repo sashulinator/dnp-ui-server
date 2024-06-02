@@ -21,22 +21,34 @@ model Translation {
   data   String
 }
 
-model NormalizationConfig {
-  id        String    @id @default(uuid()) @db.Uuid
-  createdBy String    @db.Uuid
-  updatedBy String    @db.Uuid
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+model NormalizationConfigArchive {
+  id        String   @id @db.VarChar(24)
   name      String
-  v         Int       @default(autoincrement())
+  v         Int
+  createdAt DateTime
+  updatedAt DateTime
+  createdBy String   @db.VarChar(24)
+  updatedBy String   @db.VarChar(24)
   data      Json
-  processes Process[]
+}
+
+model NormalizationConfig {
+  id        String   @id @db.VarChar(24)
+  name      String   @unique
+  v         Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String   @db.VarChar(24)
+  updatedBy String   @db.VarChar(24)
+  data      Json
 }
 
 model Process {
-  id                    String              @id @default(uuid()) @db.Uuid
-  createdBy             String              @db.Uuid
-  createdAt             DateTime            @default(now())
-  normalizationConfig   NormalizationConfig @relation(fields: [normalizationConfigId], references: [id])
-  normalizationConfigId String              @db.Uuid
+  id                    String   @id @db.VarChar(24)
+  createdBy             String   @db.VarChar(24)
+  createdAt             DateTime @default(now())
+  // relation не делаем так как ссылаться на процесс 
+  // могут не только NormalizationConfig
+  // но и NormalizationConfigArchive
+  normalizationConfigId String   @db.VarChar(24)
 }

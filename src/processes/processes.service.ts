@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { createId } from '@paralleldrive/cuid2'
 import { Prisma, type Process } from '@prisma/client'
 
 import { isInstanceOf } from 'utils/core'
@@ -176,7 +177,8 @@ export class Service {
     return this.prisma.process.create({
       data: {
         ...createInput,
-        createdBy: '3422b448-2460-4fd2-9183-8000de6f8343',
+        id: createId(),
+        createdBy: 'tz4a98xxat96iws9zmbrgj3a',
       },
     })
   }

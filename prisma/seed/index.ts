@@ -1,15 +1,19 @@
 import { PrismaClient } from '@prisma/client'
 
 import { seedNormalizationConfigs } from './normalization-config'
+import { seedProcesses } from './processes'
 import { seedTranslations } from './translations'
 
 const prisma = new PrismaClient()
 async function main() {
   await seedNormalizationConfigs(prisma)
   console.log('Seeded normalization configs')
+  await seedProcesses(prisma)
+  console.log('Seeded processes')
   await seedTranslations(prisma)
   console.log('Seeded translations')
 }
+
 main()
   .then(async () => {
     await prisma.$disconnect()
