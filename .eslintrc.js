@@ -14,6 +14,7 @@ module.exports = {
   },
   ignorePatterns: ['.eslintrc.js'],
   rules: {
+    'no-console': 'error',
     '@typescript-eslint/consistent-type-imports': 'error',
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
