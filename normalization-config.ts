@@ -55,6 +55,7 @@ export type DriverUniversalServices = v.InferOutput<typeof driverUniversalServic
 
 export const normalizationConfigSchema = v.object({
   id: v.pipe(v.string(), v.nonEmpty()),
+  v: v.pipe(v.number(), v.notValue(0)),
   name: v.pipe(v.string(), v.nonEmpty()),
   createdBy: v.pipe(v.string(), v.nonEmpty()),
   updatedBy: v.pipe(v.string(), v.nonEmpty()),
@@ -77,6 +78,7 @@ export type NormalizationConfig = v.InferOutput<typeof normalizationConfigSchema
 
 export const createNormalizationConfigSchema = v.omit(normalizationConfigSchema, [
   'id',
+  'v',
   'createdAt',
   'updatedAt',
   'createdBy',
@@ -94,6 +96,8 @@ export const updateNormalizationConfigSchema = v.omit(normalizationConfigSchema,
   'updatedAt',
   'createdBy',
   'updatedBy',
+  'id',
+  'v',
 ])
 
 export type UpdateNormalizationConfig = v.InferOutput<typeof updateNormalizationConfigSchema>
