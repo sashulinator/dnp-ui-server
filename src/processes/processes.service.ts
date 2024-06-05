@@ -1,11 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { createId } from '@paralleldrive/cuid2'
-import { Prisma, type Process } from '@prisma/client'
+// import { createId } from '@paralleldrive/cuid2'
+import { Prisma, type Process as PrismaProcess } from '@prisma/client'
 
 import { isInstanceOf } from 'utils/core'
 
+import { MinioService } from '~/minio.service'
+
 import { PrismaService } from '../prisma.service'
-import { type CreateProcess, type UpdateProcess } from './processes.dto'
+import { type CreateProcess } from './processes.dto'
 
 export type WhereUniqueInput = Prisma.ProcessWhereUniqueInput
 export type WhereInput = Prisma.ProcessWhereInput
@@ -17,7 +20,10 @@ const ORDER_BY: OrderByWithRelationInput = { createdAt: 'desc' }
 
 @Injectable()
 export class Service {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private minio: MinioService
+  ) {}
 
   /**
    * ------------ GET FIRST------------
@@ -29,7 +35,7 @@ export class Service {
    * @returns {Promise<Process>} The found process
    * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no process is found
    */
-  async getFirst(whereUniqInput: WhereUniqueInput): Promise<Process> {
+  async getFirst(whereUniqInput: WhereUniqueInput): Promise<PrismaProcess> {
     return this.prisma.process
       .findFirstOrThrow({
         where: whereUniqInput,
@@ -40,17 +46,7 @@ export class Service {
       })
   }
 
-  /**
-   * ------------ GET UNIQUE ------------
-   *
-   * Get the unique process that matches the given `whereUniqueInput`.
-   * If no process is found, throw a `HttpException` with status `NOT_FOUND`.
-   *
-   * @param {WhereUniqueInput} whereUniqInput The `whereUniqueInput` to match
-   * @returns {Promise<Process>} The found process
-   * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no process is found
-   */
-  async getUnique(whereUniqInput: WhereUniqueInput): Promise<Process> {
+  async getUnique(whereUniqInput: WhereUniqueInput): Promise<PrismaProcess> {
     return this.prisma.process
       .findUniqueOrThrow({
         where: whereUniqInput,
@@ -76,7 +72,7 @@ export class Service {
       where?: WhereInput
       select?: Select
     } = {}
-  ): Promise<Process | null> {
+  ): Promise<PrismaProcess | null> {
     return this.prisma.process.findFirst(params)
   }
 
@@ -89,7 +85,7 @@ export class Service {
    * @param {WhereUniqueInput} whereUniqInput The `whereUniqueInput` to match
    * @returns {Promise<Process | null>} The found process or `null` if no process is found
    */
-  async findUnique(whereUniqInput: WhereUniqueInput): Promise<Process | null> {
+  async findUnique(whereUniqInput: WhereUniqueInput): Promise<PrismaProcess | null> {
     return this.prisma.process.findUnique({
       where: whereUniqInput,
     })
@@ -116,7 +112,7 @@ export class Service {
       orderBy?: OrderByWithRelationInput
       select?: Select
     } = {}
-  ): Promise<Process[]> {
+  ): Promise<PrismaProcess[]> {
     const { skip, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
 
     return this.prisma.process.findMany({
@@ -149,7 +145,7 @@ export class Service {
       orderBy?: OrderByWithRelationInput
       select?: Select
     } = {}
-  ): Promise<[Process[], number]> {
+  ): Promise<[PrismaProcess[], number]> {
     const { skip, select, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
 
     const commonArgs = {
@@ -164,52 +160,49 @@ export class Service {
     ])
   }
 
-  /**
-   * ------------ CREATE ------------
-   *
-   * Create a new process
-   *
-   * @param {CreateInput} createInput The data to create the process with
-   * @returns {Promise<Process>} A promise containing the created process
-   * @throws {HttpException} HttpException with status code 409 if the process already exists
-   */
-  async create(createInput: CreateProcess): Promise<Process> {
+  async create(props: CreateProcess): Promise<PrismaProcess> {
+    // Retrieve the normalizationConfig from the database
+    const normalizationConfig = await this.prisma.normalizationConfig.findUnique({
+      where: { id: props.normalizationConfigId },
+    })
+
+    // Throw an error if the normalizationConfig is not found
+    if (!normalizationConfig) {
+      throw new HttpException(
+        `NormalizationConfig with id=${props.normalizationConfigId} not found`,
+        HttpStatus.NOT_FOUND
+      )
+    }
+
+    // Prepare the filename and buffer for uploading to Minio
+    const fileName = `${normalizationConfig.name}.json`
+    const buffer = JSON.stringify(normalizationConfig.data)
+
+    // Upload the normalizationConfig to Minio
+    await this.minio.putObject('dnp-common', fileName, buffer)
+
+    // Set the headers for the HTTP request
+    const headers = new Headers()
+    headers.set('Authorization', 'Basic ' + Buffer.from('airflow:airflow').toString('base64'))
+    headers.set('Content-Type', 'application/json;charset=UTF-8')
+
+    // Trigger the Airflow DAG run
+    await fetch('http://10.4.40.30:8080/api/v1/dags/dnp_rest_api_trigger/dagRuns', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        conf: {
+          dnp_s3_config_path: `dnp-common/${fileName}`,
+        },
+      }),
+    })
+
     return this.prisma.process.create({
       data: {
-        ...createInput,
+        normalizationConfigId: props.normalizationConfigId,
         id: createId(),
         createdBy: 'tz4a98xxat96iws9zmbrgj3a',
       },
-    })
-  }
-
-  /**
-   * ------------ UPDATE ------------
-   *
-   * Update a process
-   *
-   * @param {WhereUniqueInput} where A WHERE clause for the query
-   * @param {UpdateInput} data The data to update the process with
-   * @returns {Promise<Process>} A promise containing the updated process
-   */
-  async update(where: WhereUniqueInput, data: UpdateProcess): Promise<Process> {
-    return this.prisma.process.update({
-      data,
-      where,
-    })
-  }
-
-  /**
-   * ------------ REMOVE ------------
-   *
-   * Remove a process
-   *
-   * @param {WhereUniqueInput} where A WHERE clause for the query
-   * @returns {Promise<Process>} A promise containing the removed process
-   */
-  async remove(where: WhereUniqueInput): Promise<Process> {
-    return this.prisma.process.delete({
-      where,
     })
   }
 }
