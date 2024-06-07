@@ -1,0 +1,54 @@
+stages:
+  - build
+
+variables:
+  NODE_IMAGE: "nexus.inno.tech:19120/node:22.2.0-bookworm-slim"
+  DOCKER_IMAGE: "nexus.inno.tech:19120/docker:24.0.4"
+  IMAGE_NAME: "dnp-server-ui"
+  DOCKERFILE: "Dockerfile"
+  VERSION: "0.${CI_PIPELINE_IID}"
+
+build:
+  stage: build
+  image: $NODE_IMAGE
+  tags:
+    - common
+    - docker
+  script:
+    - yarn --version
+    - yarn set version stable
+    - yarn install --immutable --inline-builds
+    - yarn build
+  artifacts:
+    paths:
+      - node_modules/
+      - dist/
+    expire_in: 1 hour
+
+build-image:
+  stage: build
+  image: $DOCKER_IMAGE
+  tags:
+    - common
+    - dind
+  needs:
+    - job: build
+      artifacts: true
+  services:
+    - name: $DOCKER_IMAGE
+      alias: docker
+      command: ["--tls=false", "--host=tcp://0.0.0.0:2375"]
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_CERT_PATH: ""
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_TLS_VERIFY: ""
+  script:
+    - docker build -f ${DOCKERFILE} -t ${IMAGE_NAME}:${VERSION} .
+    - mkdir -p images
+    - docker save -o images/${IMAGE_NAME}.tar ${IMAGE_NAME}:${VERSION}
+  artifacts:
+    name: ${IMAGE_NAME}
+    paths:
+      - images/*.tar
+    expire_in: 1 hour
