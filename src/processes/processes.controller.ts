@@ -14,7 +14,7 @@ import {
 export class Controller {
   constructor(private readonly processesService: Service) {}
 
-  @Post('create')
+  @Post()
   /**
    * ------------ CREATE ------------
    *
