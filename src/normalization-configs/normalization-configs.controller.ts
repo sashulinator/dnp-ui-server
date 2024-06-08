@@ -65,19 +65,6 @@ export class Controller {
   }
 
   /**
-   * ------------ RUN ------------
-   *
-   * Run a normalizationConfig by its ID
-   *
-   * @param {string} id - The ID of the normalizationConfig to run
-   * @return {Promise<void>} A promise that resolves when the normalizationConfig is run
-   */
-  @Post(':id/run')
-  run(@Param('id') id: string): Promise<void> {
-    return this.normalizationConfigsService.run({ id })
-  }
-
-  /**
    * ------------ GET BY ID ------------
    *
    * Get a normalizationConfig by its ID
