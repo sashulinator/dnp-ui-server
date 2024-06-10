@@ -2,7 +2,7 @@
   "name": "dnp-server",
   "version": "0.0.1",
   "description": "Сервер для DNP",
-  "packageManager": "yarn@4.2.2",
+  "packageManager": "yarn@1.22.22",
   "author": "Савченко Александр",
   "private": true,
   "license": "UNLICENSED",

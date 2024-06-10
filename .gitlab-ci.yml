@@ -1,12 +1,24 @@
+workflow:
+  name: "Pipeline for branch: $CI_COMMIT_BRANCH"
+  rules:
+    - if: $CI_PIPELINE_SOURCE =~ /merge_request_event|web/
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_REF_NAME == "main"
+    - if: $CI_COMMIT_REF_NAME == "develop"
+      variables:
+        DEPLOY: "true"
+
 stages:
   - build
+  - deploy
 
 variables:
   NODE_IMAGE: "nexus.inno.tech:19120/node:22.2.0-bookworm-slim"
   DOCKER_IMAGE: "nexus.inno.tech:19120/docker:24.0.4"
   IMAGE_NAME: "dnp-server-ui"
   DOCKERFILE: "Dockerfile"
-  VERSION: "0.${CI_PIPELINE_IID}"
+  TAG: "0.${CI_PIPELINE_IID}"
 
 build:
   stage: build
@@ -16,7 +28,6 @@ build:
     - docker
   script:
     - yarn --version
-    - yarn set version stable
     - yarn install --immutable --inline-builds
     - yarn build
   artifacts:
@@ -44,11 +55,24 @@ build-image:
     DOCKER_TLS_CERTDIR: ""
     DOCKER_TLS_VERIFY: ""
   script:
-    - docker build -f ${DOCKERFILE} -t ${IMAGE_NAME}:${VERSION} .
+    - docker build -f ${DOCKERFILE} -t ${IMAGE_NAME}:${TAG} .
     - mkdir -p images
-    - docker save -o images/${IMAGE_NAME}.tar ${IMAGE_NAME}:${VERSION}
+    - docker save -o images/${IMAGE_NAME}.tar ${IMAGE_NAME}:${TAG}
+    - echo "DNP_SERVER_UI_IMAGE_TAG=${TAG}" >> build.env
+    - echo "DNP_SERVER_UI_IMAGE_REF=${CI_COMMIT_REF_NAME}" >> build.env
   artifacts:
     name: ${IMAGE_NAME}
     paths:
       - images/*.tar
-    expire_in: 1 hour
+    expire_in: 1 week
+    reports:
+      dotenv: build.env
+
+deploy:
+  stage: deploy
+  rules:
+    - if: $DEPLOY
+  trigger:
+    project: dnp_team/deployment
+    branch: main
+    strategy: depend
