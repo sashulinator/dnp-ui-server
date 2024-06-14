@@ -26,6 +26,8 @@ build:
   tags:
     - common
     - docker
+  variables:
+    PRISMA_CLI_BINARY_TARGETS: "debian-openssl-3.0.x"
   script:
     - yarn --version
     - yarn install --immutable --inline-builds

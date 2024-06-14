@@ -6,6 +6,7 @@ RUN apt-get update -y && \
     apt-get install --no-install-recommends -y openssl curl && \
     rm -rf /var/lib/apt/lists/*
 
+COPY ./package.json /app/package.json
 COPY ./node_modules/ /app/node_modules/
 COPY ./dist/ /app/dist/
 
