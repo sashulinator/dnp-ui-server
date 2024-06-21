@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
@@ -22,10 +22,8 @@ model Translation {
   data   String
 }
 
-model NormalizationConfigArchive {
-  id        String   @id @db.VarChar(24)
-  name      String
-  v         Int
+model SourceConfig {
+  keyName   String   @id @db.VarChar(36)
   createdAt DateTime
   updatedAt DateTime
   createdBy String   @db.VarChar(24)
@@ -33,15 +31,34 @@ model NormalizationConfigArchive {
   data      Json
 }
 
+model NormalizationConfigArchive {
+  id                  String   @id @db.VarChar(24)
+  name                String
+  v                   Int
+  createdAt           DateTime
+  updatedAt           DateTime
+  createdBy           String   @db.VarChar(24)
+  updatedBy           String   @db.VarChar(24)
+  data                Json
+  // relation не делаем так как ссылаться на SourceConfig 
+  // могут не только NormalizationConfig
+  // но и NormalizationConfigArchive
+  sourceConfigKeyName String   @db.VarChar(36)
+}
+
 model NormalizationConfig {
-  id        String   @id @db.VarChar(24)
-  name      String   @unique
-  v         Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  createdBy String   @db.VarChar(24)
-  updatedBy String   @db.VarChar(24)
-  data      Json
+  id                  String   @id @db.VarChar(24)
+  name                String   @unique
+  v                   Int
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  createdBy           String   @db.VarChar(24)
+  updatedBy           String   @db.VarChar(24)
+  data                Json
+  // relation не делаем так как ссылаться на SourceConfig 
+  // могут не только NormalizationConfig
+  // но и NormalizationConfigArchive
+  sourceConfigKeyName String   @db.VarChar(36)
 }
 
 model Process {

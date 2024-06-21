@@ -61,6 +61,7 @@ export const normalizationConfigSchema = v.object({
   updatedBy: v.pipe(v.string(), v.nonEmpty()),
   createdAt: v.pipe(v.string(), v.nonEmpty()),
   updatedAt: v.pipe(v.string(), v.nonEmpty()),
+  sourceConfigKeyName: v.pipe(v.string(), v.nonEmpty()),
   data: v.object({
     executables: v.array(executableSchema),
     sdk: sdkSchema,

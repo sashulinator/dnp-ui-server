@@ -229,6 +229,7 @@ export class Service {
           v: itemToArchive.v + 1,
           createdBy: 'tz4a98xxat96iws9zmbrgj3a',
           updatedBy: 'tz4a98xxat96iws9zmbrgj3a',
+          sourceConfigKeyName: 'default',
         },
       }),
     ])
