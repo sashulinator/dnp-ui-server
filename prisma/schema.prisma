@@ -24,8 +24,8 @@ model Translation {
 
 model SourceConfig {
   keyName   String   @id @db.VarChar(36)
-  createdAt DateTime
-  updatedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   createdBy String   @db.VarChar(24)
   updatedBy String   @db.VarChar(24)
   data      Json
@@ -35,8 +35,8 @@ model NormalizationConfigArchive {
   id                  String   @id @db.VarChar(24)
   name                String
   v                   Int
-  createdAt           DateTime
-  updatedAt           DateTime
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
   createdBy           String   @db.VarChar(24)
   updatedBy           String   @db.VarChar(24)
   data                Json

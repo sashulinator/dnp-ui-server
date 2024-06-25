@@ -10,15 +10,28 @@ CREATE TABLE "Translation" (
 );
 
 -- CreateTable
-CREATE TABLE "NormalizationConfigArchive" (
-    "id" VARCHAR(24) NOT NULL,
-    "name" TEXT NOT NULL,
-    "v" INTEGER NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL,
+CREATE TABLE "SourceConfig" (
+    "keyName" VARCHAR(36) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "createdBy" VARCHAR(24) NOT NULL,
     "updatedBy" VARCHAR(24) NOT NULL,
     "data" JSONB NOT NULL,
+
+    CONSTRAINT "SourceConfig_pkey" PRIMARY KEY ("keyName")
+);
+
+-- CreateTable
+CREATE TABLE "NormalizationConfigArchive" (
+    "id" VARCHAR(24) NOT NULL,
+    "name" TEXT NOT NULL,
+    "v" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdBy" VARCHAR(24) NOT NULL,
+    "updatedBy" VARCHAR(24) NOT NULL,
+    "data" JSONB NOT NULL,
+    "sourceConfigKeyName" VARCHAR(36) NOT NULL,
 
     CONSTRAINT "NormalizationConfigArchive_pkey" PRIMARY KEY ("id")
 );
@@ -33,6 +46,7 @@ CREATE TABLE "NormalizationConfig" (
     "createdBy" VARCHAR(24) NOT NULL,
     "updatedBy" VARCHAR(24) NOT NULL,
     "data" JSONB NOT NULL,
+    "sourceConfigKeyName" VARCHAR(36) NOT NULL,
 
     CONSTRAINT "NormalizationConfig_pkey" PRIMARY KEY ("id")
 );
