@@ -18,7 +18,7 @@ export type SourceConfig = v.InferOutput<typeof SourceConfigSchema>
 /**
  * CreateSourceConfig
  */
-export const createSourceConfigSchema = v.omit(SourceConfigSchema, ['createdAt', 'createdBy'])
+export const createSourceConfigSchema = v.omit(SourceConfigSchema, ['createdAt', 'createdBy', 'updatedAt', 'updatedBy'])
 
 export type CreateSourceConfig = v.InferOutput<typeof createSourceConfigSchema>
 
