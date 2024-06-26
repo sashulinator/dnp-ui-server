@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common'
 
-import { PrismaService } from '../prisma.service'
 import { Controller } from './normalization-configs.controller'
 import { Service } from './normalization-configs.service'
+import PrismaModule from '~/prisma/prisma.module'
 
 @Module({
   controllers: [Controller],
-  providers: [Service, PrismaService],
+  providers: [Service],
+  imports: [PrismaModule],
 })
 export class NormalizationConfigModule {}

@@ -1,7 +1,7 @@
 import type { TestingModule } from '@nestjs/testing'
 import { Test } from '@nestjs/testing'
 
-import { Service } from './source-configs.service'
+import { Service } from './store-configs.service'
 
 describe('TranslationsService', () => {
   let service: Service

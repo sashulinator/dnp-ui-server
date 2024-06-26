@@ -4,7 +4,7 @@ import { Prisma, type NormalizationConfig as PrismaNormalizationConfig } from '@
 
 import { isInstanceOf } from 'utils/core'
 
-import { PrismaService } from '../prisma.service'
+import PrismaService from '../prisma/prisma.service'
 import {
   type CreateNormalizationConfig,
   type NormalizationConfig,

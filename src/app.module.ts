@@ -6,7 +6,8 @@ import { ExceptionFilter } from './exception.filter'
 import { NormalizationConfigArchiveModule } from './normalization-configs-archive/normalization-configs-archive.module'
 import { NormalizationConfigModule } from './normalization-configs/normalization-configs.module'
 import { ProcessModule } from './processes/processes.module'
-import SourceModule from './source-configs/source-configs.module'
+import SourceModule from './store-configs/store-configs.module'
+import PrismaModule from './prisma/prisma.module'
 import ExplorerModule from './explorer/explorer.module'
 import { TranslationsModule } from './translations/translations.module'
 
@@ -18,6 +19,7 @@ import { TranslationsModule } from './translations/translations.module'
     NormalizationConfigArchiveModule,
     ProcessModule,
     SourceModule,
+    PrismaModule,
     ExplorerModule,
   ],
   providers: [

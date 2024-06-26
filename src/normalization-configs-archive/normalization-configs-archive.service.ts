@@ -4,7 +4,7 @@ import { type NormalizationConfig, Prisma } from '@prisma/client'
 import { MinioService } from 'src/minio.service'
 import { isInstanceOf } from 'utils/core'
 
-import { PrismaService } from '../prisma.service'
+import PrismaService from '../prisma/prisma.service'
 
 export type WhereUniqueInput = Prisma.NormalizationConfigArchiveWhereUniqueInput
 export type WhereInput = Prisma.NormalizationConfigArchiveWhereInput

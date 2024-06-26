@@ -22,12 +22,13 @@ model Translation {
   data   String
 }
 
-model SourceConfig {
+model StoreConfig {
   keyName   String   @id @db.VarChar(36)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   createdBy String   @db.VarChar(24)
   updatedBy String   @db.VarChar(24)
+  type      String   @db.VarChar(10)
   data      Json
 }
 
