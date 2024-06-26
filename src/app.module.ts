@@ -7,6 +7,7 @@ import { NormalizationConfigArchiveModule } from './normalization-configs-archiv
 import { NormalizationConfigModule } from './normalization-configs/normalization-configs.module'
 import { ProcessModule } from './processes/processes.module'
 import SourceModule from './source-configs/source-configs.module'
+import ExplorerModule from './explorer/explorer.module'
 import { TranslationsModule } from './translations/translations.module'
 
 @Module({
@@ -17,6 +18,7 @@ import { TranslationsModule } from './translations/translations.module'
     NormalizationConfigArchiveModule,
     ProcessModule,
     SourceModule,
+    ExplorerModule,
   ],
   providers: [
     {
