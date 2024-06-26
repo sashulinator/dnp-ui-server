@@ -6,7 +6,7 @@ import { isInstanceOf } from 'utils/core'
 
 import { MinioService } from '~/minio.service'
 
-import PrismaService from '../prisma/prisma.service'
+import PrismaService from '../../prisma/prisma.service'
 import { type CreateProcess } from './processes.dto'
 
 export type WhereUniqueInput = Prisma.ProcessWhereUniqueInput
