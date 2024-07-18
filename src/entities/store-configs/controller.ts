@@ -8,7 +8,7 @@ import { ValibotPipe } from '~/shared/valibot.pipe'
 import { type CreateStoreConfig, type UpdateStoreConfig, createStoreConfigSchema, updateStoreConfigSchema } from './dto'
 import Service, { type OrderByWithRelationInput, type Select, type WhereInput, type WhereUniqueInput } from './service'
 
-@NestJSController('api/v1/source-configs')
+@NestJSController('api/v1/store-configs')
 export default class Controller {
   constructor(private readonly service: Service) {}
 
