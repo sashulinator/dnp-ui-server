@@ -185,6 +185,7 @@ export default class Service {
         ...createInput,
         v: 1,
         id: createId(),
+        current: true,
         createdBy: 'tz4a98xxat96iws9zmbrgj3a',
         updatedBy: 'tz4a98xxat96iws9zmbrgj3a',
       },
@@ -215,9 +216,11 @@ export default class Service {
     // Необходимо Date поля привести к string, самый простой способ
     const itemToArchive = JSON.parse(JSON.stringify(prismaItem)) as NormalizationConfig
 
-    const [, , created] = await this.prisma.$transaction([
-      this.prisma.normalizationConfigArchive.create({ data: itemToArchive }),
-      this.prisma.normalizationConfig.delete({ where: { id: itemToArchive.id } }),
+    const [, created] = await this.prisma.$transaction([
+      this.prisma.normalizationConfig.update({
+        where: { id: itemToArchive.id },
+        data: { ...itemToArchive, current: false },
+      }),
       this.prisma.normalizationConfig.create({
         data: {
           ...data,
@@ -225,7 +228,7 @@ export default class Service {
           v: itemToArchive.v + 1,
           createdBy: 'tz4a98xxat96iws9zmbrgj3a',
           updatedBy: 'tz4a98xxat96iws9zmbrgj3a',
-          sourceConfigKeyName: 'default',
+          current: true,
         },
       }),
     ])

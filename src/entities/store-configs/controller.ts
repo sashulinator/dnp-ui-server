@@ -17,12 +17,12 @@ export default class Controller {
    *
    * Delete a StoreConfig by its KeyName
    *
-   * @param {string} keyName The KeyName of the storeConfig to delete
+   * @param {string} keyname The KeyName of the storeConfig to delete
    * @returns {Promise<StoreConfig>} A promise that resolves when the storeConfig is deleted
    */
-  @Delete(':keyName')
-  remove(@Param('keyName') keyName: string): Promise<StoreConfig> {
-    return this.service.remove({ keyName })
+  @Delete(':keyname')
+  remove(@Param('keyname') keyname: string): Promise<StoreConfig> {
+    return this.service.remove({ keyname })
   }
 
   /**
@@ -36,7 +36,7 @@ export default class Controller {
   @Put()
   @UsePipes(new ValibotPipe(v.object({ input: updateStoreConfigSchema })))
   update(@Body() body: { input: UpdateStoreConfig }): Promise<StoreConfig> {
-    return this.service.update({ keyName: body.input.keyName }, body.input)
+    return this.service.update({ keyname: body.input.keyname }, body.input)
   }
 
   /**
@@ -58,13 +58,13 @@ export default class Controller {
    *
    * Get a StoreConfig by its KeyName
    *
-   * @param {string} keyName The KeyName of the storeConfig to find
+   * @param {string} keyname The KeyName of the storeConfig to find
    * @returns {Promise<StoreConfig>} The found storeConfig
    * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no storeConfig is found
    */
-  @Get(':keyName')
-  getByName(@Param('keyName') keyName: string): Promise<StoreConfig> {
-    return this.service.getUnique({ keyName })
+  @Get(':keyname')
+  getByName(@Param('keyname') keyname: string): Promise<StoreConfig> {
+    return this.service.getUnique({ keyname })
   }
 
   /**

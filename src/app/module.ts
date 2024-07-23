@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common'
 import { APP_FILTER } from '@nestjs/core'
 import AppController from './controller'
 import ExceptionFilter from './exception.filter'
-import NormalizationConfigArchiveModule from '../entities/normalization-configs-archive/module'
 import NormalizationConfigModule from '../entities/normalization-configs/module'
 import ProcessModule from '../entities/processes/module'
 import StoreConfigModule from '../entities/store-configs/module'
@@ -15,7 +14,6 @@ import TranslationsModule from '../system/translations/module'
   imports: [
     TranslationsModule,
     NormalizationConfigModule,
-    NormalizationConfigArchiveModule,
     ProcessModule,
     StoreConfigModule,
     PrismaModule,

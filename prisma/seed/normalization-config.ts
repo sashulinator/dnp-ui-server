@@ -1,33 +1,31 @@
-import { type PrismaClient } from '@prisma/client'
+import { type Prisma, type PrismaClient } from '@prisma/client'
+
+const normalizationConfig1: Prisma.NormalizationConfigCreateInput = {
+  id: 'tz4a98xxat96iws9zmbrgj3a',
+  v: 1,
+  name: 'first',
+  current: true,
+  createdBy: 'tz4a98xxat96iws9zmbrgj3a',
+  updatedBy: 'tz4a98xxat96iws9zmbrgj3a',
+  createdAt: '2024-05-28T06:37:43.048Z',
+  updatedAt: '2024-05-28T06:37:43.048Z',
+  data: getData(),
+}
 
 export async function seedNormalizationConfigs(prisma: PrismaClient) {
   await prisma.normalizationConfig.create({
-    data: {
-      id: 'tz4a98xxat96iws9zmbrgj3a',
-      v: 1,
-      name: 'first',
-      sourceConfigKeyName: 'default',
-      createdBy: 'tz4a98xxat96iws9zmbrgj3a',
-      updatedBy: 'tz4a98xxat96iws9zmbrgj3a',
-      createdAt: '2024-05-28T06:37:43.048Z',
-      updatedAt: '2024-05-28T06:37:43.048Z',
-      data: getData(),
-    },
+    data: normalizationConfig1,
   })
 
-  await prisma.normalizationConfig.create({
-    data: {
-      id: 'tz4a98xxat96iws9zmbrgj3b',
-      v: 1,
-      name: 'second',
-      sourceConfigKeyName: 'default',
-      createdBy: 'tz4a98xxat96iws9zmbrgj3a',
-      updatedBy: 'tz4a98xxat96iws9zmbrgj3a',
-      createdAt: '2024-05-28T06:37:43.048Z',
-      updatedAt: '2024-05-28T06:37:43.048Z',
-      data: getData(),
-    },
-  })
+  const seedPromises = Array(20)
+    .fill(undefined)
+    .map((_, i) => {
+      return prisma.normalizationConfig.create({
+        data: { ...normalizationConfig1, name: `seed-${i}` },
+      })
+    })
+
+  return Promise.allSettled(seedPromises)
 }
 
 function getData() {

@@ -14,16 +14,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Translation {
-  id     Int    @id @default(autoincrement())
-  key    String
-  ns     String
-  locale String
-  data   String
+model Process {
+  id                    String              @id @db.VarChar(24)
+  createdBy             String              @db.VarChar(24)
+  createdAt             DateTime            @default(now())
+  normalizationConfigId String              @db.VarChar(24)
+  // relations
+  normalizationConfig   NormalizationConfig @relation(fields: [normalizationConfigId], references: [id])
 }
 
 model StoreConfig {
-  keyName   String   @id @db.VarChar(36)
+  keyname   String   @id @db.VarChar(36)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   createdBy String   @db.VarChar(24)
@@ -32,42 +33,28 @@ model StoreConfig {
   data      Json
 }
 
-model NormalizationConfigArchive {
-  id                  String   @id @db.VarChar(24)
-  name                String
-  v                   Int
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-  createdBy           String   @db.VarChar(24)
-  updatedBy           String   @db.VarChar(24)
-  data                Json
-  // relation не делаем так как ссылаться на SourceConfig 
-  // могут не только NormalizationConfig
-  // но и NormalizationConfigArchive
-  sourceConfigKeyName String   @db.VarChar(36)
-}
-
 model NormalizationConfig {
-  id                  String   @id @db.VarChar(24)
-  name                String   @unique
-  v                   Int
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-  createdBy           String   @db.VarChar(24)
-  updatedBy           String   @db.VarChar(24)
-  data                Json
-  // relation не делаем так как ссылаться на SourceConfig 
-  // могут не только NormalizationConfig
-  // но и NormalizationConfigArchive
-  sourceConfigKeyName String   @db.VarChar(36)
+  id        String    @id @db.VarChar(24)
+  name      String    @unique
+  v         Int
+  current   Boolean
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  createdBy String    @db.VarChar(24)
+  updatedBy String    @db.VarChar(24)
+  data      Json
+  // relations
+  processes Process[]
 }
 
-model Process {
-  id                    String   @id @db.VarChar(24)
-  createdBy             String   @db.VarChar(24)
-  createdAt             DateTime @default(now())
-  // relation не делаем так как ссылаться на процесс 
-  // могут не только NormalizationConfig
-  // но и NormalizationConfigArchive
-  normalizationConfigId String   @db.VarChar(24)
+// **************
+// *** SYSTEM ***
+// **************
+
+model Translation {
+  id     Int    @id @default(autoincrement())
+  key    String
+  ns     String
+  locale String
+  data   String
 }

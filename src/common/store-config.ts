@@ -4,8 +4,8 @@ import * as v from 'valibot'
  * StoreConfig
  */
 
-export const StoreConfigSchema = v.object({
-  keyName: v.pipe(v.string(), v.nonEmpty()),
+export const storeConfigSchema = v.object({
+  keyname: v.pipe(v.string(), v.nonEmpty()),
   createdBy: v.pipe(v.string(), v.nonEmpty()),
   updatedBy: v.pipe(v.string(), v.nonEmpty()),
   createdAt: v.pipe(v.string(), v.nonEmpty()),
@@ -14,12 +14,12 @@ export const StoreConfigSchema = v.object({
   data: v.looseObject({}),
 })
 
-export type StoreConfig = v.InferOutput<typeof StoreConfigSchema>
+export type StoreConfig = v.InferOutput<typeof storeConfigSchema>
 
 /**
  * CreateStoreConfig
  */
-export const createStoreConfigSchema = v.omit(StoreConfigSchema, ['createdAt', 'createdBy', 'updatedAt', 'updatedBy'])
+export const createStoreConfigSchema = v.omit(storeConfigSchema, ['createdAt', 'createdBy', 'updatedAt', 'updatedBy'])
 
 export type CreateStoreConfig = v.InferOutput<typeof createStoreConfigSchema>
 
@@ -27,6 +27,6 @@ export type CreateStoreConfig = v.InferOutput<typeof createStoreConfigSchema>
  * UpdateStoreConfig
  */
 
-export const updateStoreConfigSchema = v.omit(StoreConfigSchema, ['createdAt', 'createdBy'])
+export const updateStoreConfigSchema = v.omit(storeConfigSchema, ['createdAt', 'createdBy'])
 
 export type UpdateStoreConfig = v.InferOutput<typeof updateStoreConfigSchema>
