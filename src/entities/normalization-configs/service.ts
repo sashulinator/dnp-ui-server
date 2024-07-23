@@ -29,7 +29,7 @@ export default class Service {
    * @returns {Promise<PrismaNormalizationConfig>} The found normalizationConfig
    * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no normalizationConfig is found
    */
-  async getFirst(whereUniqInput: WhereUniqueInput): Promise<PrismaNormalizationConfig> {
+  async getFirst(whereUniqInput: WhereInput): Promise<PrismaNormalizationConfig> {
     return this.prisma.normalizationConfig
       .findFirstOrThrow({
         where: whereUniqInput,
@@ -174,7 +174,7 @@ export default class Service {
    * @throws {HttpException} HttpException with status code 409 if the normalizationConfig already exists
    */
   async create(createInput: CreateNormalizationConfig): Promise<PrismaNormalizationConfig> {
-    const item = await this.prisma.normalizationConfig.findUnique({ where: { name: createInput.name } })
+    const item = await this.prisma.normalizationConfig.findFirst({ where: { name: createInput.name, current: true } })
 
     if (item) {
       throw new HttpException(`NormalizationConfig with name "${createInput.name}" already exists`, HttpStatus.CONFLICT)
@@ -198,17 +198,20 @@ export default class Service {
    * Update a normalizationConfig
    *
    * @param {WhereUniqueInput} where A WHERE clause for the query
-   * @param {UpdateInput} data The data to update the normalizationConfig with
+   * @param {UpdateInput} updateNormalizationConfig The data to update the normalizationConfig with
    * @returns {Promise<PrismaNormalizationConfig>} A promise containing the updated normalizationConfig
    */
-  async update(where: WhereUniqueInput, data: UpdateNormalizationConfig): Promise<PrismaNormalizationConfig> {
-    const prismaItem = await this.getUnique(where)
+  async update(
+    where: WhereInput,
+    updateNormalizationConfig: UpdateNormalizationConfig
+  ): Promise<PrismaNormalizationConfig> {
+    const prismaItem = await this.getFirst(where)
 
     const processes = await this.prisma.process.findFirst({ where: { normalizationConfigId: prismaItem.id } })
 
     // Если нет процессов, то просто обновляем данные
     if (!processes) {
-      return this.prisma.normalizationConfig.update({ where, data })
+      return this.prisma.normalizationConfig.update({ where: { id: prismaItem.id }, data: updateNormalizationConfig })
     }
 
     // Если есть процессы, то создаем архивную версию
@@ -223,7 +226,8 @@ export default class Service {
       }),
       this.prisma.normalizationConfig.create({
         data: {
-          ...data,
+          ...updateNormalizationConfig,
+          name: itemToArchive.name,
           id: createId(),
           v: itemToArchive.v + 1,
           createdBy: 'tz4a98xxat96iws9zmbrgj3a',

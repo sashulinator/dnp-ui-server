@@ -1,6 +1,7 @@
 import { type Prisma, type PrismaClient } from '@prisma/client'
+import { createId } from '@paralleldrive/cuid2'
 
-const normalizationConfig1: Prisma.NormalizationConfigCreateInput = {
+export const normalizationConfig1: Prisma.NormalizationConfigCreateInput = {
   id: 'tz4a98xxat96iws9zmbrgj3a',
   v: 1,
   name: 'first',
@@ -13,7 +14,7 @@ const normalizationConfig1: Prisma.NormalizationConfigCreateInput = {
 }
 
 export async function seedNormalizationConfigs(prisma: PrismaClient) {
-  await prisma.normalizationConfig.create({
+  const seedPromise = prisma.normalizationConfig.create({
     data: normalizationConfig1,
   })
 
@@ -21,11 +22,11 @@ export async function seedNormalizationConfigs(prisma: PrismaClient) {
     .fill(undefined)
     .map((_, i) => {
       return prisma.normalizationConfig.create({
-        data: { ...normalizationConfig1, name: `seed-${i}` },
+        data: { ...normalizationConfig1, id: createId(), name: `seed-${i}` },
       })
     })
 
-  return Promise.allSettled(seedPromises)
+  return Promise.all([...seedPromises, seedPromise])
 }
 
 function getData() {

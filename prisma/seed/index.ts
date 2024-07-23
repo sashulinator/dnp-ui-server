@@ -3,15 +3,18 @@ import { PrismaClient } from '@prisma/client'
 import { seedNormalizationConfigs } from './normalization-config'
 import { seedProcesses } from './processes'
 import { seedTranslations } from './translations'
+import { seedStoreConfigs } from './store-config'
 
 const prisma = new PrismaClient()
 async function main() {
   await seedNormalizationConfigs(prisma)
-  console.log('Seeded normalization configs')
+  console.log('NormalizationConfigs seeded')
+  await seedStoreConfigs(prisma)
+  console.log('StoreConfigs seeded')
   await seedProcesses(prisma)
-  console.log('Seeded processes')
+  console.log('Processes seeded')
   await seedTranslations(prisma)
-  console.log('Seeded translations')
+  console.log('Translations seeded')
 }
 
 main()

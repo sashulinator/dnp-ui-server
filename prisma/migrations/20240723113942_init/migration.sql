@@ -47,8 +47,5 @@ CREATE TABLE "Translation" (
     CONSTRAINT "Translation_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "NormalizationConfig_name_key" ON "NormalizationConfig"("name");
-
 -- AddForeignKey
 ALTER TABLE "Process" ADD CONSTRAINT "Process_normalizationConfigId_fkey" FOREIGN KEY ("normalizationConfigId") REFERENCES "NormalizationConfig"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

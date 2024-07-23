@@ -35,7 +35,7 @@ model StoreConfig {
 
 model NormalizationConfig {
   id        String    @id @db.VarChar(24)
-  name      String    @unique
+  name      String
   v         Int
   current   Boolean
   createdAt DateTime  @default(now())

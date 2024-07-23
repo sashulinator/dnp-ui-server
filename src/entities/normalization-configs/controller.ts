@@ -41,7 +41,7 @@ export default class Controller {
   @Put()
   @UsePipes(new ValibotPipe(v.object({ input: updateNormalizationConfigSchema })))
   update(@Body() body: { input: UpdateNormalizationConfig }): Promise<NormalizationConfig> {
-    return this.service.update({ name: body.input.name }, body.input)
+    return this.service.update({ id: body.input.id }, body.input)
   }
 
   /**
@@ -67,9 +67,9 @@ export default class Controller {
    * @returns {Promise<NormalizationConfig>} The found normalizationConfig
    * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no normalizationConfig is found
    */
-  @Get(':name')
-  getByName(@Param('name') name: string): Promise<NormalizationConfig> {
-    return this.service.getUnique({ name })
+  @Get(':id')
+  getByName(@Param('id') id: string): Promise<NormalizationConfig> {
+    return this.service.getFirst({ id })
   }
 
   /**
