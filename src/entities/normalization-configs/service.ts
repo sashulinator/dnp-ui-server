@@ -219,6 +219,10 @@ export default class Service {
     // Необходимо Date поля привести к string, самый простой способ
     const itemToArchive = JSON.parse(JSON.stringify(prismaItem)) as NormalizationConfig
 
+    if (!itemToArchive.current) {
+      throw new HttpException('Редактирование архивной версии недоступно', HttpStatus.BAD_REQUEST)
+    }
+
     const [, created] = await this.prisma.$transaction([
       this.prisma.normalizationConfig.update({
         where: { id: itemToArchive.id },
