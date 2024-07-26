@@ -6,7 +6,7 @@ import NormalizationConfigModule from '../entities/normalization-configs/module'
 import ProcessModule from '../entities/processes/module'
 import StoreConfigModule from '../entities/store-configs/module'
 import PrismaModule from '../shared/prisma/module'
-import ExplorerModule from '../procedures/explorer/module'
+import ExplorerModule from '../entities/explorer/module'
 import TranslationsModule from '../system/translations/module'
 
 @Module({
