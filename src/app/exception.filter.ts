@@ -46,6 +46,9 @@ export default class ExceptionFilter implements NestJSExceptionFilter {
     if (isCausable(exception)) {
       responseBody.cause = exception.cause
     }
+    if (has(exception, 'errors')) {
+      responseBody.errors = exception.errors
+    }
     if (has(exception, 'response') && has(exception.response, 'errors')) {
       responseBody.errors = exception.response.errors
     }
