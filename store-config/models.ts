@@ -1,6 +1,20 @@
 import * as v from 'valibot'
 
 /**
+ * JDBCData
+ */
+
+export const jdbsDataSchema = v.object({
+  host: v.pipe(v.string(), v.nonEmpty()),
+  port: v.pipe(v.string(), v.nonEmpty()),
+  database: v.pipe(v.string(), v.nonEmpty()),
+  username: v.pipe(v.string(), v.nonEmpty()),
+  password: v.pipe(v.string(), v.nonEmpty()),
+})
+
+export type JDBSData = v.InferOutput<typeof jdbsDataSchema>
+
+/**
  * StoreConfig
  */
 
@@ -11,7 +25,7 @@ export const storeConfigSchema = v.object({
   createdAt: v.pipe(v.string(), v.nonEmpty()),
   updatedAt: v.pipe(v.string(), v.nonEmpty()),
   type: v.pipe(v.string(), v.nonEmpty()),
-  data: v.looseObject({}),
+  data: jdbsDataSchema,
 })
 
 export type StoreConfig = v.InferOutput<typeof storeConfigSchema>
@@ -19,6 +33,7 @@ export type StoreConfig = v.InferOutput<typeof storeConfigSchema>
 /**
  * CreateStoreConfig
  */
+
 export const createStoreConfigSchema = v.omit(storeConfigSchema, ['createdAt', 'createdBy', 'updatedAt', 'updatedBy'])
 
 export type CreateStoreConfig = v.InferOutput<typeof createStoreConfigSchema>
