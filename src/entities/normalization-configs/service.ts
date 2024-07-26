@@ -174,7 +174,7 @@ export default class Service {
    * @throws {HttpException} HttpException with status code 409 if the normalizationConfig already exists
    */
   async create(createInput: CreateNormalizationConfig): Promise<PrismaNormalizationConfig> {
-    const item = await this.prisma.normalizationConfig.findFirst({ where: { name: createInput.name, current: true } })
+    const item = await this.prisma.normalizationConfig.findFirst({ where: { name: createInput.name, last: true } })
 
     if (item) {
       throw new HttpException(`NormalizationConfig with name "${createInput.name}" already exists`, HttpStatus.CONFLICT)
@@ -185,7 +185,6 @@ export default class Service {
         ...createInput,
         v: 1,
         id: createId(),
-        current: true,
         createdBy: 'tz4a98xxat96iws9zmbrgj3a',
         updatedBy: 'tz4a98xxat96iws9zmbrgj3a',
       },
@@ -226,7 +225,7 @@ export default class Service {
     const [, created] = await this.prisma.$transaction([
       this.prisma.normalizationConfig.update({
         where: { id: itemToArchive.id },
-        data: { ...itemToArchive, current: false },
+        data: { ...itemToArchive, last: false },
       }),
       this.prisma.normalizationConfig.create({
         data: {
@@ -236,7 +235,7 @@ export default class Service {
           v: itemToArchive.v + 1,
           createdBy: 'tz4a98xxat96iws9zmbrgj3a',
           updatedBy: 'tz4a98xxat96iws9zmbrgj3a',
-          current: true,
+          last: true,
         },
       }),
     ])

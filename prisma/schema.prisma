@@ -15,36 +15,49 @@ datasource db {
 }
 
 model Process {
-  id                    String              @id @db.VarChar(24)
+  id                    String              @db.VarChar(24)
+  normalizationConfigId String              @db.VarChar(24)
+  // meta
   createdBy             String              @db.VarChar(24)
   createdAt             DateTime            @default(now())
-  normalizationConfigId String              @db.VarChar(24)
   // relations
   normalizationConfig   NormalizationConfig @relation(fields: [normalizationConfigId], references: [id])
+
+  @@id([id])
 }
 
 model StoreConfig {
-  keyname   String   @id @db.VarChar(36)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  createdBy String   @db.VarChar(24)
-  updatedBy String   @db.VarChar(24)
-  type      String   @db.VarChar(10)
+  kn        String        @db.VarChar(36)
+  extendsKn String?       @db.VarChar(36)
+  type      String        @db.VarChar(10)
   data      Json
+  // meta
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  createdBy String        @db.VarChar(24)
+  updatedBy String        @db.VarChar(24)
+  // relation
+  extends   StoreConfig?  @relation("ExtendsStoreConfig", fields: [extendsKn], references: [kn])
+  extended  StoreConfig[] @relation("ExtendsStoreConfig")
+
+  @@id([kn])
 }
 
 model NormalizationConfig {
-  id        String    @id @db.VarChar(24)
+  id        String    @db.VarChar(24)
   name      String
   v         Int
-  current   Boolean
+  last      Boolean   @default(true)
+  data      Json
+  // meta
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   createdBy String    @db.VarChar(24)
   updatedBy String    @db.VarChar(24)
-  data      Json
   // relations
   processes Process[]
+
+  @@id([id])
 }
 
 // **************
@@ -52,9 +65,11 @@ model NormalizationConfig {
 // **************
 
 model Translation {
-  id     Int    @id @default(autoincrement())
+  id     Int    @default(autoincrement())
   key    String
   ns     String
   locale String
   data   String
+
+  @@id([id])
 }

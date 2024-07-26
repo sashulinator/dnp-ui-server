@@ -5,7 +5,7 @@ export const normalizationConfig1: Prisma.NormalizationConfigCreateInput = {
   id: 'tz4a98xxat96iws9zmbrgj3a',
   v: 1,
   name: 'first',
-  current: true,
+  last: true,
   createdBy: 'tz4a98xxat96iws9zmbrgj3a',
   updatedBy: 'tz4a98xxat96iws9zmbrgj3a',
   createdAt: '2024-05-28T06:37:43.048Z',

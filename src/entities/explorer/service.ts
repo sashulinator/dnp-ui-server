@@ -8,10 +8,10 @@ import { assertJDBCData } from '~/common/store-config'
 export class Service {
   constructor(private storeConfigService: StoreConfigService) {}
 
-  async getTables(params: { storeConfigKeyname: string }) {
+  async getTables(params: { storeConfigKn: string }) {
     const storeConfigPrisma = await this.storeConfigService.findFirst({
       where: {
-        keyname: params.storeConfigKeyname,
+        kn: params.storeConfigKn,
       },
     })
 
@@ -30,10 +30,10 @@ export class Service {
     return ret
   }
 
-  async getTable(params: { storeConfigKeyname: string; tableName: string }) {
+  async getTable(params: { storeConfigKn: string; tableName: string }) {
     const storeConfigPrisma = await this.storeConfigService.findFirst({
       where: {
-        keyname: params.storeConfigKeyname,
+        kn: params.storeConfigKn,
       },
     })
 

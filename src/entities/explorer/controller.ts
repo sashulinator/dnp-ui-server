@@ -8,7 +8,7 @@ export class Controller {
 
   @Search()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getById(@Body() body: { storeConfigKeyname: string; tableName: string }): Promise<any> {
+  getByStoreConfigKn(@Body() body: { storeConfigKn: string; tableName: string }): Promise<any> {
     if (body.tableName) {
       return this.service.getTable(body)
     }

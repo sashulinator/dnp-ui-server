@@ -173,10 +173,10 @@ export default class Service {
    * @throws {HttpException} HttpException with status code 409 if the storeConfig already exists
    */
   async create(createInput: CreateStoreConfig): Promise<PrismaStoreConfig> {
-    const item = await this.prisma.storeConfig.findUnique({ where: { keyname: createInput.keyname } })
+    const item = await this.prisma.storeConfig.findUnique({ where: { kn: createInput.kn } })
 
     if (item) {
-      throw new HttpException(`StoreConfig with keyname "${createInput.keyname}" already exists`, HttpStatus.CONFLICT)
+      throw new HttpException(`StoreConfig with kn "${createInput.kn}" already exists`, HttpStatus.CONFLICT)
     }
 
     return this.prisma.storeConfig.create({
