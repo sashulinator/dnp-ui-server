@@ -4,6 +4,7 @@ import { seedNormalizationConfigs } from './normalization-config'
 import { seedProcesses } from './processes'
 import { seedTranslations } from './translations'
 import { seedStoreConfigs } from './store-config'
+import { seedIoConfig } from './io-configs'
 
 const prisma = new PrismaClient()
 async function main() {
@@ -11,6 +12,8 @@ async function main() {
   console.log('NormalizationConfigs seeded')
   await seedStoreConfigs(prisma)
   console.log('StoreConfigs seeded')
+  await seedIoConfig(prisma)
+  console.log('IoConfigs seeded')
   await seedProcesses(prisma)
   console.log('Processes seeded')
   await seedTranslations(prisma)

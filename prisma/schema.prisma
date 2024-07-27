@@ -17,28 +17,42 @@ datasource db {
 model Process {
   id                    String              @db.VarChar(24)
   normalizationConfigId String              @db.VarChar(24)
+  // relations
+  normalizationConfig   NormalizationConfig @relation(fields: [normalizationConfigId], references: [id])
   // meta
   createdBy             String              @db.VarChar(24)
   createdAt             DateTime            @default(now())
-  // relations
-  normalizationConfig   NormalizationConfig @relation(fields: [normalizationConfigId], references: [id])
 
   @@id([id])
 }
 
 model StoreConfig {
-  kn        String        @db.VarChar(36)
-  extendsKn String?       @db.VarChar(36)
-  type      String        @db.VarChar(10)
+  kn        String     @db.VarChar(36)
+  type      StoreType
   data      Json
+  // relations
+  ioConfigs IoConfig[]
   // meta
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  createdBy String        @db.VarChar(24)
-  updatedBy String        @db.VarChar(24)
-  // relation
-  extends   StoreConfig?  @relation("ExtendsStoreConfig", fields: [extendsKn], references: [kn])
-  extended  StoreConfig[] @relation("ExtendsStoreConfig")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  createdBy String     @db.VarChar(24)
+  updatedBy String     @db.VarChar(24)
+
+  @@id([kn])
+}
+
+model IoConfig {
+  kn            String       @db.VarChar(36)
+  type          StoreType
+  data          Json
+  // relations
+  storeConfigKn String       @db.VarChar(36)
+  StoreConfig   StoreConfig? @relation(fields: [storeConfigKn], references: [kn])
+  // meta
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  createdBy     String       @db.VarChar(24)
+  updatedBy     String       @db.VarChar(24)
 
   @@id([kn])
 }
@@ -49,13 +63,13 @@ model NormalizationConfig {
   v         Int
   last      Boolean   @default(true)
   data      Json
+  // relations
+  processes Process[]
   // meta
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   createdBy String    @db.VarChar(24)
   updatedBy String    @db.VarChar(24)
-  // relations
-  processes Process[]
 
   @@id([id])
 }
@@ -72,4 +86,9 @@ model Translation {
   data   String
 
   @@id([id])
+}
+
+enum StoreType {
+  jdbc
+  s3
 }
