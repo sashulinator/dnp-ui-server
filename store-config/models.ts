@@ -25,7 +25,7 @@ export const storeConfigRelationsSchema = v.object({
   extended: v.array(baseStoreConfigSchema),
 })
 
-export type StoreConfigRelations = v.InferOutput<typeof baseStoreConfigSchema>
+export type StoreConfigRelations = v.InferOutput<typeof storeConfigRelationsSchema>
 
 /**
  * StoreConfig
@@ -33,7 +33,7 @@ export type StoreConfigRelations = v.InferOutput<typeof baseStoreConfigSchema>
 
 export const storeConfigSchema = v.intersect([baseStoreConfigSchema, storeConfigRelationsSchema])
 
-export type StoreConfig = v.InferOutput<typeof baseStoreConfigSchema>
+export type StoreConfig = v.InferOutput<typeof storeConfigSchema>
 
 /**
  * JDBCData
