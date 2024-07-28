@@ -22,7 +22,7 @@ export type BaseIoConfig = v.InferOutput<typeof baseIoConfigSchema>
  */
 
 export const ioConfigRelationsSchema = v.object({
-  storeConfig: baseStoreConfigSchema,
+  storeConfig: v.lazy(() => baseStoreConfigSchema),
 })
 
 export type IoConfigRelations = v.InferOutput<typeof ioConfigRelationsSchema>
