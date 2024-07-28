@@ -13,3 +13,10 @@ export const updatableSchema = v.object({
 })
 
 export type Updatable = v.InferOutput<typeof updatableSchema>
+
+export const crudableSchema = v.object({
+  ...creatableSchema.entries,
+  ...updatableSchema.entries,
+})
+
+export type crudableSchema = v.InferOutput<typeof updatableSchema>

@@ -1,4 +1,7 @@
 import * as v from 'valibot'
+import { getObjectKeys } from '../_lib/get-object-keys'
+import { crudableSchema } from '../_models/crudable'
+import { ioConfigSchema } from '../io-config/models'
 
 /**
  * BaseStoreConfig
@@ -6,12 +9,9 @@ import * as v from 'valibot'
 
 export const baseStoreConfigSchema = v.object({
   kn: v.pipe(v.string(), v.nonEmpty()),
-  createdBy: v.pipe(v.string(), v.nonEmpty()),
-  updatedBy: v.pipe(v.string(), v.nonEmpty()),
-  createdAt: v.pipe(v.string(), v.nonEmpty()),
-  updatedAt: v.pipe(v.string(), v.nonEmpty()),
-  type: v.pipe(v.string(), v.nonEmpty()),
+  type: v.union([v.literal('jdbc'), v.literal('s3')]),
   data: v.lazy(() => jdbsDataSchema),
+  ...crudableSchema.entries,
 })
 
 export type BaseStoreConfig = v.InferOutput<typeof baseStoreConfigSchema>
@@ -21,8 +21,7 @@ export type BaseStoreConfig = v.InferOutput<typeof baseStoreConfigSchema>
  */
 
 export const storeConfigRelationsSchema = v.object({
-  extends: baseStoreConfigSchema,
-  extended: v.array(baseStoreConfigSchema),
+  ioConfigs: ioConfigSchema,
 })
 
 export type StoreConfigRelations = v.InferOutput<typeof storeConfigRelationsSchema>
@@ -47,18 +46,13 @@ export const jdbsDataSchema = v.object({
   password: v.pipe(v.string(), v.nonEmpty()),
 })
 
-export type JDBSData = v.InferOutput<typeof jdbsDataSchema>
+export type JdbcData = v.InferOutput<typeof jdbsDataSchema>
 
 /**
  * CreateStoreConfig
  */
 
-export const createStoreConfigSchema = v.omit(baseStoreConfigSchema, [
-  'createdAt',
-  'createdBy',
-  'updatedAt',
-  'updatedBy',
-])
+export const createStoreConfigSchema = v.omit(baseStoreConfigSchema, getObjectKeys(crudableSchema.entries))
 
 export type CreateStoreConfig = v.InferOutput<typeof createStoreConfigSchema>
 
@@ -66,6 +60,6 @@ export type CreateStoreConfig = v.InferOutput<typeof createStoreConfigSchema>
  * UpdateStoreConfig
  */
 
-export const updateStoreConfigSchema = v.omit(baseStoreConfigSchema, ['createdAt', 'createdBy'])
+export const updateStoreConfigSchema = v.omit(baseStoreConfigSchema, getObjectKeys(crudableSchema.entries))
 
 export type UpdateStoreConfig = v.InferOutput<typeof updateStoreConfigSchema>
