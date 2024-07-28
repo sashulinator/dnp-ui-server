@@ -11,4 +11,4 @@ import PrismaModule from '~/shared/prisma/module'
   providers: [Service],
   imports: [PrismaModule, MinioModule],
 })
-export default class EntityModule {}
+export default class ProcessModule {}

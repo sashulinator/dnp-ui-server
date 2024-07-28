@@ -9,4 +9,4 @@ import PrismaModule from '~/shared/prisma/module'
   providers: [Service],
   imports: [PrismaModule],
 })
-export default class EntityModule {}
+export default class NormalizationConfigModule {}

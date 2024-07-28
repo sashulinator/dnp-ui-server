@@ -43,7 +43,7 @@ export const jdbsDataSchema = v.object({
   table: v.pipe(v.string(), v.nonEmpty()),
 })
 
-export type JDBSData = v.InferOutput<typeof jdbsDataSchema>
+export type JdbcData = v.InferOutput<typeof jdbsDataSchema>
 
 /**
  * CreateIoConfig

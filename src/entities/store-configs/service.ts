@@ -15,7 +15,7 @@ const TAKE = 100
 const ORDER_BY: OrderByWithRelationInput = { updatedAt: 'desc' }
 
 @Injectable()
-export default class Service {
+export default class StoreConfigService {
   constructor(private prisma: PrismaService) {}
 
   /**

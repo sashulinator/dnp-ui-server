@@ -9,7 +9,7 @@ import { type CreateStoreConfig, type UpdateStoreConfig, createStoreConfigSchema
 import Service, { type OrderByWithRelationInput, type Select, type WhereInput, type WhereUniqueInput } from './service'
 
 @NestJSController('api/v1/store-configs')
-export default class Controller {
+export default class StoreConfigController {
   constructor(private readonly service: Service) {}
 
   /**
@@ -17,7 +17,7 @@ export default class Controller {
    *
    * Delete a StoreConfig by its KeyName
    *
-   * @param {string} keyname The KeyName of the storeConfig to delete
+   * @param {string} kn The KeyName of the storeConfig to delete
    * @returns {Promise<StoreConfig>} A promise that resolves when the storeConfig is deleted
    */
   @Delete(':kn')
