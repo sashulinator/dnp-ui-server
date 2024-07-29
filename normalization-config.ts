@@ -57,7 +57,7 @@ export const normalizationConfigSchema = v.object({
   id: v.pipe(v.string(), v.nonEmpty()),
   v: v.pipe(v.number(), v.notValue(0)),
   name: v.pipe(v.string(), v.nonEmpty()),
-  current: v.boolean(),
+  last: v.boolean(),
   createdBy: v.pipe(v.string(), v.nonEmpty()),
   updatedBy: v.pipe(v.string(), v.nonEmpty()),
   createdAt: v.pipe(v.string(), v.nonEmpty()),
