@@ -1,1 +1,1 @@
-export * from '~/common/explorer'
+export * from '~/common/entities/explorer/models'

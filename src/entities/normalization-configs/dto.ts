@@ -1,1 +1,1 @@
-export * from '~/common/normalization-config'
+export * from '~/common/entities/normalization-config/models'
