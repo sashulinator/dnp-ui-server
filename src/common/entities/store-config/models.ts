@@ -1,6 +1,6 @@
 import * as v from 'valibot'
-import { getObjectKeys } from '../_lib/get-object-keys'
-import { crudableSchema } from '../_models/crudable'
+import { getObjectKeys } from '../../lib/get-object-keys'
+import { crudableSchema } from '../../models/crudable'
 import { ioConfigSchema } from '../io-config/models'
 
 /**
