@@ -1,11 +1,22 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
 import { type JdbcData } from '~/entities/store-configs/dto'
-import { type Explorer } from './dto'
+import type { Path, Explorer } from './dto'
 
 @Injectable()
 export default class ExplorerService {
   constructor() {}
+
+  async expore(params: { paths: Path[]; storeConfigData: { type: 'jdbc'; data: JdbcData } }): Promise<Explorer> {
+    const { paths, storeConfigData } = params
+    const [, path2] = paths
+
+    if (storeConfigData.type === 'jdbc') {
+      if (path2) return this.getJdbcTable(storeConfigData.data, path2.name)
+
+      return this.getJdbcDatabase(storeConfigData.data)
+    }
+  }
 
   async getJdbcDatabase(jdbcData: JdbcData): Promise<Explorer> {
     type getTablesQueryRet = {
@@ -18,7 +29,7 @@ export default class ExplorerService {
     const prisma = new PrismaClient({ datasources: { db: { url } } })
 
     const queriedTables: getTablesQueryRet[] =
-      await prisma.$queryRaw`SELECT tablename, schemaname FROM pg_tables WHERE schemaname = 'public';`
+      await prisma.$queryRaw`SELECT tablename, schemaname FROM pg_tables WHERE schemaname = 'public' LIMIT 100;`
 
     const items = queriedTables.map((table) => ({ type: 'table', name: table.tablename, data: {} }) as const)
 
@@ -36,7 +47,7 @@ export default class ExplorerService {
 
     const prismaClient = new PrismaClient({ datasources: { db: { url } } })
 
-    const query = `SELECT * FROM "${tableName}";`
+    const query = `SELECT * FROM "${tableName}" LIMIT 100;`
 
     const queriedRecords: unknown[] = await prismaClient.$queryRawUnsafe(query)
 
