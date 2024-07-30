@@ -1,8 +1,7 @@
 import { Body, Get, Controller as NestJSController, Param, Post, Search } from '@nestjs/common'
 import { type Process as PrismaProcess } from '@prisma/client'
-
-import { CreateProcess } from './dto'
 import Service, { type OrderByWithRelationInput, type Select, type WhereInput, type WhereUniqueInput } from './service'
+import { CreateProcess, type Process } from './dto'
 
 @NestJSController('api/v1/processes')
 export default class Controller {
@@ -77,9 +76,9 @@ export default class Controller {
       orderBy?: OrderByWithRelationInput
       select?: Select
     } = {}
-  ): Promise<{ items: PrismaProcess[]; total: number }> {
+  ): Promise<{ items: Partial<Process>[]; total: number }> {
     const [items, total] = await this.service.findAndCountMany(params)
 
-    return { items, total }
+    return { items: items as unknown as Partial<Process>[], total }
   }
 }
