@@ -14,6 +14,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id       String @db.VarChar(24)
+  name     String @db.VarChar(24)
+  password String @db.VarChar(24)
+
+  createdByEntities Entity[] @relation("createdByEntities")
+  updatedByEntities Entity[] @relation("updatedByEntities")
+  createdByTables   Table[]  @relation("createdByTables")
+  updatedByTables   Table[]  @relation("updatedByTables")
+
+  @@id([id])
+}
+
 model Process {
   id                    String              @db.VarChar(24)
   normalizationConfigId String              @db.VarChar(24)
@@ -37,6 +50,42 @@ model StoreConfig {
   updatedAt DateTime   @updatedAt
   createdBy String     @db.VarChar(24)
   updatedBy String     @db.VarChar(24)
+
+  @@id([kn])
+}
+
+model Table {
+  kn          String   @db.VarChar(36)
+  name        String   @db.VarChar(36)
+  schema      Json
+  // relations
+  entities    Entity[]
+  // meta
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String   @db.VarChar(24)
+  updatedById String   @db.VarChar(24)
+  createdBy   User     @relation("createdByTables", fields: [createdById], references: [id])
+  updatedBy   User     @relation("updatedByTables", fields: [updatedById], references: [id])
+
+  @@id([kn])
+}
+
+model Entity {
+  kn          String   @db.VarChar(24)
+  name        String   @db.VarChar(24)
+  tableKn     String   @db.VarChar(24)
+  nav         Boolean
+  data        Json
+  // relations
+  table       Table    @relation(fields: [tableKn], references: [kn])
+  // meta
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String   @db.VarChar(24)
+  updatedById String   @db.VarChar(24)
+  createdBy   User     @relation("createdByEntities", fields: [createdById], references: [id])
+  updatedBy   User     @relation("updatedByEntities", fields: [updatedById], references: [id])
 
   @@id([kn])
 }
