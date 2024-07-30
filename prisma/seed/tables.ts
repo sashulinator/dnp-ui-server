@@ -1,6 +1,6 @@
 import { type Prisma, type PrismaClient } from '@prisma/client'
 import { users } from './users'
-import { generateId } from '~/utils/core'
+import { createId } from '@paralleldrive/cuid2'
 
 export const table1 = _create({ kn: 'kn', name: 'name' })
 
@@ -20,8 +20,8 @@ export async function seedTables(prisma: PrismaClient) {
 
 function _create(defaultValues: Partial<Prisma.TableUncheckedCreateInput>): Prisma.TableUncheckedCreateInput {
   const instance: Prisma.TableUncheckedCreateInput = {
-    kn: defaultValues.kn ?? generateId(),
-    name: defaultValues.name ?? generateId(),
+    kn: defaultValues.kn ?? createId(),
+    name: defaultValues.name ?? createId(),
     createdById: users[0].id,
     updatedById: users[0].id,
     schema: {},

@@ -1,7 +1,7 @@
 import { type Prisma, type PrismaClient } from '@prisma/client'
 import { users } from './users'
-import { generateId } from '~/utils/core'
 import { table1 } from './tables'
+import { createId } from '@paralleldrive/cuid2'
 
 const entityName = 'entity'
 type CreateInput = Prisma.EntityUncheckedCreateInput
@@ -10,8 +10,8 @@ export const entities = [_create({ kn: 'first', name: 'first', nav: true })] as 
 
 function _create(defaultValues: Partial<CreateInput>): CreateInput {
   const instance: CreateInput = {
-    kn: defaultValues.kn ?? generateId(),
-    name: defaultValues.name ?? generateId(),
+    kn: defaultValues.kn ?? createId(),
+    name: defaultValues.name ?? createId(),
     tableKn: table1.kn,
     nav: false,
     data: { iconName: 'Star' },
