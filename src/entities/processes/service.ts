@@ -1,174 +1,38 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { createId } from '@paralleldrive/cuid2'
-import { Prisma, type Process as PrismaProcess } from '@prisma/client'
-
-import { isInstanceOf } from 'utils/core'
+import { type Prisma, type PrismaClient, type Process as PrismaProcess } from '@prisma/client'
 
 import MinioService from '~/shared/minio/service'
 
 import PrismaService from '../../shared/prisma/service'
-import { type CreateProcess } from './dto'
+
+import { CrudService } from '~/shared/crud-service'
 
 export type WhereUniqueInput = Prisma.ProcessWhereUniqueInput
 export type WhereInput = Prisma.ProcessWhereInput
 export type OrderByWithRelationInput = Prisma.ProcessOrderByWithRelationInput
 export type Select = Prisma.ProcessSelect
 
-const TAKE = 100
-const ORDER_BY: OrderByWithRelationInput = { createdAt: 'desc' }
-
 @Injectable()
-export default class Service {
+export default class Service extends CrudService<'process'> {
   constructor(
-    private prisma: PrismaService,
-    private minio: MinioService
-  ) {}
-
-  /**
-   * ------------ GET FIRST------------
-   *
-   * Get the first process that matches the given `whereUniqueInput`.
-   * If no process is found, throw a `HttpException` with status `NOT_FOUND`.
-   *
-   * @param {WhereUniqueInput} whereUniqInput The `whereUniqueInput` to match
-   * @returns {Promise<Process>} The found process
-   * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no process is found
-   */
-  async getFirst(whereUniqInput: WhereUniqueInput): Promise<PrismaProcess> {
-    return this.prisma.process
-      .findFirstOrThrow({
-        where: whereUniqInput,
-      })
-      .catch((error) => {
-        if (!isInstanceOf(error, Prisma.PrismaClientKnownRequestError) || error.code !== 'P2025') throw error
-        throw new HttpException('Not found', HttpStatus.NOT_FOUND)
-      })
+    protected prisma: PrismaService,
+    protected minio: MinioService
+  ) {
+    super(prisma, 'process')
   }
 
-  async getUnique(whereUniqInput: WhereUniqueInput): Promise<PrismaProcess> {
-    return this.prisma.process
-      .findUniqueOrThrow({
-        where: whereUniqInput,
-      })
-      .catch((error) => {
-        if (!isInstanceOf(error, Prisma.PrismaClientKnownRequestError) || error.code !== 'P2025') throw error
-        throw new HttpException('Not found', HttpStatus.NOT_FOUND)
-      })
-  }
-
-  /**
-   * ------------ FIND FIRST ------------
-   *
-   * Find the first process that matches the given `whereInput`
-   *
-   * @param {Object} params - The parameters for the query
-   * @param {WhereInput} params.where - A WHERE clause for the query
-   * @param {Select} params.select - A SELECT clause for the query
-   * @returns {Promise<Process | null>} - The found process or `null` if no process is found
-   */
-  async findFirst(
-    params: {
-      where?: WhereInput
-      select?: Select
-    } = {}
-  ): Promise<PrismaProcess | null> {
-    return this.prisma.process.findFirst(params)
-  }
-
-  /**
-   * ------------ FIND UNIQUE ------------
-   *
-   * Find the unique process that matches the given `whereUniqueInput`.
-   * If no process is found, return `null`.
-   *
-   * @param {WhereUniqueInput} whereUniqInput The `whereUniqueInput` to match
-   * @returns {Promise<Process | null>} The found process or `null` if no process is found
-   */
-  async findUnique(whereUniqInput: WhereUniqueInput): Promise<PrismaProcess | null> {
-    return this.prisma.process.findUnique({
-      where: whereUniqInput,
-    })
-  }
-
-  /**
-   * ------------ FIND MANY ------------
-   *
-   * Find many processes based on the given query parameters
-   *
-   * @param {number} params.skip The number of results to skip
-   * @param {number} params.take The number of results to return
-   * @param {WhereUniqueInput} params.cursor The cursor to start from
-   * @param {WhereInput} params.where A WHERE clause for the query
-   * @param {OrderByWithRelationInput} params.orderBy An ORDER BY clause for the query
-   * @returns {Promise<Process[]>} A promise containing the processes
-   */
-  async findMany(
-    params: {
-      skip?: number
-      take?: number
-      cursor?: WhereUniqueInput
-      where?: WhereInput
-      orderBy?: OrderByWithRelationInput
-      select?: Select
-    } = {}
-  ): Promise<PrismaProcess[]> {
-    const { skip, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
-
-    return this.prisma.process.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    })
-  }
-
-  /**
-   * ------------ FIND AND COUNT MANY ------------
-   *
-   * Find many processes and return the total count of the results
-   *
-   * @param {number} params.skip The number of results to skip
-   * @param {number} params.take The number of results to return
-   * @param {WhereUniqueInput} params.cursor The cursor to start from
-   * @param {WhereInput} params.where A WHERE clause for the query
-   * @param {OrderByWithRelationInput} params.orderBy An ORDER BY clause for the query
-   * @returns {Promise<[Process[], number]>} A promise containing the processes and the total count of the results
-   */
-  async findAndCountMany(
-    params: {
-      skip?: number
-      take?: number
-      cursor?: WhereUniqueInput
-      where?: WhereInput
-      orderBy?: OrderByWithRelationInput
-      select?: Select
-    } = {}
-  ): Promise<[PrismaProcess[], number]> {
-    const { skip, select, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
-
-    const commonArgs = {
-      cursor,
-      where,
-      orderBy,
-    }
-
-    return this.prisma.$transaction([
-      this.prisma.process.findMany({ ...commonArgs, take, skip, select }),
-      this.prisma.process.count(commonArgs),
-    ])
-  }
-
-  async create(props: CreateProcess): Promise<PrismaProcess> {
+  async create(...args: Parameters<PrismaClient['process']['create']>): Promise<PrismaProcess> {
+    const { data } = args[0]
     // Retrieve the normalizationConfig from the database
     const normalizationConfig = await this.prisma.normalizationConfig.findUnique({
-      where: { id: props.normalizationConfigId },
+      where: { id: data.normalizationConfigId },
     })
 
     // Throw an error if the normalizationConfig is not found
     if (!normalizationConfig) {
       throw new HttpException(
-        `NormalizationConfig with id=${props.normalizationConfigId} not found`,
+        `NormalizationConfig with id=${data.normalizationConfigId} not found`,
         HttpStatus.NOT_FOUND
       )
     }
@@ -198,7 +62,7 @@ export default class Service {
 
     return this.prisma.process.create({
       data: {
-        normalizationConfigId: props.normalizationConfigId,
+        normalizationConfigId: data.normalizationConfigId,
         id: createId(),
         createdBy: 'tz4a98xxat96iws9zmbrgj3a',
       },

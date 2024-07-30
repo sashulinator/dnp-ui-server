@@ -1,7 +1,8 @@
 import { Body, Get, Controller as NestJSController, Param, Post, Search } from '@nestjs/common'
 import { type Process as PrismaProcess } from '@prisma/client'
 import Service, { type OrderByWithRelationInput, type Select, type WhereInput, type WhereUniqueInput } from './service'
-import { CreateProcess, type Process } from './dto'
+import { type CreateProcess, type Process } from './dto'
+import { createId } from '@paralleldrive/cuid2'
 
 @NestJSController('api/v1/processes')
 export default class Controller {
@@ -17,7 +18,7 @@ export default class Controller {
    * @returns {Promise<void>} A promise that resolves when the process is created
    */
   create(@Body() body: CreateProcess): Promise<PrismaProcess> {
-    return this.service.create(body)
+    return this.service.create({ data: { ...body, id: createId(), createdBy: 'tz4a98xxat96iws9zmbrgj3a' } })
   }
 
   /**
@@ -31,7 +32,7 @@ export default class Controller {
    */
   @Get(':id')
   getById(@Param('id') id: string): Promise<PrismaProcess> {
-    return this.service.getUnique({ id })
+    return this.service.getUnique({ where: { id } })
   }
 
   /**
