@@ -31,6 +31,7 @@ export type { ValueOrSetter } from './types/value-or-setter'
 
 export { c } from './c'
 export { capitalize } from './capitalize'
+export { uncapitalize } from './uncapitalize'
 export { generateId, generateUniqId } from './generate-id'
 export { group } from './group'
 export { invariant } from './invariant'
