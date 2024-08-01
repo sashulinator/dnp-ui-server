@@ -4,7 +4,7 @@ import type {
   User,
   StoreConfig,
   Prisma,
-  Table,
+  TableSchema,
   Entity,
   Translation,
 } from '@prisma/client'
@@ -15,7 +15,7 @@ export type EntityMap = {
   process: Process
   storeConfig: StoreConfig
   normalizationConfig: NormalizationConfig
-  table: Table
+  tableSchema: TableSchema
   entity: Entity
   translation: Translation
 }

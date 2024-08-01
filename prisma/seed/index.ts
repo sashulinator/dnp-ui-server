@@ -5,15 +5,15 @@ import { seedProcesses } from './processes'
 import { seedTranslations } from './translations'
 import { seedStoreConfigs } from './store-config'
 import seedUsers from './users'
-import { seedTables } from './tables'
+import seedTableSchemas from './table-schemas'
 import seedEntities from './entities'
 
 const prisma = new PrismaClient()
 async function main() {
   await seedUsers(prisma)
   console.log('Users seeded')
-  await seedTables(prisma)
-  console.log('Tables seeded')
+  await seedTableSchemas(prisma)
+  console.log('TableSchemas seeded')
   await seedEntities(prisma)
   console.log('Entities seeded')
   await seedNormalizationConfigs(prisma)

@@ -1,22 +1,19 @@
 import { type Prisma, type PrismaClient } from '@prisma/client'
 import { users } from './users'
-import tables from './table-schemas'
 import { createId } from '@paralleldrive/cuid2'
 
-const entityName = 'entity'
-type CreateInput = Prisma.EntityUncheckedCreateInput
+const entityName = 'tableSchemas'
+type CreateInput = Prisma.TableSchemaUncheckedCreateInput
 
-export const entities = [_create({ kn: 'first', name: 'first', nav: true })] as const
+export const tables = [_create({ kn: 'kn', name: 'name' })] as const
 
 function _create(defaultValues: Partial<CreateInput>): CreateInput {
   const instance: CreateInput = {
     kn: defaultValues.kn ?? createId(),
     name: defaultValues.name ?? createId(),
-    tableSchemaKn: tables[0].kn,
-    nav: false,
-    data: { iconName: 'Star' },
     createdById: users[0].id,
     updatedById: users[0].id,
+    data: {},
     ...defaultValues,
   }
   return instance
@@ -26,9 +23,9 @@ function _createOnIteration(_: unknown, i: number): CreateInput {
   return _create({ name: `seeded-name-${i}`, kn: `seeded-kn-${i}` })
 }
 
-export default async function seedEntities(prisma: PrismaClient) {
+export default async function seedTableSchemas(prisma: PrismaClient) {
   const generatedEntities = Array(20).fill(35).map(_createOnIteration)
-  const allSeeds = [...entities, ...generatedEntities]
+  const allSeeds = [...tables, ...generatedEntities]
   const seedPromises = allSeeds.map((seed) => prisma[entityName].create({ data: seed }))
   return Promise.all([...seedPromises])
 }

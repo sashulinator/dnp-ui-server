@@ -19,10 +19,10 @@ model User {
   name     String @db.VarChar(24)
   password String @db.VarChar(24)
 
-  createdByEntities Entity[] @relation("createdByEntities")
-  updatedByEntities Entity[] @relation("updatedByEntities")
-  createdByTables   Table[]  @relation("createdByTables")
-  updatedByTables   Table[]  @relation("updatedByTables")
+  createdByEntities    Entity[]      @relation("createdByEntities")
+  updatedByEntities    Entity[]      @relation("updatedByEntities")
+  tableSchemasCreators TableSchema[] @relation("tableSchemasCreators")
+  tableSchemasUpdators TableSchema[] @relation("tableSchemasUpdators")
 
   @@id([id])
 }
@@ -52,10 +52,10 @@ model StoreConfig {
   @@id([kn])
 }
 
-model Table {
+model TableSchema {
   kn          String   @db.VarChar(36)
   name        String   @db.VarChar(36)
-  schema      Json
+  data        Json
   // relations
   entities    Entity[]
   // meta
@@ -63,27 +63,27 @@ model Table {
   updatedAt   DateTime @updatedAt
   createdById String   @db.VarChar(24)
   updatedById String   @db.VarChar(24)
-  createdBy   User     @relation("createdByTables", fields: [createdById], references: [id])
-  updatedBy   User     @relation("updatedByTables", fields: [updatedById], references: [id])
+  createdBy   User     @relation("tableSchemasCreators", fields: [createdById], references: [id])
+  updatedBy   User     @relation("tableSchemasUpdators", fields: [updatedById], references: [id])
 
   @@id([kn])
 }
 
 model Entity {
-  kn          String   @db.VarChar(24)
-  name        String   @db.VarChar(24)
-  tableKn     String   @db.VarChar(24)
-  nav         Boolean
-  data        Json
+  kn            String      @db.VarChar(24)
+  name          String      @db.VarChar(24)
+  tableSchemaKn String      @db.VarChar(24)
+  nav           Boolean
+  data          Json
   // relations
-  table       Table    @relation(fields: [tableKn], references: [kn])
+  tableSchema   TableSchema @relation(fields: [tableSchemaKn], references: [kn])
   // meta
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdById String   @db.VarChar(24)
-  updatedById String   @db.VarChar(24)
-  createdBy   User     @relation("createdByEntities", fields: [createdById], references: [id])
-  updatedBy   User     @relation("updatedByEntities", fields: [updatedById], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  createdById   String      @db.VarChar(24)
+  updatedById   String      @db.VarChar(24)
+  createdBy     User        @relation("createdByEntities", fields: [createdById], references: [id])
+  updatedBy     User        @relation("updatedByEntities", fields: [updatedById], references: [id])
 
   @@id([kn])
 }
