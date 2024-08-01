@@ -40,16 +40,14 @@ model Process {
 }
 
 model StoreConfig {
-  kn        String     @db.VarChar(36)
+  kn        String    @db.VarChar(36)
   type      StoreType
   data      Json
-  // relations
-  ioConfigs IoConfig[]
   // meta
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  createdBy String     @db.VarChar(24)
-  updatedBy String     @db.VarChar(24)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  createdBy String    @db.VarChar(24)
+  updatedBy String    @db.VarChar(24)
 
   @@id([kn])
 }
@@ -86,22 +84,6 @@ model Entity {
   updatedById String   @db.VarChar(24)
   createdBy   User     @relation("createdByEntities", fields: [createdById], references: [id])
   updatedBy   User     @relation("updatedByEntities", fields: [updatedById], references: [id])
-
-  @@id([kn])
-}
-
-model IoConfig {
-  kn            String       @db.VarChar(36)
-  type          StoreType
-  data          Json
-  // relations
-  storeConfigKn String       @db.VarChar(36)
-  StoreConfig   StoreConfig? @relation(fields: [storeConfigKn], references: [kn])
-  // meta
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  createdBy     String       @db.VarChar(24)
-  updatedBy     String       @db.VarChar(24)
 
   @@id([kn])
 }
