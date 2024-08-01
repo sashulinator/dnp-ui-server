@@ -9,7 +9,7 @@ import { crudableSchema } from '~/common/models/crudable'
 export const baseEntitySchema = v.object({
   kn: v.string(),
   name: v.string(),
-  tableKn: v.string(),
+  tableSchemaKn: v.string(),
   nav: v.boolean(),
   data: v.object({}),
   ...crudableSchema.entries,
