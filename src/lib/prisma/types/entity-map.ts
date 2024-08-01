@@ -5,7 +5,7 @@ import type {
   StoreConfig,
   Prisma,
   TableSchema,
-  Entity,
+  TargetTable,
   Translation,
 } from '@prisma/client'
 import { check } from '~/utils/types/test'
@@ -16,7 +16,7 @@ export type EntityMap = {
   storeConfig: StoreConfig
   normalizationConfig: NormalizationConfig
   tableSchema: TableSchema
-  entity: Entity
+  targetTable: TargetTable
   translation: Translation
 }
 

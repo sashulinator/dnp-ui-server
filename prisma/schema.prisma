@@ -19,10 +19,10 @@ model User {
   name     String @db.VarChar(24)
   password String @db.VarChar(24)
 
-  createdByEntities    Entity[]      @relation("createdByEntities")
-  updatedByEntities    Entity[]      @relation("updatedByEntities")
+  targetTableCreators  TargetTable[] @relation("targetTableCreators")
   tableSchemasCreators TableSchema[] @relation("tableSchemasCreators")
-  tableSchemasUpdators TableSchema[] @relation("tableSchemasUpdators")
+  targetTableUpdaters  TargetTable[] @relation("targetTableUpdaters")
+  tableSchemasUpdaters TableSchema[] @relation("tableSchemasUpdaters")
 
   @@id([id])
 }
@@ -53,23 +53,23 @@ model StoreConfig {
 }
 
 model TableSchema {
-  kn          String   @db.VarChar(36)
-  name        String   @db.VarChar(36)
-  data        Json
+  kn           String        @db.VarChar(36)
+  name         String        @db.VarChar(36)
+  data         Json
   // relations
-  entities    Entity[]
+  targetTables TargetTable[]
   // meta
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdById String   @db.VarChar(24)
-  updatedById String   @db.VarChar(24)
-  createdBy   User     @relation("tableSchemasCreators", fields: [createdById], references: [id])
-  updatedBy   User     @relation("tableSchemasUpdators", fields: [updatedById], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  createdById  String        @db.VarChar(24)
+  updatedById  String        @db.VarChar(24)
+  createdBy    User          @relation("tableSchemasCreators", fields: [createdById], references: [id])
+  updatedBy    User          @relation("tableSchemasUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
 }
 
-model Entity {
+model TargetTable {
   kn            String      @db.VarChar(24)
   name          String      @db.VarChar(24)
   tableSchemaKn String      @db.VarChar(24)
@@ -82,8 +82,8 @@ model Entity {
   updatedAt     DateTime    @updatedAt
   createdById   String      @db.VarChar(24)
   updatedById   String      @db.VarChar(24)
-  createdBy     User        @relation("createdByEntities", fields: [createdById], references: [id])
-  updatedBy     User        @relation("updatedByEntities", fields: [updatedById], references: [id])
+  createdBy     User        @relation("targetTableCreators", fields: [createdById], references: [id])
+  updatedBy     User        @relation("targetTableUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
 }

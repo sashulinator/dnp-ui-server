@@ -1,79 +1,79 @@
 import { Body, Delete, Get, Controller as NestJSController, Param, Post, Put, Search, UsePipes } from '@nestjs/common'
-import { type Entity } from '@prisma/client'
+import { type TargetTable } from '@prisma/client'
 
 import * as v from 'valibot'
 
 import { ValibotPipe } from '~/shared/valibot.pipe'
 
-import { type CreateEntity, type UpdateEntity, createEntitySchema, updateEntitySchema } from './dto'
+import { type CreateTargetTable, type UpdateTargetTable, createTargetTableSchema, updateTargetTableSchema } from './dto'
 import Service, { type OrderByWithRelationInput, type Select, type WhereInput, type WhereUniqueInput } from './service'
 
 @NestJSController('api/v1/entities')
-export default class EntityController {
+export default class TargetTableController {
   constructor(private readonly service: Service) {}
 
   /**
    * ------------ DELETE ------------
    *
-   * Delete an Entity by its KeyName
+   * Delete an TargetTable by its KeyName
    *
-   * @param {string} kn The KeyName of the entity to delete
-   * @returns {Promise<Entity>} A promise that resolves when the entity is deleted
+   * @param {string} kn The KeyName of the targetTable to delete
+   * @returns {Promise<TargetTable>} A promise that resolves when the targetTable is deleted
    */
   @Delete(':kn')
-  remove(@Param('kn') kn: string): Promise<Entity> {
+  remove(@Param('kn') kn: string): Promise<TargetTable> {
     return this.service.remove({ kn })
   }
 
   /**
    * ------------ UPDATE ------------
    *
-   * Update an Entity by its KeyName
+   * Update an TargetTable by its KeyName
    *
-   * @param {{ input: UpdateEntity }} body The new data for the entity
-   * @returns A promise that resolves when the entity is updated
+   * @param {{ input: UpdateTargetTable }} body The new data for the targetTable
+   * @returns A promise that resolves when the targetTable is updated
    */
   @Put()
-  @UsePipes(new ValibotPipe(v.object({ input: updateEntitySchema })))
-  update(@Body() body: { input: UpdateEntity }): Promise<Entity> {
+  @UsePipes(new ValibotPipe(v.object({ input: updateTargetTableSchema })))
+  update(@Body() body: { input: UpdateTargetTable }): Promise<TargetTable> {
     return this.service.update({ kn: body.input.kn }, body.input)
   }
 
   /**
    * ------------ CREATE ------------
    *
-   * Create a new Entity
+   * Create a new TargetTable
    *
-   * @param {{ input: CreateEntity }} body - The data for the new entity
-   * @returns {Promise<Entity>} A promise that resolves to the created entity
+   * @param {{ input: CreateTargetTable }} body - The data for the new targetTable
+   * @returns {Promise<TargetTable>} A promise that resolves to the created targetTable
    */
   @Post()
-  @UsePipes(new ValibotPipe(v.object({ input: createEntitySchema })))
-  create(@Body() body: { input: CreateEntity }): Promise<Entity> {
+  @UsePipes(new ValibotPipe(v.object({ input: createTargetTableSchema })))
+  create(@Body() body: { input: CreateTargetTable }): Promise<TargetTable> {
     return this.service.create(body.input)
   }
 
   /**
    * ------------ GET BY KEYNAME ------------
    *
-   * Get an Entity by its KeyName
+   * Get an TargetTable by its KeyName
    *
-   * @param {string} kn The KeyName of the entity to find
-   * @returns {Promise<Entity>} The found entity
-   * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no entity is found
+   * @param {string} kn The KeyName of the targetTable to find
+   * @returns {Promise<TargetTable>} The found targetTable
+   * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no targetTable is found
    */
   @Get(':kn')
-  getByKeyname(@Param('kn') kn: string): Promise<Entity> {
+  getByKeyname(@Param('kn') kn: string): Promise<TargetTable> {
     return this.service.getUnique({ kn })
   }
 
   /**
    * ------------ FIND FIRST ------------
    *
-   * Find the first Entity that matches the given query parameters
+   * Find the first TargetTable that matches the given query parameters
    *
    * @param {{ where?: WhereInput; select?: Select }} params - The query parameters
-   * @returns {Promise<Entity>} A promise that resolves to the found entity
+   * @returns {Promise<TargetTable>} A promise that resolves to the found targetTable
    */
   @Search('first')
   findFirst(
@@ -82,7 +82,7 @@ export default class EntityController {
       where?: WhereInput
       select?: Select
     } = {}
-  ): Promise<Entity> {
+  ): Promise<TargetTable> {
     return this.service.findFirst(params)
   }
 
@@ -96,7 +96,7 @@ export default class EntityController {
    * @param {WhereUniqueInput} params.cursor The cursor to start from
    * @param {WhereInput} params.where A WHERE clause for the query
    * @param {OrderByWithRelationInput} params.orderBy An ORDER BY clause for the query
-   * @returns {Promise<{ data: Entity[]; total: number }>} A promise containing the entitys and the total count of the results
+   * @returns {Promise<{ data: TargetTable[]; total: number }>} A promise containing the targetTables and the total count of the results
    */
   @Search()
   async findAndCountMany(
@@ -109,7 +109,7 @@ export default class EntityController {
       orderBy?: OrderByWithRelationInput
       select?: Select
     } = {}
-  ): Promise<{ items: Entity[]; total: number }> {
+  ): Promise<{ items: TargetTable[]; total: number }> {
     const [items, total] = await this.service.findAndCountMany(params)
 
     return { items, total }

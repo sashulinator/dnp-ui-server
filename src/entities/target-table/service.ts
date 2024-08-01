@@ -1,35 +1,35 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { Prisma, type Entity as PrismaEntity } from '@prisma/client'
+import { Prisma, type TargetTable as PrismaTargetTable } from '@prisma/client'
 
 import { isInstanceOf } from 'utils/core'
 
 import PrismaService from '../../shared/prisma/service'
-import { type CreateEntity, type UpdateEntity } from './dto'
+import { type CreateTargetTable, type UpdateTargetTable } from './dto'
 
-export type WhereUniqueInput = Prisma.EntityWhereUniqueInput
-export type WhereInput = Prisma.EntityWhereInput
-export type OrderByWithRelationInput = Prisma.EntityOrderByWithRelationInput
-export type Select = Prisma.EntitySelect
+export type WhereUniqueInput = Prisma.TargetTableWhereUniqueInput
+export type WhereInput = Prisma.TargetTableWhereInput
+export type OrderByWithRelationInput = Prisma.TargetTableOrderByWithRelationInput
+export type Select = Prisma.TargetTableSelect
 
 const TAKE = 100
 const ORDER_BY: OrderByWithRelationInput = { updatedAt: 'desc' }
 
 @Injectable()
-export default class EntityService {
+export default class TargetTableService {
   constructor(private prisma: PrismaService) {}
 
   /**
    * ------------ GET FIRST ------------
    *
-   * Get the first entity that matches the given `whereUniqueInput`.
-   * If no entity is found, throw a `HttpException` with status `NOT_FOUND`.
+   * Get the first targetTable that matches the given `whereUniqueInput`.
+   * If no targetTable is found, throw a `HttpException` with status `NOT_FOUND`.
    *
    * @param {WhereUniqueInput} whereUniqInput The `whereUniqueInput` to match
-   * @returns {Promise<PrismaEntity>} The found entity
-   * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no entity is found
+   * @returns {Promise<PrismaTargetTable>} The found targetTable
+   * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no targetTable is found
    */
-  async getFirst(whereUniqInput: WhereUniqueInput): Promise<PrismaEntity> {
-    return this.prisma.entity
+  async getFirst(whereUniqInput: WhereUniqueInput): Promise<PrismaTargetTable> {
+    return this.prisma.targetTable
       .findFirstOrThrow({
         where: whereUniqInput,
       })
@@ -42,15 +42,15 @@ export default class EntityService {
   /**
    * ------------ GET UNIQUE ------------
    *
-   * Get the unique entity that matches the given `whereUniqueInput`.
-   * If no entity is found, throw a `HttpException` with status `NOT_FOUND`.
+   * Get the unique targetTable that matches the given `whereUniqueInput`.
+   * If no targetTable is found, throw a `HttpException` with status `NOT_FOUND`.
    *
    * @param {WhereUniqueInput} whereUniqInput The `whereUniqueInput` to match
-   * @returns {Promise<PrismaEntity>} The found entity
-   * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no entity is found
+   * @returns {Promise<PrismaTargetTable>} The found targetTable
+   * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no targetTable is found
    */
-  async getUnique(whereUniqInput: WhereUniqueInput): Promise<PrismaEntity> {
-    return this.prisma.entity
+  async getUnique(whereUniqInput: WhereUniqueInput): Promise<PrismaTargetTable> {
+    return this.prisma.targetTable
       .findUniqueOrThrow({
         where: whereUniqInput,
       })
@@ -63,33 +63,33 @@ export default class EntityService {
   /**
    * ------------ FIND FIRST ------------
    *
-   * Find the first entity that matches the given `whereInput`
+   * Find the first targetTable that matches the given `whereInput`
    *
    * @param {Object} params - The parameters for the query
    * @param {WhereInput} params.where - A WHERE clause for the query
    * @param {Select} params.select - A SELECT clause for the query
-   * @returns {Promise<PrismaEntity | null>} - The found entity or `null` if no entity is found
+   * @returns {Promise<PrismaTargetTable | null>} - The found targetTable or `null` if no targetTable is found
    */
   async findFirst(
     params: {
       where?: WhereInput
       select?: Select
     } = {}
-  ): Promise<PrismaEntity | null> {
-    return this.prisma.entity.findFirst(params)
+  ): Promise<PrismaTargetTable | null> {
+    return this.prisma.targetTable.findFirst(params)
   }
 
   /**
    * ------------ FIND UNIQUE ------------
    *
-   * Find the unique entity that matches the given `whereUniqueInput`.
-   * If no entity is found, return `null`.
+   * Find the unique targetTable that matches the given `whereUniqueInput`.
+   * If no targetTable is found, return `null`.
    *
    * @param {WhereUniqueInput} whereUniqInput The `whereUniqueInput` to match
-   * @returns {Promise<PrismaEntity | null>} The found entity or `null` if no entity is found
+   * @returns {Promise<PrismaTargetTable | null>} The found targetTable or `null` if no targetTable is found
    */
-  async findUnique(whereUniqInput: WhereUniqueInput): Promise<PrismaEntity | null> {
-    return this.prisma.entity.findUnique({
+  async findUnique(whereUniqInput: WhereUniqueInput): Promise<PrismaTargetTable | null> {
+    return this.prisma.targetTable.findUnique({
       where: whereUniqInput,
     })
   }
@@ -97,14 +97,14 @@ export default class EntityService {
   /**
    * ------------ FIND MANY ------------
    *
-   * Find many entitys based on the given query parameters
+   * Find many targetTables based on the given query parameters
    *
    * @param {number} params.skip The number of results to skip
    * @param {number} params.take The number of results to return
    * @param {WhereUniqueInput} params.cursor The cursor to start from
    * @param {WhereInput} params.where A WHERE clause for the query
    * @param {OrderByWithRelationInput} params.orderBy An ORDER BY clause for the query
-   * @returns {Promise<PrismaEntity[]>} A promise containing the entitys
+   * @returns {Promise<PrismaTargetTable[]>} A promise containing the targetTables
    */
   async findMany(
     params: {
@@ -115,10 +115,10 @@ export default class EntityService {
       orderBy?: OrderByWithRelationInput
       select?: Select
     } = {}
-  ): Promise<PrismaEntity[]> {
+  ): Promise<PrismaTargetTable[]> {
     const { skip, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
 
-    return this.prisma.entity.findMany({
+    return this.prisma.targetTable.findMany({
       skip,
       take,
       cursor,
@@ -130,14 +130,14 @@ export default class EntityService {
   /**
    * ------------ FIND AND COUNT MANY ------------
    *
-   * Find many entitys and return the total count of the results
+   * Find many targetTables and return the total count of the results
    *
    * @param {number} params.skip The number of results to skip
    * @param {number} params.take The number of results to return
    * @param {WhereUniqueInput} params.cursor The cursor to start from
    * @param {WhereInput} params.where A WHERE clause for the query
    * @param {OrderByWithRelationInput} params.orderBy An ORDER BY clause for the query
-   * @returns {Promise<[PrismaEntity[], number]>} A promise containing the entitys and the total count of the results
+   * @returns {Promise<[PrismaTargetTable[], number]>} A promise containing the targetTables and the total count of the results
    */
   async findAndCountMany(
     params: {
@@ -148,7 +148,7 @@ export default class EntityService {
       orderBy?: OrderByWithRelationInput
       select?: Select
     } = {}
-  ): Promise<[PrismaEntity[], number]> {
+  ): Promise<[PrismaTargetTable[], number]> {
     const { skip, select, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
 
     const commonArgs = {
@@ -158,28 +158,28 @@ export default class EntityService {
     }
 
     return this.prisma.$transaction([
-      this.prisma.entity.findMany({ ...commonArgs, take, skip, select }),
-      this.prisma.entity.count(commonArgs),
+      this.prisma.targetTable.findMany({ ...commonArgs, take, skip, select }),
+      this.prisma.targetTable.count(commonArgs),
     ])
   }
 
   /**
    * ------------ CREATE ------------
    *
-   * Create a new entity
+   * Create a new targetTable
    *
-   * @param {CreateInput} createInput The data to create the entity with
-   * @returns {Promise<PrismaEntity>} A promise containing the created entity
-   * @throws {HttpException} HttpException with status code 409 if the entity already exists
+   * @param {CreateInput} createInput The data to create the targetTable with
+   * @returns {Promise<PrismaTargetTable>} A promise containing the created targetTable
+   * @throws {HttpException} HttpException with status code 409 if the targetTable already exists
    */
-  async create(createInput: CreateEntity): Promise<PrismaEntity> {
-    const item = await this.prisma.entity.findUnique({ where: { kn: createInput.kn } })
+  async create(createInput: CreateTargetTable): Promise<PrismaTargetTable> {
+    const item = await this.prisma.targetTable.findUnique({ where: { kn: createInput.kn } })
 
     if (item) {
-      throw new HttpException(`Entity with kn "${createInput.kn}" already exists`, HttpStatus.CONFLICT)
+      throw new HttpException(`TargetTable with kn "${createInput.kn}" already exists`, HttpStatus.CONFLICT)
     }
 
-    return this.prisma.entity.create({
+    return this.prisma.targetTable.create({
       data: {
         ...createInput,
         createdById: 'tz4a98xxat96iws9zmbrgj3a',
@@ -191,26 +191,26 @@ export default class EntityService {
   /**
    * ------------ UPDATE ------------
    *
-   * Update a entity
+   * Update a targetTable
    *
    * @param {WhereUniqueInput} where A WHERE clause for the query
-   * @param {UpdateInput} data The data to update the entity with
-   * @returns {Promise<PrismaEntity>} A promise containing the updated entity
+   * @param {UpdateInput} data The data to update the targetTable with
+   * @returns {Promise<PrismaTargetTable>} A promise containing the updated targetTable
    */
-  async update(where: WhereUniqueInput, data: UpdateEntity): Promise<PrismaEntity> {
-    return this.prisma.entity.update({ where, data })
+  async update(where: WhereUniqueInput, data: UpdateTargetTable): Promise<PrismaTargetTable> {
+    return this.prisma.targetTable.update({ where, data })
   }
 
   /**
    * ------------ REMOVE ------------
    *
-   * Remove a entity
+   * Remove a targetTable
    *
    * @param {WhereUniqueInput} where A WHERE clause for the query
-   * @returns {Promise<PrismaEntity>} A promise containing the removed entity
+   * @returns {Promise<PrismaTargetTable>} A promise containing the removed targetTable
    */
-  async remove(where: WhereUniqueInput): Promise<PrismaEntity> {
-    return this.prisma.entity.delete({
+  async remove(where: WhereUniqueInput): Promise<PrismaTargetTable> {
+    return this.prisma.targetTable.delete({
       where,
     })
   }

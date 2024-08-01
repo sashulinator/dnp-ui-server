@@ -1,5 +1,5 @@
 import { type Prisma, type PrismaClient } from '@prisma/client'
-import { normalizationConfig1 } from './normalization-config'
+import { normalizationConfig1 } from './normalization-configs'
 import { createId } from '@paralleldrive/cuid2'
 
 const processes1: Prisma.ProcessUncheckedCreateInput = {
