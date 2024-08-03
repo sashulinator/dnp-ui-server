@@ -1,6 +1,5 @@
 import * as v from 'valibot'
-import { getObjectKeys } from '~/common/lib/get-object-keys'
-import { crudableSchema } from '~/common/models/crudable'
+import { userSchema } from '../user'
 
 /**
  * BaseTargetTable
@@ -11,8 +10,14 @@ export const baseTargetTableSchema = v.object({
   name: v.string(),
   tableSchemaKn: v.string(),
   nav: v.boolean(),
-  data: v.object({}),
-  ...crudableSchema.entries,
+  data: v.object({
+    items: v.array(v.object({})),
+  }),
+  // meta
+  createdById: v.pipe(v.string(), v.nonEmpty()),
+  updatedById: v.pipe(v.string(), v.nonEmpty()),
+  createdAt: v.pipe(v.string(), v.nonEmpty()),
+  updatedAt: v.pipe(v.string(), v.nonEmpty()),
 })
 
 export type BaseTargetTable = v.InferOutput<typeof baseTargetTableSchema>
@@ -21,7 +26,10 @@ export type BaseTargetTable = v.InferOutput<typeof baseTargetTableSchema>
  * Relations
  */
 
-export const targetTableRelationsSchema = v.object({})
+export const targetTableRelationsSchema = v.object({
+  createdBy: userSchema,
+  updatedBy: userSchema,
+})
 
 export type TargetTableRelations = v.InferOutput<typeof targetTableRelationsSchema>
 
@@ -37,7 +45,12 @@ export type TargetTable = v.InferOutput<typeof targetTableSchema>
  * CreateTargetTable
  */
 
-export const createTargetTableSchema = v.omit(baseTargetTableSchema, getObjectKeys(crudableSchema.entries))
+export const createTargetTableSchema = v.omit(baseTargetTableSchema, [
+  'updatedById',
+  'createdById',
+  'createdAt',
+  'updatedAt',
+])
 
 export type CreateTargetTable = v.InferOutput<typeof createTargetTableSchema>
 
@@ -45,6 +58,11 @@ export type CreateTargetTable = v.InferOutput<typeof createTargetTableSchema>
  * UpdateTargetTable
  */
 
-export const updateTargetTableSchema = v.omit(baseTargetTableSchema, getObjectKeys(crudableSchema.entries))
+export const updateTargetTableSchema = v.omit(baseTargetTableSchema, [
+  'updatedById',
+  'createdById',
+  'createdAt',
+  'updatedAt',
+])
 
 export type UpdateTargetTable = v.InferOutput<typeof updateTargetTableSchema>
