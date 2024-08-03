@@ -1,4 +1,5 @@
 import * as v from 'valibot'
+import { baseProcessSchema } from '../process'
 
 /**
  * Executable
@@ -50,10 +51,10 @@ export const driverUniversalServicesSchema = v.array(v.string())
 export type DriverUniversalServices = v.InferOutput<typeof driverUniversalServicesSchema>
 
 /**
- * NormalizationConfig
+ * BaseNormalizationConfig
  */
 
-export const normalizationConfigSchema = v.object({
+export const baseNormalizationConfigSchema = v.object({
   id: v.pipe(v.string(), v.nonEmpty()),
   v: v.pipe(v.number(), v.notValue(0)),
   name: v.pipe(v.string(), v.nonEmpty()),
@@ -71,13 +72,34 @@ export const normalizationConfigSchema = v.object({
   }),
 })
 
+export type BaseNormalizationConfig = v.InferOutput<typeof baseNormalizationConfigSchema>
+
+/**
+ * Relations
+ */
+
+export const normalizationConfigRelationsSchema = v.object({
+  processes: v.array(baseProcessSchema),
+})
+
+export type NormalizationConfigRelations = v.InferOutput<typeof normalizationConfigRelationsSchema>
+
+/**
+ * NormalizationConfig
+ */
+
+export const normalizationConfigSchema = v.intersect([
+  baseNormalizationConfigSchema,
+  normalizationConfigRelationsSchema,
+])
+
 export type NormalizationConfig = v.InferOutput<typeof normalizationConfigSchema>
 
 /**
  * CreateNormalizationConfig
  */
 
-export const createNormalizationConfigSchema = v.omit(normalizationConfigSchema, [
+export const createNormalizationConfigSchema = v.omit(baseNormalizationConfigSchema, [
   'id',
   'v',
   'createdAt',
@@ -92,7 +114,7 @@ export type CreateNormalizationConfig = v.InferOutput<typeof createNormalization
  * UpdateNormalizationConfig
  */
 
-export const updateNormalizationConfigSchema = v.omit(normalizationConfigSchema, [
+export const updateNormalizationConfigSchema = v.omit(baseNormalizationConfigSchema, [
   'createdAt',
   'updatedAt',
   'createdBy',

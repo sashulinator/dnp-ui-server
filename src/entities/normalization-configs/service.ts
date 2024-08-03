@@ -5,7 +5,7 @@ import { Prisma, type NormalizationConfig as PrismaNormalizationConfig } from '@
 import { isInstanceOf } from 'utils/core'
 
 import PrismaService from '../../shared/prisma/service'
-import { type CreateNormalizationConfig, type NormalizationConfig, type UpdateNormalizationConfig } from './dto'
+import { type BaseNormalizationConfig, type CreateNormalizationConfig, type UpdateNormalizationConfig } from './dto'
 
 export type WhereUniqueInput = Prisma.NormalizationConfigWhereUniqueInput
 export type WhereInput = Prisma.NormalizationConfigWhereInput
@@ -216,7 +216,7 @@ export default class Service {
     // Если есть процессы, то создаем архивную версию
 
     // Необходимо Date поля привести к string, самый простой способ
-    const itemToArchive = JSON.parse(JSON.stringify(prismaItem)) as NormalizationConfig
+    const itemToArchive = JSON.parse(JSON.stringify(prismaItem)) as BaseNormalizationConfig
 
     if (!itemToArchive.last) {
       throw new HttpException('Редактирование архивной версии недоступно', HttpStatus.BAD_REQUEST)
