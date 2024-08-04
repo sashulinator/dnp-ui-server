@@ -19,10 +19,19 @@ model User {
   name     String @db.VarChar(24)
   password String @db.VarChar(24)
 
-  targetTableCreators  TargetTable[] @relation("targetTableCreators")
+  processCreators Process[] @relation("processCreators")
+
+  storeConfigCreators StoreConfig[] @relation("storeConfigCreators")
+  storeConfigUpdaters StoreConfig[] @relation("storeConfigUpdaters")
+
   tableSchemasCreators TableSchema[] @relation("tableSchemasCreators")
-  targetTableUpdaters  TargetTable[] @relation("targetTableUpdaters")
   tableSchemasUpdaters TableSchema[] @relation("tableSchemasUpdaters")
+
+  targetTableCreators TargetTable[] @relation("targetTableCreators")
+  targetTableUpdaters TargetTable[] @relation("targetTableUpdaters")
+
+  normalizationConfigCreators NormalizationConfig[] @relation("normalizationConfigCreators")
+  normalizationConfigUpdaters NormalizationConfig[] @relation("normalizationConfigUpdaters")
 
   @@id([id])
 }
@@ -33,21 +42,24 @@ model Process {
   // relations
   normalizationConfig   NormalizationConfig @relation(fields: [normalizationConfigId], references: [id])
   // meta
-  createdBy             String              @db.VarChar(24)
   createdAt             DateTime            @default(now())
+  createdById           String?             @db.VarChar(24)
+  createdBy             User?               @relation("processCreators", fields: [createdById], references: [id])
 
   @@id([id])
 }
 
 model StoreConfig {
-  kn        String    @db.VarChar(36)
-  type      StoreType
-  data      Json
+  kn          String    @db.VarChar(36)
+  type        StoreType
+  data        Json
   // meta
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  createdBy String    @db.VarChar(24)
-  updatedBy String    @db.VarChar(24)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  createdById String    @db.VarChar(24)
+  updatedById String    @db.VarChar(24)
+  createdBy   User      @relation("storeConfigCreators", fields: [createdById], references: [id])
+  updatedBy   User      @relation("storeConfigUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
 }
@@ -89,18 +101,20 @@ model TargetTable {
 }
 
 model NormalizationConfig {
-  id        String    @db.VarChar(24)
-  name      String
-  v         Int
-  last      Boolean   @default(true)
-  data      Json
+  id          String    @db.VarChar(24)
+  name        String
+  v           Int
+  last        Boolean   @default(true)
+  data        Json
   // relations
-  processes Process[]
+  processes   Process[]
   // meta
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  createdBy String    @db.VarChar(24)
-  updatedBy String    @db.VarChar(24)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  createdById String    @db.VarChar(24)
+  updatedById String    @db.VarChar(24)
+  createdBy   User      @relation("normalizationConfigCreators", fields: [createdById], references: [id])
+  updatedBy   User      @relation("normalizationConfigUpdaters", fields: [updatedById], references: [id])
 
   @@id([id])
 }

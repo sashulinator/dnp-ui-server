@@ -1,6 +1,7 @@
 import * as v from 'valibot'
 import { getObjectKeys } from '../../lib/get-object-keys'
 import { crudableSchema } from '../../models/crudable'
+import { userSchema } from '../user'
 
 /**
  * BaseStoreConfig
@@ -19,7 +20,10 @@ export type BaseStoreConfig = v.InferOutput<typeof baseStoreConfigSchema>
  * Relations
  */
 
-export const storeConfigRelationsSchema = v.object({})
+export const storeConfigRelationsSchema = v.object({
+  createdBy: userSchema,
+  updatedBy: userSchema,
+})
 
 export type StoreConfigRelations = v.InferOutput<typeof storeConfigRelationsSchema>
 

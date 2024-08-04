@@ -64,7 +64,7 @@ export default class Service extends CrudService<'process'> {
       data: {
         normalizationConfigId: data.normalizationConfigId,
         id: createId(),
-        createdBy: 'tz4a98xxat96iws9zmbrgj3a',
+        createdById: 'tz4a98xxat96iws9zmbrgj3a',
       },
     })
   }

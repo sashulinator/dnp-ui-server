@@ -182,8 +182,8 @@ export default class StoreConfigService {
     return this.prisma.storeConfig.create({
       data: {
         ...createInput,
-        createdBy: 'tz4a98xxat96iws9zmbrgj3a',
-        updatedBy: 'tz4a98xxat96iws9zmbrgj3a',
+        createdById: 'tz4a98xxat96iws9zmbrgj3a',
+        updatedById: 'tz4a98xxat96iws9zmbrgj3a',
       },
     })
   }

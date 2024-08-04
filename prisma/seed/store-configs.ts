@@ -1,10 +1,10 @@
 import { type Prisma, type PrismaClient } from '@prisma/client'
 
-export const storeConfig1: Prisma.StoreConfigCreateInput = {
+export const storeConfig1: Prisma.StoreConfigUncheckedCreateInput = {
   kn: 'first',
   type: 'jdbc',
-  createdBy: 'tz4a98xxat96iws9zmbrgj3a',
-  updatedBy: 'tz4a98xxat96iws9zmbrgj3a',
+  createdById: 'tz4a98xxat96iws9zmbrgj3a',
+  updatedById: 'tz4a98xxat96iws9zmbrgj3a',
   createdAt: '2024-05-28T06:37:43.048Z',
   updatedAt: '2024-05-28T06:37:43.048Z',
   data: {

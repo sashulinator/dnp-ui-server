@@ -18,7 +18,7 @@ export default class Controller {
    * @returns {Promise<void>} A promise that resolves when the process is created
    */
   create(@Body() body: CreateProcess): Promise<PrismaProcess> {
-    return this.service.create({ data: { ...body, id: createId(), createdBy: 'tz4a98xxat96iws9zmbrgj3a' } })
+    return this.service.create({ data: { ...body, id: createId(), createdById: 'tz4a98xxat96iws9zmbrgj3a' } })
   }
 
   /**

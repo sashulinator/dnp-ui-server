@@ -185,8 +185,8 @@ export default class Service {
         ...createInput,
         v: 1,
         id: createId(),
-        createdBy: 'tz4a98xxat96iws9zmbrgj3a',
-        updatedBy: 'tz4a98xxat96iws9zmbrgj3a',
+        createdById: 'tz4a98xxat96iws9zmbrgj3a',
+        updatedById: 'tz4a98xxat96iws9zmbrgj3a',
       },
     })
   }
@@ -233,8 +233,8 @@ export default class Service {
           name: itemToArchive.name,
           id: createId(),
           v: itemToArchive.v + 1,
-          createdBy: 'tz4a98xxat96iws9zmbrgj3a',
-          updatedBy: 'tz4a98xxat96iws9zmbrgj3a',
+          createdById: 'tz4a98xxat96iws9zmbrgj3a',
+          updatedById: 'tz4a98xxat96iws9zmbrgj3a',
           last: true,
         },
       }),

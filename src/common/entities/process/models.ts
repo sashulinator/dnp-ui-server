@@ -1,5 +1,8 @@
 import * as v from 'valibot'
 import { normalizationConfigSchema } from '../normalization-config'
+import { creatableSchema } from '~/common/models/crudable'
+import { getObjectKeys } from '~/common/lib/get-object-keys'
+import { userSchema } from '../user'
 
 /**
  * BaseProcess
@@ -7,9 +10,8 @@ import { normalizationConfigSchema } from '../normalization-config'
 
 export const baseProcessSchema = v.object({
   id: v.pipe(v.string(), v.nonEmpty()),
-  createdBy: v.pipe(v.string(), v.nonEmpty()),
-  createdAt: v.pipe(v.string(), v.nonEmpty()),
   normalizationConfigId: v.pipe(v.string(), v.nonEmpty()),
+  ...creatableSchema.entries,
 })
 
 export type BaseProcess = v.InferOutput<typeof baseProcessSchema>
@@ -19,7 +21,8 @@ export type BaseProcess = v.InferOutput<typeof baseProcessSchema>
  */
 
 export const processRelationsSchema = v.object({
-  normalizationConfig: normalizationConfigSchema,
+  normalizationConfig: v.lazy(() => normalizationConfigSchema),
+  createdBy: v.lazy(() => userSchema),
 })
 
 export type ProcessRelations = v.InferOutput<typeof processRelationsSchema>
@@ -36,7 +39,7 @@ export type Process = v.InferOutput<typeof processSchema>
  * CreateProcess
  */
 
-export const createProcessSchema = v.omit(baseProcessSchema, ['id', 'createdAt', 'createdBy'])
+export const createProcessSchema = v.omit(baseProcessSchema, ['id', ...getObjectKeys(creatableSchema.entries)])
 
 export type CreateProcess = v.InferOutput<typeof createProcessSchema>
 
@@ -44,6 +47,6 @@ export type CreateProcess = v.InferOutput<typeof createProcessSchema>
  * UpdateProcess
  */
 
-export const updateProcessSchema = v.omit(baseProcessSchema, ['createdAt', 'createdBy'])
+export const updateProcessSchema = v.omit(baseProcessSchema, ['id', ...getObjectKeys(creatableSchema.entries)])
 
 export type UpdateProcess = v.InferOutput<typeof updateProcessSchema>

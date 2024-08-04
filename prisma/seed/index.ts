@@ -12,16 +12,22 @@ const prisma = new PrismaClient()
 async function main() {
   await seedUsers(prisma)
   console.log('Users seeded')
+
   await seedTableSchemas(prisma)
   console.log('TableSchemas seeded')
+
   await seedTargetTables(prisma)
-  console.log('Entities seeded')
+  console.log('TargetTable seeded')
+
   await seedNormalizationConfigs(prisma)
   console.log('NormalizationConfigs seeded')
+
   await seedStoreConfigs(prisma)
   console.log('StoreConfigs seeded')
+
   await seedProcesses(prisma)
   console.log('Processes seeded')
+
   await seedTranslations(prisma)
   console.log('Translations seeded')
 }

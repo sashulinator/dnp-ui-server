@@ -8,7 +8,7 @@ import { ValibotPipe } from '~/shared/valibot.pipe'
 import { type CreateTargetTable, type UpdateTargetTable, createTargetTableSchema, updateTargetTableSchema } from './dto'
 import Service, { type OrderByWithRelationInput, type Select, type WhereInput, type WhereUniqueInput } from './service'
 
-@NestJSController('api/v1/entities')
+@NestJSController('api/v1/target-tables')
 export default class TargetTableController {
   constructor(private readonly service: Service) {}
 
