@@ -1,5 +1,8 @@
 import * as v from 'valibot'
 import { baseProcessSchema } from '../process'
+import { crudableSchema } from '~/common/models/crudable'
+import { getObjectKeys } from '~/common/lib/get-object-keys'
+import { userSchema } from '../user'
 
 /**
  * Executable
@@ -59,10 +62,6 @@ export const baseNormalizationConfigSchema = v.object({
   v: v.pipe(v.number(), v.notValue(0)),
   name: v.pipe(v.string(), v.nonEmpty()),
   last: v.boolean(),
-  createdBy: v.pipe(v.string(), v.nonEmpty()),
-  updatedBy: v.pipe(v.string(), v.nonEmpty()),
-  createdAt: v.pipe(v.string(), v.nonEmpty()),
-  updatedAt: v.pipe(v.string(), v.nonEmpty()),
   data: v.object({
     executables: v.array(executableSchema),
     sdk: sdkSchema,
@@ -70,6 +69,7 @@ export const baseNormalizationConfigSchema = v.object({
     'preload-jars': preloadJarsSchema,
     'driver-universal-services': driverUniversalServicesSchema,
   }),
+  ...crudableSchema.entries,
 })
 
 export type BaseNormalizationConfig = v.InferOutput<typeof baseNormalizationConfigSchema>
@@ -80,6 +80,8 @@ export type BaseNormalizationConfig = v.InferOutput<typeof baseNormalizationConf
 
 export const normalizationConfigRelationsSchema = v.object({
   processes: v.array(baseProcessSchema),
+  createdBy: userSchema,
+  updatedBy: userSchema,
 })
 
 export type NormalizationConfigRelations = v.InferOutput<typeof normalizationConfigRelationsSchema>
@@ -102,10 +104,7 @@ export type NormalizationConfig = v.InferOutput<typeof normalizationConfigSchema
 export const createNormalizationConfigSchema = v.omit(baseNormalizationConfigSchema, [
   'id',
   'v',
-  'createdAt',
-  'updatedAt',
-  'createdBy',
-  'updatedBy',
+  ...getObjectKeys(crudableSchema.entries),
 ])
 
 export type CreateNormalizationConfig = v.InferOutput<typeof createNormalizationConfigSchema>
@@ -115,11 +114,8 @@ export type CreateNormalizationConfig = v.InferOutput<typeof createNormalization
  */
 
 export const updateNormalizationConfigSchema = v.omit(baseNormalizationConfigSchema, [
-  'createdAt',
-  'updatedAt',
-  'createdBy',
-  'updatedBy',
   'v',
+  ...getObjectKeys(crudableSchema.entries),
 ])
 
 export type UpdateNormalizationConfig = v.InferOutput<typeof updateNormalizationConfigSchema>
