@@ -23,20 +23,20 @@ export type BaseOperationalTable = v.InferOutput<typeof baseOperationalTableSche
  * Relations
  */
 
-export const targetTableRelationsSchema = v.object({
+export const operationalTableRelationsSchema = v.object({
   createdBy: userSchema,
   updatedBy: userSchema,
 })
 
-export type OperationalTableRelations = v.InferOutput<typeof targetTableRelationsSchema>
+export type OperationalTableRelations = v.InferOutput<typeof operationalTableRelationsSchema>
 
 /**
  * OperationalTable
  */
 
-export const targetTableSchema = v.intersect([baseOperationalTableSchema, targetTableRelationsSchema])
+export const operationalTableSchema = v.intersect([baseOperationalTableSchema, operationalTableRelationsSchema])
 
-export type OperationalTable = v.InferOutput<typeof targetTableSchema>
+export type OperationalTable = v.InferOutput<typeof operationalTableSchema>
 
 /**
  * CreateOperationalTable
