@@ -7,9 +7,7 @@ import { userSchema } from '../user'
 
 export const baseTargetTableSchema = v.object({
   kn: v.string(),
-  name: v.string(),
-  tableName: v.string(),
-  tableSchemaKn: v.string(),
+  data: v.object({}),
   // meta
   createdById: v.pipe(v.string(), v.nonEmpty()),
   updatedById: v.pipe(v.string(), v.nonEmpty()),
