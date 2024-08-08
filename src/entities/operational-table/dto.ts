@@ -1,1 +1,1 @@
-export * from '~/common/entities/operatinal-table/models'
+export * from '~/common/entities/operational-table/models'

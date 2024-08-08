@@ -7,18 +7,21 @@ import ProcessModule from '../entities/processes/module'
 import StoreConfigModule from '../entities/store-configs/module'
 import PrismaModule from '../shared/prisma/module'
 import ExplorerModule from '../entities/explorer/module'
-import EntitiesModule from '../entities/target-table/module'
+import TargetTablesModule from '../entities/target-table/module'
+import OperationalTablesModule from '../entities/operational-table/module'
 import TranslationsModule from '../system/translations/module'
 
 @Module({
   controllers: [AppController],
   imports: [
-    TranslationsModule,
-    EntitiesModule,
+    PrismaModule,
+
     NormalizationConfigModule,
+    OperationalTablesModule,
     ProcessModule,
     StoreConfigModule,
-    PrismaModule,
+    TranslationsModule,
+    TargetTablesModule,
     ExplorerModule,
   ],
   providers: [
