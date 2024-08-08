@@ -8,8 +8,8 @@ import { userSchema } from '../user'
 export const baseTargetTableSchema = v.object({
   kn: v.string(),
   name: v.string(),
+  tableName: v.string(),
   tableSchemaKn: v.string(),
-  nav: v.boolean(),
   data: v.object({
     items: v.array(v.object({})),
   }),

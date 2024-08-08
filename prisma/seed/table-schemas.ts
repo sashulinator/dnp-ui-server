@@ -5,12 +5,11 @@ import { createId } from '@paralleldrive/cuid2'
 const entityName = 'tableSchema'
 type CreateInput = Prisma.TableSchemaUncheckedCreateInput
 
-export const tableSchemas = [_create({ kn: 'kn', name: 'name' })] as const
+export const tableSchemas = [_create({ kn: 'kn' })] as const
 
 function _create(defaultValues: Partial<CreateInput>): CreateInput {
   const instance: CreateInput = {
     kn: defaultValues.kn ?? createId(),
-    name: defaultValues.name ?? createId(),
     createdById: users[0].id,
     updatedById: users[0].id,
     data: {},
@@ -20,7 +19,7 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
 }
 
 function _createOnIteration(_: unknown, i: number): CreateInput {
-  return _create({ name: `seeded-name-${i}`, kn: `seeded-kn-${i}` })
+  return _create({ kn: `seeded-kn-${i}` })
 }
 
 export default async function seedTableSchemas(prisma: PrismaClient) {

@@ -3,15 +3,16 @@ import { users } from './users'
 import { tableSchemas } from './table-schemas'
 import { createId } from '@paralleldrive/cuid2'
 
-const targetTableName = 'targetTable'
-type CreateInput = Prisma.TargetTableUncheckedCreateInput
+const operationalTableName = 'operationalTable'
+type CreateInput = Prisma.OperationalTableUncheckedCreateInput
 
-export const targetTables = [_create({ kn: 'first', name: 'first' })] as const
+export const operationalTables = [_create({ kn: 'first', name: 'first' })] as const
 
 function _create(defaultValues: Partial<CreateInput>): CreateInput {
   const instance: CreateInput = {
     kn: defaultValues.kn ?? createId(),
     name: defaultValues.name ?? createId(),
+    nav: false,
     tableName: defaultValues.name ?? createId(),
     tableSchemaKn: tableSchemas[0].kn,
     data: { iconName: 'Star' },
@@ -26,9 +27,9 @@ function _createOnIteration(_: unknown, i: number): CreateInput {
   return _create({ name: `seeded-name-${i}`, tableName: `seeded-tablename-${i}`, kn: `seeded-kn-${i}` })
 }
 
-export default async function seedtargetTables(prisma: PrismaClient) {
-  const generatedtargetTables = Array(20).fill(35).map(_createOnIteration)
-  const allSeeds = [...targetTables, ...generatedtargetTables]
-  const seedPromises = allSeeds.map((seed) => prisma[targetTableName].create({ data: seed }))
+export default async function seedOperationalTables(prisma: PrismaClient) {
+  const generatedOperationalTables = Array(20).fill(35).map(_createOnIteration)
+  const allSeeds = [...operationalTables, ...generatedOperationalTables]
+  const seedPromises = allSeeds.map((seed) => prisma[operationalTableName].create({ data: seed }))
   return Promise.all([...seedPromises])
 }

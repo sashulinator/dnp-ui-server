@@ -7,6 +7,7 @@ import { seedStoreConfigs } from './store-configs'
 import seedUsers from './users'
 import seedTableSchemas from './table-schemas'
 import seedTargetTables from './target-tables'
+import seedOperationalTables from './operational-tables'
 
 const prisma = new PrismaClient()
 async function main() {
@@ -16,8 +17,11 @@ async function main() {
   await seedTableSchemas(prisma)
   console.log('TableSchemas seeded')
 
+  await seedOperationalTables(prisma)
+  console.log('OperationalTables seeded')
+
   await seedTargetTables(prisma)
-  console.log('TargetTable seeded')
+  console.log('TargetTables seeded')
 
   await seedNormalizationConfigs(prisma)
   console.log('NormalizationConfigs seeded')

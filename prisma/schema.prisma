@@ -30,6 +30,9 @@ model User {
   targetTableCreators TargetTable[] @relation("targetTableCreators")
   targetTableUpdaters TargetTable[] @relation("targetTableUpdaters")
 
+  operationalTableCreators OperationalTable[] @relation("operationalTableCreators")
+  operationalTableUpdaters OperationalTable[] @relation("operationalTableUpdaters")
+
   normalizationConfigCreators NormalizationConfig[] @relation("normalizationConfigCreators")
   normalizationConfigUpdaters NormalizationConfig[] @relation("normalizationConfigUpdaters")
 
@@ -50,7 +53,7 @@ model Process {
 }
 
 model StoreConfig {
-  kn          String    @db.VarChar(36)
+  kn          String    @db.VarChar(24)
   type        StoreType
   data        Json
   // meta
@@ -65,18 +68,38 @@ model StoreConfig {
 }
 
 model TableSchema {
-  kn           String        @db.VarChar(36)
-  name         String        @db.VarChar(36)
-  data         Json
+  kn                String             @db.VarChar(24)
+  data              Json
   // relations
-  targetTables TargetTable[]
+  targetTables      TargetTable[]
+  operationalTables OperationalTable[]
   // meta
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  createdById  String        @db.VarChar(24)
-  updatedById  String        @db.VarChar(24)
-  createdBy    User          @relation("tableSchemasCreators", fields: [createdById], references: [id])
-  updatedBy    User          @relation("tableSchemasUpdaters", fields: [updatedById], references: [id])
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  createdById       String             @db.VarChar(24)
+  updatedById       String             @db.VarChar(24)
+  createdBy         User               @relation("tableSchemasCreators", fields: [createdById], references: [id])
+  updatedBy         User               @relation("tableSchemasUpdaters", fields: [updatedById], references: [id])
+
+  @@id([kn])
+}
+
+model OperationalTable {
+  kn            String      @db.VarChar(24)
+  name          String      @db.VarChar(24)
+  tableName     String      @db.VarChar(24)
+  tableSchemaKn String      @db.VarChar(24)
+  nav           Boolean
+  data          Json
+  // relations
+  tableSchema   TableSchema @relation(fields: [tableSchemaKn], references: [kn])
+  // meta
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  createdById   String      @db.VarChar(24)
+  updatedById   String      @db.VarChar(24)
+  createdBy     User        @relation("operationalTableCreators", fields: [createdById], references: [id])
+  updatedBy     User        @relation("operationalTableUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
 }
@@ -84,8 +107,8 @@ model TableSchema {
 model TargetTable {
   kn            String      @db.VarChar(24)
   name          String      @db.VarChar(24)
+  tableName     String      @db.VarChar(24)
   tableSchemaKn String      @db.VarChar(24)
-  nav           Boolean
   data          Json
   // relations
   tableSchema   TableSchema @relation(fields: [tableSchemaKn], references: [kn])

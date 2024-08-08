@@ -6,6 +6,7 @@ import type {
   Prisma,
   TableSchema,
   TargetTable,
+  OperationalTable,
   Translation,
 } from '@prisma/client'
 import { check } from '~/utils/types/test'
@@ -17,6 +18,7 @@ export type EntityMap = {
   normalizationConfig: NormalizationConfig
   tableSchema: TableSchema
   targetTable: TargetTable
+  operationalTable: OperationalTable
   translation: Translation
 }
 
