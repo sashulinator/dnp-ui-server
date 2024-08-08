@@ -10,9 +10,6 @@ export const baseTargetTableSchema = v.object({
   name: v.string(),
   tableName: v.string(),
   tableSchemaKn: v.string(),
-  data: v.object({
-    items: v.array(v.object({})),
-  }),
   // meta
   createdById: v.pipe(v.string(), v.nonEmpty()),
   updatedById: v.pipe(v.string(), v.nonEmpty()),
