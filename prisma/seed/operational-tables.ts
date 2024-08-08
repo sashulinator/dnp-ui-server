@@ -15,7 +15,6 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
     nav: false,
     tableName: defaultValues.name ?? createId(),
     tableSchemaKn: tableSchemas[0].kn,
-    data: { iconName: 'Star' },
     createdById: users[0].id,
     updatedById: users[0].id,
     ...defaultValues,
