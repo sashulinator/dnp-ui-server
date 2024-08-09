@@ -6,7 +6,7 @@ import { createId } from '@paralleldrive/cuid2'
 const operationalTableName = 'operationalTable'
 type CreateInput = Prisma.OperationalTableUncheckedCreateInput
 
-export const operationalTables = [_create({ kn: 'first', name: 'first' })] as const
+export const operationalTables = [_create({ kn: 'first', name: 'first', tableName: 'Translation' })] as const
 
 function _create(defaultValues: Partial<CreateInput>): CreateInput {
   const instance: CreateInput = {

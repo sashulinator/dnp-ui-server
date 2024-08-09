@@ -1,30 +1,35 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
-import { type JdbcData } from '~/entities/store-configs/dto'
-import type { Path, Explorer } from './dto'
+import type { Explorer, StoreConfig } from './dto'
+
+export interface ExploreParams {
+  type: 'jdbc'
+  paths: string[]
+  storeConfig: StoreConfig
+}
 
 @Injectable()
 export default class ExplorerService {
   constructor() {}
 
-  async expore(params: { paths: Path[]; storeConfigData: { type: 'jdbc'; data: JdbcData } }): Promise<Explorer> {
-    const { paths, storeConfigData } = params
-    const [, path2] = paths
+  async expore(params: ExploreParams): Promise<Explorer> {
+    const { paths, type, storeConfig } = params
+    const [path1, path2] = paths
 
-    if (storeConfigData.type === 'jdbc') {
-      if (path2) return this.getJdbcTable(storeConfigData.data, path2.name)
+    if (type === 'jdbc') {
+      if (path2) return this.getJdbcTable(storeConfig, path1, path2)
 
-      return this.getJdbcDatabase(storeConfigData.data)
+      return this.getJdbcDatabase(storeConfig, path1)
     }
   }
 
-  async getJdbcDatabase(jdbcData: JdbcData): Promise<Explorer> {
+  async getJdbcDatabase(storeConfig: StoreConfig, database: string): Promise<Explorer> {
     type getTablesQueryRet = {
       tablename: string
       schemaname: string
     }
 
-    const url = `postgresql://${jdbcData.username}:${jdbcData.password}@${jdbcData.host}:${jdbcData.port}/${jdbcData.database}?schema=public`
+    const url = `postgresql://${storeConfig.username}:${storeConfig.password}@${storeConfig.host}:${storeConfig.port}/${database}?schema=public`
 
     const prisma = new PrismaClient({ datasources: { db: { url } } })
 
@@ -36,14 +41,15 @@ export default class ExplorerService {
     prisma.$disconnect()
 
     return {
-      name: jdbcData.database,
+      paths: [{ name: database, type: 'jdbc' }],
+      name: database,
       type: 'jdbc',
       items,
     }
   }
 
-  async getJdbcTable(jdbcData: JdbcData, tableName: string): Promise<Explorer> {
-    const url = `postgresql://${jdbcData.username}:${jdbcData.password}@${jdbcData.host}:${jdbcData.port}/${jdbcData.database}?schema=public`
+  async getJdbcTable(storeConfig: StoreConfig, database: string, tableName: string): Promise<Explorer> {
+    const url = `postgresql://${storeConfig.username}:${storeConfig.password}@${storeConfig.host}:${storeConfig.port}/${database}?schema=public`
 
     const prismaClient = new PrismaClient({ datasources: { db: { url } } })
 
@@ -63,6 +69,10 @@ export default class ExplorerService {
     )
 
     return {
+      paths: [
+        { name: database, type: 'jdbc' },
+        { name: tableName, type: 'table' },
+      ],
       name: tableName,
       type: 'table',
       items,

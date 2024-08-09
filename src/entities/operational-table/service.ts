@@ -5,6 +5,7 @@ import { isInstanceOf } from 'utils/core'
 
 import PrismaService from '../../shared/prisma/service'
 import { type CreateOperationalTable, type UpdateOperationalTable } from './dto'
+import ExplorerService, { type ExploreParams } from '../explorer/service'
 
 export type WhereUniqueInput = Prisma.OperationalTableWhereUniqueInput
 export type WhereInput = Prisma.OperationalTableWhereInput
@@ -16,7 +17,27 @@ const ORDER_BY: OrderByWithRelationInput = { updatedAt: 'desc' }
 
 @Injectable()
 export default class OperationalTableService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private explorerService: ExplorerService
+  ) {}
+
+  async explore(whereUniqInput: WhereUniqueInput) {
+    const operationlTable = await this.getUnique(whereUniqInput)
+
+    const params: ExploreParams = {
+      type: 'jdbc',
+      paths: ['dnp_dev_1', operationlTable.tableName],
+      storeConfig: {
+        host: '10.4.40.2',
+        port: '5432',
+        username: 'asavchenko',
+        password: 'Orion123',
+      },
+    }
+
+    return this.explorerService.expore(params)
+  }
 
   /**
    * ------------ GET FIRST ------------

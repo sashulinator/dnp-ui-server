@@ -18,6 +18,14 @@ export default class OperationalTableController {
   constructor(private readonly service: Service) {}
 
   /**
+   * ------------ EXPLORE ------------
+   */
+  @Search('explorer')
+  explore(@Body() body: { kn: string }) {
+    return this.service.explore({ kn: body.kn })
+  }
+
+  /**
    * ------------ DELETE ------------
    *
    * Delete an OperationalTable by its KeyName
