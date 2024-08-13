@@ -9,6 +9,7 @@ export const explorerSchema = v.object({
   name: v.pipe(v.string(), v.nonEmpty()),
   type: v.lazy(() => typeSchema),
   items: v.array(v.lazy(() => itemSchema)),
+  total: v.number(),
 })
 
 export type Explorer = v.InferOutput<typeof explorerSchema>
