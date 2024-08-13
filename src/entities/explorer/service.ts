@@ -38,6 +38,9 @@ export default class ExplorerService {
     const queriedTables: getTablesQueryRet[] =
       await prisma.$queryRaw`SELECT tablename, schemaname FROM pg_tables WHERE schemaname = 'public' LIMIT ${take} OFFSET ${skip};`
 
+    const queriedCount: [{ count: number }] =
+      await prisma.$queryRaw`SELECT COUNT(*) FROM pg_tables WHERE schemaname = 'public';`
+
     const items = queriedTables.map((table) => ({ type: 'table', name: table.tablename, data: {} }) as const)
 
     prisma.$disconnect()
@@ -47,6 +50,7 @@ export default class ExplorerService {
       name: database,
       type: 'jdbc',
       items,
+      total: Number(queriedCount[0].count),
     }
   }
 
@@ -58,9 +62,11 @@ export default class ExplorerService {
 
     const prismaClient = new PrismaClient({ datasources: { db: { url } } })
 
+    const queryCount = `SELECT COUNT(*) FROM "${tableName}";`
     const query = `SELECT * FROM "${tableName}" LIMIT ${take} OFFSET ${skip};`
 
     const queriedRecords: unknown[] = await prismaClient.$queryRawUnsafe(query)
+    const queriedCount: [{ count: number }] = await prismaClient.$queryRawUnsafe(queryCount)
 
     const [pk] = await this.getPrimaryKeys(prismaClient, tableName)
 
@@ -81,6 +87,7 @@ export default class ExplorerService {
       name: tableName,
       type: 'table',
       items,
+      total: Number(queriedCount[0].count),
     }
   }
 

@@ -5,12 +5,13 @@ import { isInstanceOf } from 'utils/core'
 
 import PrismaService from '../../shared/prisma/service'
 import { type CreateOperationalTable, type UpdateOperationalTable } from './dto'
-import ExplorerService, { type ExploreParams } from '../explorer/service'
+import ExplorerService, { type ExploreParams as ExplorerExploreParams } from '../explorer/service'
 
 export type WhereUniqueInput = Prisma.OperationalTableWhereUniqueInput
 export type WhereInput = Prisma.OperationalTableWhereInput
 export type OrderByWithRelationInput = Prisma.OperationalTableOrderByWithRelationInput
 export type Select = Prisma.OperationalTableSelect
+export type ExploreParams = { kn: string; take: number; skip: number }
 
 const TAKE = 100
 const ORDER_BY: OrderByWithRelationInput = { updatedAt: 'desc' }
@@ -22,10 +23,12 @@ export default class OperationalTableService {
     private explorerService: ExplorerService
   ) {}
 
-  async explore(whereUniqInput: WhereUniqueInput) {
-    const operationlTable = await this.getUnique(whereUniqInput)
+  async explore(params: ExploreParams) {
+    const operationlTable = await this.getUnique({ kn: params.kn })
 
-    const params: ExploreParams = {
+    const exploreParams: Required<ExplorerExploreParams> = {
+      take: params.take || TAKE,
+      skip: params.skip || 0,
       type: 'jdbc',
       paths: ['dnp_dev_1', operationlTable.tableName],
       storeConfig: {
@@ -36,7 +39,7 @@ export default class OperationalTableService {
       },
     }
 
-    return this.explorerService.expore(params)
+    return this.explorerService.expore(exploreParams)
   }
 
   /**

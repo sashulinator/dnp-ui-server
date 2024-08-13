@@ -11,7 +11,13 @@ import {
   createOperationalTableSchema,
   updateOperationalTableSchema,
 } from './dto'
-import Service, { type OrderByWithRelationInput, type Select, type WhereInput, type WhereUniqueInput } from './service'
+import Service, {
+  type OrderByWithRelationInput,
+  type Select,
+  type WhereInput,
+  type WhereUniqueInput,
+  type ExploreParams,
+} from './service'
 
 @NestJSController('api/v1/operational-tables')
 export default class OperationalTableController {
@@ -21,8 +27,8 @@ export default class OperationalTableController {
    * ------------ EXPLORE ------------
    */
   @Search('explorer')
-  explore(@Body() body: { kn: string }) {
-    return this.service.explore({ kn: body.kn })
+  explore(@Body() body: ExploreParams) {
+    return this.service.explore(body)
   }
 
   /**
