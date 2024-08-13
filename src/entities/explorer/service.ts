@@ -5,6 +5,8 @@ import type { Explorer, StoreConfig } from './dto'
 export interface ExploreParams {
   type: 'jdbc'
   paths: string[]
+  take?: number | undefined
+  skip?: number | undefined
   storeConfig: StoreConfig
 }
 
@@ -13,28 +15,28 @@ export default class ExplorerService {
   constructor() {}
 
   async expore(params: ExploreParams): Promise<Explorer> {
-    const { paths, type, storeConfig } = params
-    const [path1, path2] = paths
+    if (params.type === 'jdbc') {
+      if (params.paths.length === 1) return this.getJdbcDatabase(params)
 
-    if (type === 'jdbc') {
-      if (path2) return this.getJdbcTable(storeConfig, path1, path2)
-
-      return this.getJdbcDatabase(storeConfig, path1)
+      return this.getJdbcTable(params)
     }
   }
 
-  async getJdbcDatabase(storeConfig: StoreConfig, database: string): Promise<Explorer> {
+  async getJdbcDatabase(params: ExploreParams): Promise<Explorer> {
     type getTablesQueryRet = {
       tablename: string
       schemaname: string
     }
+
+    const { storeConfig, paths, take = 100, skip = 0 } = params
+    const [database] = paths
 
     const url = `postgresql://${storeConfig.username}:${storeConfig.password}@${storeConfig.host}:${storeConfig.port}/${database}?schema=public`
 
     const prisma = new PrismaClient({ datasources: { db: { url } } })
 
     const queriedTables: getTablesQueryRet[] =
-      await prisma.$queryRaw`SELECT tablename, schemaname FROM pg_tables WHERE schemaname = 'public' LIMIT 100;`
+      await prisma.$queryRaw`SELECT tablename, schemaname FROM pg_tables WHERE schemaname = 'public' LIMIT ${take} OFFSET ${skip};`
 
     const items = queriedTables.map((table) => ({ type: 'table', name: table.tablename, data: {} }) as const)
 
@@ -48,12 +50,15 @@ export default class ExplorerService {
     }
   }
 
-  async getJdbcTable(storeConfig: StoreConfig, database: string, tableName: string): Promise<Explorer> {
+  async getJdbcTable(params: ExploreParams): Promise<Explorer> {
+    const { storeConfig, paths, take = 100, skip = 0 } = params
+    const [database, tableName] = paths
+
     const url = `postgresql://${storeConfig.username}:${storeConfig.password}@${storeConfig.host}:${storeConfig.port}/${database}?schema=public`
 
     const prismaClient = new PrismaClient({ datasources: { db: { url } } })
 
-    const query = `SELECT * FROM "${tableName}" LIMIT 100;`
+    const query = `SELECT * FROM "${tableName}" LIMIT ${take} OFFSET ${skip};`
 
     const queriedRecords: unknown[] = await prismaClient.$queryRawUnsafe(query)
 
