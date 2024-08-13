@@ -1,6 +1,5 @@
 import { type Prisma, type PrismaClient } from '@prisma/client'
 import { users } from './users'
-import { tableSchemas } from './table-schemas'
 import { createId } from '@paralleldrive/cuid2'
 
 const operationalTableName = 'operationalTable'
@@ -14,7 +13,7 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
     name: defaultValues.name ?? createId(),
     nav: false,
     tableName: defaultValues.name ?? createId(),
-    tableSchemaKn: tableSchemas[0].kn,
+    tableSchema: {},
     createdById: users[0].id,
     updatedById: users[0].id,
     ...defaultValues,
