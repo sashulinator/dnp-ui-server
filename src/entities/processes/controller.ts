@@ -32,7 +32,7 @@ export default class Controller {
    */
   @Get(':id')
   getById(@Param('id') id: string): Promise<PrismaProcess> {
-    return this.service.getUnique({ where: { id } })
+    return this.service.findUniqueOrThrow({ where: { id } })
   }
 
   /**
@@ -44,14 +44,14 @@ export default class Controller {
    * @returns {Promise<PrismaProcess>} A promise that resolves to the found process
    */
   @Search('first')
-  findFirst(
+  findFirstOrThrow(
     @Body()
     params: {
       where?: WhereInput
       select?: Select
     } = {}
   ): Promise<PrismaProcess> {
-    return this.service.findFirst(params)
+    return this.service.findFirstOrThrow(params)
   }
 
   /**

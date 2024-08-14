@@ -1,12 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { createId } from '@paralleldrive/cuid2'
 import { type Prisma, type PrismaClient, type Process as PrismaProcess } from '@prisma/client'
-
 import MinioService from '~/shared/minio/service'
-
 import PrismaService from '../../shared/prisma/service'
-
-import { CrudService } from '~/shared/crud-service'
+import { DelegateService } from '~/shared/delegate-service'
 
 export type WhereUniqueInput = Prisma.ProcessWhereUniqueInput
 export type WhereInput = Prisma.ProcessWhereInput
@@ -14,12 +11,12 @@ export type OrderByWithRelationInput = Prisma.ProcessOrderByWithRelationInput
 export type Select = Prisma.ProcessSelect
 
 @Injectable()
-export default class Service extends CrudService<'process'> {
+export default class Service extends DelegateService<PrismaService['process']> {
   constructor(
     protected prisma: PrismaService,
     protected minio: MinioService
   ) {
-    super(prisma, 'process')
+    super(prisma, prisma.process)
   }
 
   async create(...args: Parameters<PrismaClient['process']['create']>): Promise<PrismaProcess> {
