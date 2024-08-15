@@ -20,20 +20,20 @@ export default class Service extends CrudService<Process, CreateProcess> {
     protected minio: MinioService
   ) {
     super(
-      prisma,
       {
         take: 100,
         orderBy: { createdAt: 'desc' },
         include: { normalizationConfig: true, createdBy: true },
       },
       {
-        count: prisma.process.count,
-        create: prisma.process.create,
-        getFirst: prisma.process.findFirstOrThrow,
-        getUnique: prisma.process.findUniqueOrThrow,
-        findFirst: prisma.process.findFirst,
-        findMany: prisma.process.findMany,
-        findUnique: prisma.process.findUnique,
+        count: prisma.process.count.bind(prisma),
+        create: prisma.process.create.bind(prisma),
+        getFirst: prisma.process.findFirstOrThrow.bind(prisma),
+        getUnique: prisma.process.findUniqueOrThrow.bind(prisma),
+        findFirst: prisma.process.findFirst.bind(prisma),
+        findMany: prisma.process.findMany.bind(prisma),
+        findUnique: prisma.process.findUnique.bind(prisma),
+        transaction: prisma.$transaction.bind(prisma),
       }
     )
   }

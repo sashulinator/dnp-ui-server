@@ -7,8 +7,9 @@ import {
 } from '@nestjs/common'
 import { HttpAdapterHost } from '@nestjs/core'
 
-import { has } from '../utils/core'
+import { has, isInstanceOf } from '../utils/core'
 import { assertError, isCausable } from '../utils/error'
+import { Prisma } from '@prisma/client'
 
 export type ErrorBody = {
   message: string
@@ -51,6 +52,10 @@ export default class ExceptionFilter implements NestJSExceptionFilter {
     }
     if (has(exception, 'response') && has(exception.response, 'errors')) {
       responseBody.errors = exception.response.errors
+    }
+
+    if (isInstanceOf(exception, Prisma.PrismaClientKnownRequestError) && exception.code === 'P2025') {
+      responseBody.status = HttpStatus.NOT_FOUND
     }
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus)

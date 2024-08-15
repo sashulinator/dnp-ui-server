@@ -1,7 +1,4 @@
-import { Prisma } from '@prisma/client'
-import PrismaService from './prisma/service'
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { isInstanceOf } from '~/utils/core'
+import { Injectable } from '@nestjs/common'
 
 interface Delegate<TEntity, TCreateEntity> {
   getFirst: (params: {
@@ -35,12 +32,12 @@ interface Delegate<TEntity, TCreateEntity> {
   }): Promise<TEntity[]>
   findUnique(params: { where: _AnyRecord; select?: _AnyRecord; include?: _AnyRecord }): Promise<TEntity | null>
   create(params: { data: TCreateEntity; select?: _AnyRecord; include?: _AnyRecord }): Promise<TEntity>
+  transaction<T>(promises: Promise<unknown>[]): Promise<T>
 }
 
 @Injectable()
 export abstract class CrudService<TEntity, TCreateEntity> {
   constructor(
-    protected prisma: PrismaService,
     public defaultParams: {
       take?: number
       orderBy?: Record<string, unknown>
@@ -54,7 +51,7 @@ export abstract class CrudService<TEntity, TCreateEntity> {
   }
 
   async create(params: { data: TCreateEntity; select?: _AnyRecord; include?: _AnyRecord }): Promise<TEntity> {
-    return this.delegate.create(params)
+    return this.delegate.create(this._prepareSelectIncludeParams(params))
   }
 
   async getFirst(
@@ -68,17 +65,11 @@ export abstract class CrudService<TEntity, TCreateEntity> {
       include?: Record<string, unknown>
     } = {}
   ): Promise<TEntity> {
-    return this.delegate.getFirst(this._prepareParams(params)).catch((error) => {
-      if (!isInstanceOf(error, Prisma.PrismaClientKnownRequestError) || error.code !== 'P2025') throw error
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND)
-    })
+    return this.delegate.getFirst(this._prepareParams(params))
   }
 
   async getUnique(params: { where: _AnyRecord; select?: _AnyRecord; include?: _AnyRecord }): Promise<TEntity> {
-    return this.delegate.getUnique(this._prepareParams(params)).catch((error) => {
-      if (!isInstanceOf(error, Prisma.PrismaClientKnownRequestError) || error.code !== 'P2025') throw error
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND)
-    })
+    return this.delegate.getUnique(this._prepareSelectIncludeParams(params))
   }
 
   async findAndCountMany(
@@ -97,9 +88,8 @@ export abstract class CrudService<TEntity, TCreateEntity> {
       cursor,
       where,
     }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return this.prisma.$transaction([
+
+    return this.delegate.transaction([
       this.delegate.findMany(this._prepareParams({ ...commonArgs, take, skip, select })),
       this.delegate.count(commonArgs),
     ])
@@ -133,7 +123,7 @@ export abstract class CrudService<TEntity, TCreateEntity> {
   }
 
   async findUnique(params: { where: _AnyRecord; select?: _AnyRecord; include?: _AnyRecord }): Promise<TEntity> {
-    return this.delegate.findUnique(this._prepareParams(params))
+    return this.delegate.findUnique(this._prepareSelectIncludeParams(params))
   }
 
   _prepareParams<
@@ -146,12 +136,23 @@ export abstract class CrudService<TEntity, TCreateEntity> {
   >(params: T): T {
     const retParams = { ...params }
 
+    retParams.orderBy = params.orderBy ?? this.defaultParams.orderBy
+    retParams.take = params.take ?? this.defaultParams.take
+
+    return this._prepareSelectIncludeParams(retParams)
+  }
+
+  _prepareSelectIncludeParams<
+    T extends {
+      select?: Record<string, unknown>
+      include?: Record<string, unknown>
+    },
+  >(params: T): T {
+    const retParams = { ...params }
+
     if (!params.select) {
       retParams.include = retParams.include || this.defaultParams.include
     }
-
-    retParams.orderBy = params.orderBy ?? this.defaultParams.orderBy
-    retParams.take = params.take ?? this.defaultParams.take
 
     return retParams
   }

@@ -32,7 +32,7 @@ export default class Controller {
    */
   @Get(':id')
   getById(@Param('id') id: string): Promise<PrismaProcess> {
-    return this.service.findUnique({ where: { id } })
+    return this.service.getUnique({ where: { id } })
   }
 
   /**
