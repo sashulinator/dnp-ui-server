@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { type Prisma, type OperationalTable as PrismaOperationalTable } from '@prisma/client'
 import PrismaService from '../../shared/prisma/service'
 import ExplorerService, { type ExploreParams as ExplorerExploreParams } from '../explorer/service'
 import { CrudService } from '~/shared/crud-service'
+import type { StoreConfig } from '../store-configs/dto'
 
 export type OperationalTable = PrismaOperationalTable
 export type CreateOperationalTable = Prisma.OperationalTableUncheckedCreateInput
@@ -52,20 +53,29 @@ export default class OperationalTableService extends CrudService<
 
   async explore(params: ExploreParams) {
     const operationlTable = await this.getUnique({ where: { kn: params.kn } })
+    const storeConfig = (await this.getStoreConfig()) as unknown as StoreConfig
 
     const exploreParams: Required<ExplorerExploreParams> = {
       take: params.take || 100,
       skip: params.skip || 0,
       type: 'jdbc',
-      paths: ['dnp_dev_1', operationlTable.tableName],
+      paths: [storeConfig.data.database, operationlTable.tableName],
       storeConfig: {
-        host: '10.4.40.2',
-        port: '5432',
-        username: 'asavchenko',
-        password: 'Orion123',
+        host: storeConfig.data.host,
+        port: storeConfig.data.port,
+        username: storeConfig.data.username,
+        password: storeConfig.data.password,
       },
     }
 
     return this.explorerService.expore(exploreParams)
+  }
+
+  async getStoreConfig() {
+    const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: 'operational-tables' } })
+
+    if (!storeConfig) throw new HttpException('Create StoreConfig with kn="operational-tables"', HttpStatus.NOT_FOUND)
+
+    return storeConfig
   }
 }
