@@ -1,33 +1,68 @@
 import { type Prisma, type PrismaClient } from '@prisma/client'
+import { users } from './users'
+import { createId } from '@paralleldrive/cuid2'
 
-export const storeConfig1: Prisma.StoreConfigUncheckedCreateInput = {
-  kn: 'first',
-  type: 'jdbc',
-  createdById: 'tz4a98xxat96iws9zmbrgj3a',
-  updatedById: 'tz4a98xxat96iws9zmbrgj3a',
-  createdAt: '2024-05-28T06:37:43.048Z',
-  updatedAt: '2024-05-28T06:37:43.048Z',
-  data: {
-    host: '10.4.40.2',
-    port: '5432',
-    username: 'asavchenko',
-    password: 'Orion123',
-    database: 'dnp_dev_1',
-  },
+const name = 'storeConfig'
+type CreateInput = Prisma.StoreConfigUncheckedCreateInput
+
+export const storeConfigs = [
+  _create({
+    kn: 'operational-tables',
+    type: 'jdbc',
+    createdById: users[0].id,
+    updatedById: users[0].id,
+    createdAt: '2024-05-28T06:37:43.048Z',
+    updatedAt: '2024-05-28T06:37:43.048Z',
+    data: {
+      host: '10.4.40.2',
+      port: '5432',
+      username: 'asavchenko',
+      password: 'Orion123',
+      database: 'dnp_dev_1',
+    },
+  }),
+  _create({
+    kn: 'target-tables',
+    type: 'jdbc',
+    createdById: users[0].id,
+    updatedById: users[0].id,
+    createdAt: '2024-05-28T06:37:43.048Z',
+    updatedAt: '2024-05-28T06:37:43.048Z',
+    data: {
+      host: '10.4.40.2',
+      port: '5432',
+      username: 'asavchenko',
+      password: 'Orion123',
+      database: 'dnp_dev_1',
+    },
+  }),
+] as const
+
+function _create(defaultValues: Partial<CreateInput>): CreateInput {
+  const instance: CreateInput = {
+    kn: defaultValues.kn ?? createId(),
+    type: defaultValues.type ?? 'jdbc',
+    createdById: users[0].id,
+    updatedById: users[0].id,
+    data: {
+      host: '10.4.40.2',
+      port: '5432',
+      username: 'asavchenko',
+      password: 'Orion123',
+      database: 'dnp_dev_1',
+    },
+    ...defaultValues,
+  }
+  return instance
 }
 
-export async function seedStoreConfigs(prisma: PrismaClient) {
-  const seedPromise = prisma.storeConfig.create({
-    data: storeConfig1,
-  })
+function _createOnIteration(_: unknown, i: number): CreateInput {
+  return _create({ kn: `seeded-kn-${i}` })
+}
 
-  const seedPromises = Array(20)
-    .fill(undefined)
-    .map((_, i) => {
-      return prisma.storeConfig.create({
-        data: { ...storeConfig1, kn: `seed-${i}` },
-      })
-    })
-
-  return Promise.all([...seedPromises, seedPromise])
+export default async function seed(prisma: PrismaClient) {
+  const generated = Array(20).fill(35).map(_createOnIteration)
+  const allSeeds = [...generated, ...storeConfigs]
+  const seedPromises = allSeeds.map((seed) => prisma[name].create({ data: seed }))
+  return Promise.all([...seedPromises])
 }

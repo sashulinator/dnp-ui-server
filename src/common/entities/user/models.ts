@@ -8,6 +8,7 @@ export const baseUserSchema = v.object({
   id: v.string(),
   name: v.string(),
   password: v.string(),
+  avatar: v.string(),
 })
 
 export type BaseUser = v.InferOutput<typeof baseUserSchema>
