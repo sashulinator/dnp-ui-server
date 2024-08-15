@@ -6,6 +6,7 @@ import { CrudService } from '~/shared/crud-service'
 
 export type Process = PrismaProcess
 export type CreateProcess = Prisma.ProcessUncheckedCreateInput
+export type UpdateProcess = Prisma.ProcessUncheckedUpdateInput
 
 export type WhereUniqueInput = Prisma.ProcessWhereUniqueInput
 export type WhereInput = Prisma.ProcessWhereInput
@@ -14,20 +15,25 @@ export type OrderByWithRelationInput = Prisma.ProcessOrderByWithRelationInput
 export type Select = Prisma.ProcessSelect
 
 @Injectable()
-export default class Service extends CrudService<Process, CreateProcess> {
+export default class Service extends CrudService<Process, CreateProcess, UpdateProcess> {
   constructor(
     protected prisma: PrismaService,
     protected minio: MinioService
   ) {
+    const include: Include = { normalizationConfig: true, createdBy: true }
+    const orderBy: OrderByWithRelationInput = { createdAt: 'desc' }
+
     super(
       {
         take: 100,
-        orderBy: { createdAt: 'desc' },
-        include: { normalizationConfig: true, createdBy: true },
+        orderBy,
+        include,
       },
       {
         count: prisma.process.count.bind(prisma),
         create: prisma.process.create.bind(prisma),
+        delete: CrudService.notAllowed,
+        update: CrudService.notAllowed,
         getFirst: prisma.process.findFirstOrThrow.bind(prisma),
         getUnique: prisma.process.findUniqueOrThrow.bind(prisma),
         findFirst: prisma.process.findFirst.bind(prisma),

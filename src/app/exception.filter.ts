@@ -17,6 +17,7 @@ export type ErrorBody = {
   timestamp: string
   path: string
   cause?: Error
+  stack: string[]
   errors?: unknown
 }
 
@@ -40,6 +41,7 @@ export default class ExceptionFilter implements NestJSExceptionFilter {
     const responseBody: ErrorBody = {
       status: httpStatus,
       message: exception.message,
+      stack: exception.message.split('\n'),
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
     }
@@ -54,10 +56,16 @@ export default class ExceptionFilter implements NestJSExceptionFilter {
       responseBody.errors = exception.response.errors
     }
 
+    if (isInstanceOf(exception, Prisma.PrismaClientKnownRequestError) && exception.code === 'P2002') {
+      responseBody.status = HttpStatus.CONFLICT
+      const parts = exception.message.split('\n')
+      responseBody.message = parts[parts.length - 1]
+    }
+
     if (isInstanceOf(exception, Prisma.PrismaClientKnownRequestError) && exception.code === 'P2025') {
       responseBody.status = HttpStatus.NOT_FOUND
     }
 
-    httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus)
+    httpAdapter.reply(ctx.getResponse(), responseBody, responseBody.status)
   }
 }

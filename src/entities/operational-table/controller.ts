@@ -1,10 +1,7 @@
 import { Body, Delete, Get, Controller as NestJSController, Param, Post, Put, Search, UsePipes } from '@nestjs/common'
 import { type OperationalTable } from '@prisma/client'
-
 import * as v from 'valibot'
-
 import { ValibotPipe } from '~/shared/valibot.pipe'
-
 import {
   type CreateOperationalTable,
   type UpdateOperationalTable,
@@ -41,7 +38,7 @@ export default class OperationalTableController {
    */
   @Delete(':kn')
   remove(@Param('kn') kn: string): Promise<OperationalTable> {
-    return this.service.remove({ kn })
+    return this.service.delete({ where: { kn } })
   }
 
   /**
@@ -55,7 +52,7 @@ export default class OperationalTableController {
   @Put()
   @UsePipes(new ValibotPipe(v.object({ input: updateOperationalTableSchema })))
   update(@Body() body: { input: UpdateOperationalTable }): Promise<OperationalTable> {
-    return this.service.update({ kn: body.input.kn }, body.input)
+    return this.service.update({ data: body.input, where: { kn: body.input.kn } })
   }
 
   /**
@@ -69,7 +66,9 @@ export default class OperationalTableController {
   @Post()
   @UsePipes(new ValibotPipe(v.object({ input: createOperationalTableSchema })))
   create(@Body() body: { input: CreateOperationalTable }): Promise<OperationalTable> {
-    return this.service.create(body.input)
+    return this.service.create({
+      data: { ...body.input, createdById: 'system', updatedById: 'system' },
+    })
   }
 
   /**
@@ -83,7 +82,7 @@ export default class OperationalTableController {
    */
   @Get(':kn')
   getByKeyname(@Param('kn') kn: string): Promise<OperationalTable> {
-    return this.service.getUnique({ kn })
+    return this.service.getUnique({ where: { kn } })
   }
 
   /**
