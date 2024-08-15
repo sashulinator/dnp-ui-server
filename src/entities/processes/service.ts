@@ -1,35 +1,53 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { createId } from '@paralleldrive/cuid2'
-import { type Prisma, type PrismaClient, type Process as PrismaProcess } from '@prisma/client'
+import { type Prisma, type Process as PrismaProcess } from '@prisma/client'
 import MinioService from '~/shared/minio/service'
 import PrismaService from '../../shared/prisma/service'
-import { DelegateService } from '~/shared/delegate-service'
+import { CrudService } from '~/shared/crud-service'
+
+export type Process = PrismaProcess
+export type CreateProcess = Prisma.ProcessUncheckedCreateInput
 
 export type WhereUniqueInput = Prisma.ProcessWhereUniqueInput
 export type WhereInput = Prisma.ProcessWhereInput
+export type Include = Prisma.ProcessInclude
 export type OrderByWithRelationInput = Prisma.ProcessOrderByWithRelationInput
 export type Select = Prisma.ProcessSelect
 
 @Injectable()
-export default class Service extends DelegateService<PrismaService['process']> {
+export default class Service extends CrudService<Process, CreateProcess> {
   constructor(
     protected prisma: PrismaService,
     protected minio: MinioService
   ) {
-    super(prisma, prisma.process)
+    super(
+      prisma,
+      {
+        take: 100,
+        orderBy: { createdAt: 'desc' },
+        include: { normalizationConfig: true, createdBy: true },
+      },
+      {
+        count: prisma.process.count,
+        create: prisma.process.create,
+        getFirst: prisma.process.findFirstOrThrow,
+        getUnique: prisma.process.findUniqueOrThrow,
+        findFirst: prisma.process.findFirst,
+        findMany: prisma.process.findMany,
+        findUnique: prisma.process.findUnique,
+      }
+    )
   }
 
-  async create(...args: Parameters<PrismaClient['process']['create']>): Promise<PrismaProcess> {
-    const { data } = args[0]
+  async create(params: { data: CreateProcess; select?: Select; include?: Include }): Promise<Process> {
     // Retrieve the normalizationConfig from the database
     const normalizationConfig = await this.prisma.normalizationConfig.findUnique({
-      where: { id: data.normalizationConfigId },
+      where: { id: params.data.normalizationConfigId },
     })
 
     // Throw an error if the normalizationConfig is not found
     if (!normalizationConfig) {
       throw new HttpException(
-        `NormalizationConfig with id=${data.normalizationConfigId} not found`,
+        `NormalizationConfig with id=${params.data.normalizationConfigId} not found`,
         HttpStatus.NOT_FOUND
       )
     }
@@ -57,12 +75,6 @@ export default class Service extends DelegateService<PrismaService['process']> {
       }),
     })
 
-    return this.prisma.process.create({
-      data: {
-        normalizationConfigId: data.normalizationConfigId,
-        id: createId(),
-        createdById: 'tz4a98xxat96iws9zmbrgj3a',
-      },
-    })
+    return super.create(params)
   }
 }
