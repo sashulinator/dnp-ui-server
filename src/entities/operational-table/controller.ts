@@ -52,7 +52,7 @@ export default class OperationalTableController {
   @Put()
   @UsePipes(new ValibotPipe(v.object({ input: updateOperationalTableSchema })))
   update(@Body() body: { input: UpdateOperationalTable }): Promise<OperationalTable> {
-    return this.service.update({ data: body.input, where: { kn: body.input.kn } })
+    return this.service.update({ data: { ...body.input, updatedById: 'system' }, where: { kn: body.input.kn } })
   }
 
   /**

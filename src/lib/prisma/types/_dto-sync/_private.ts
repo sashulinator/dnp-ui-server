@@ -12,5 +12,5 @@ export type DateToString<T> = {
 }
 
 export type ObjectToJsonValue<T> = {
-  [K in keyof T]: T[K] extends Record<string, unknown> ? JsonValue : T[K]
+  [K in keyof T]: T[K] extends Record<string, unknown> | unknown[] ? JsonValue : T[K]
 }
