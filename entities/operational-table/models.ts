@@ -12,7 +12,7 @@ export const baseOperationalTableSchema = v.object({
   name: v.string(),
   nav: v.boolean(),
   tableName: v.string(),
-  tableSchema: v.object({}),
+  tableSchema: v.array(v.looseObject({})),
   // meta
   ...crudableSchema.entries,
 })
