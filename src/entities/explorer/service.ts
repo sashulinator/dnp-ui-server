@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaClient } from '@prisma/client'
 import type { Explorer, StoreConfig } from './dto'
+import { TableHelper, PostgresHelper } from '~/lib/knex'
 
 export interface ExploreParams {
   type: 'jdbc'
@@ -16,65 +16,45 @@ export default class ExplorerService {
 
   async expore(params: ExploreParams): Promise<Explorer> {
     if (params.type === 'jdbc') {
-      if (params.paths.length === 1) return this.getJdbcDatabase(params)
-
-      return this.getJdbcTable(params)
+      if (params.paths.length === 1) return this.getPostgresDatabase(params)
+      return this.getPostgresTable(params)
     }
   }
 
-  async getJdbcDatabase(params: ExploreParams): Promise<Explorer> {
-    type getTablesQueryRet = {
-      tablename: string
-      schemaname: string
-    }
-
+  async getPostgresDatabase(params: ExploreParams): Promise<Explorer> {
     const { storeConfig, paths, take = 100, skip = 0 } = params
     const [database] = paths
 
-    const url = `postgresql://${storeConfig.username}:${storeConfig.password}@${storeConfig.host}:${storeConfig.port}/${database}?schema=public`
+    const postgresHelper = new PostgresHelper(storeConfig, database)
 
-    const prisma = new PrismaClient({ datasources: { db: { url } } })
-
-    const queriedTables: getTablesQueryRet[] =
-      await prisma.$queryRaw`SELECT tablename, schemaname FROM pg_tables WHERE schemaname = 'public' LIMIT ${take} OFFSET ${skip};`
-
-    const queriedCount: [{ count: number }] =
-      await prisma.$queryRaw`SELECT COUNT(*) FROM pg_tables WHERE schemaname = 'public';`
+    const [queriedTables, count] = await postgresHelper.findManyAndCountTables({ limit: take, offset: skip })
 
     const items = queriedTables.map((table) => ({ type: 'table', name: table.tablename, data: {} }) as const)
-
-    prisma.$disconnect()
 
     return {
       paths: [{ name: database, type: 'jdbc' }],
       name: database,
       type: 'jdbc',
       items,
-      total: Number(queriedCount[0].count),
+      total: count,
     }
   }
 
-  async getJdbcTable(params: ExploreParams): Promise<Explorer> {
-    const { storeConfig, paths, take = 100, skip = 0 } = params
+  async getPostgresTable(params: ExploreParams): Promise<Explorer> {
+    const { storeConfig, paths } = params
     const [database, tableName] = paths
 
-    const url = `postgresql://${storeConfig.username}:${storeConfig.password}@${storeConfig.host}:${storeConfig.port}/${database}?schema=public`
+    const postgresHelper = new PostgresHelper(storeConfig, database)
+    const tableCrud = new TableHelper(storeConfig, database, tableName)
 
-    const prismaClient = new PrismaClient({ datasources: { db: { url } } })
+    const [rows, count] = await tableCrud.findManyAndCount({ limit: params.take, offset: params.skip })
+    const pk = await postgresHelper.getPrimaryKey(tableName)
 
-    const queryCount = `SELECT COUNT(*) FROM "${tableName}";`
-    const query = `SELECT * FROM "${tableName}" LIMIT ${take} OFFSET ${skip};`
-
-    const queriedRecords: unknown[] = await prismaClient.$queryRawUnsafe(query)
-    const queriedCount: [{ count: number }] = await prismaClient.$queryRawUnsafe(queryCount)
-
-    const [pk] = await this.getPrimaryKeys(prismaClient, tableName)
-
-    const items = queriedRecords.map(
+    const items = rows.map(
       (record) =>
         ({
           type: 'record',
-          name: record[pk.attname],
+          name: record[pk],
           data: record,
         }) as const
     )
@@ -87,19 +67,7 @@ export default class ExplorerService {
       name: tableName,
       type: 'table',
       items,
-      total: Number(queriedCount[0].count),
+      total: count,
     }
-  }
-
-  async getPrimaryKeys(prismaClient: PrismaClient, tableName: string) {
-    const pks = (await prismaClient.$queryRawUnsafe(`
-        SELECT a.attname, format_type(a.atttypid, a.atttypmod) AS data_type
-        FROM   pg_index i
-        JOIN   pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey)
-        WHERE  i.indrelid = '"${tableName}"'::regclass
-        AND    i.indisprimary;
-    `)) as { attname: string }[]
-
-    return pks
   }
 }
