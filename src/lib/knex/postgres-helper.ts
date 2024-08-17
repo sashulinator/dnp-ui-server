@@ -1,30 +1,7 @@
-import knex, { type Knex } from 'knex'
-
-interface ConnectionConfig {
-  host: string
-  port: string
-  username: string
-  password: string
-}
+import { type Knex } from 'knex'
 
 export class PostgresHelper {
-  knex: Knex<unknown, unknown[]>
-
-  constructor(
-    protected connectionConfig: ConnectionConfig,
-    protected database: string
-  ) {
-    this.knex = knex({
-      client: 'postgres',
-      connection: {
-        user: connectionConfig.username,
-        password: connectionConfig.password,
-        port: parseInt(connectionConfig.port),
-        host: connectionConfig.host,
-        database: database,
-      },
-    })
-  }
+  constructor(protected knex: Knex) {}
 
   async getPrimaryKey(tableName: string) {
     const ret = await this.knex.raw<{ rows: { attname: string }[] }>(`

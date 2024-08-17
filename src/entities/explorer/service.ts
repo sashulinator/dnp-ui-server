@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import type { Explorer, StoreConfig } from './dto'
-import { TableHelper, PostgresHelper } from '~/lib/knex'
+import { TableHelper, PostgresHelper, createFromStoreConfig } from '~/lib/knex'
 
 export interface ExploreParams {
   type: 'jdbc'
@@ -25,7 +25,7 @@ export default class ExplorerService {
     const { storeConfig, paths, take = 100, skip = 0 } = params
     const [database] = paths
 
-    const postgresHelper = new PostgresHelper(storeConfig, database)
+    const postgresHelper = new PostgresHelper(createFromStoreConfig(storeConfig, database))
 
     const [queriedTables, count] = await postgresHelper.findManyAndCountTables({ limit: take, offset: skip })
 
@@ -44,8 +44,9 @@ export default class ExplorerService {
     const { storeConfig, paths } = params
     const [database, tableName] = paths
 
-    const postgresHelper = new PostgresHelper(storeConfig, database)
-    const tableCrud = new TableHelper(storeConfig, database, tableName)
+    const knex = createFromStoreConfig(storeConfig, database)
+    const postgresHelper = new PostgresHelper(knex)
+    const tableCrud = new TableHelper(knex, tableName)
 
     const [rows, count] = await tableCrud.findManyAndCount({ limit: params.take, offset: params.skip })
     const pk = await postgresHelper.getPrimaryKey(tableName)

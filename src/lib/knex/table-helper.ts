@@ -1,30 +1,35 @@
-import knex, { type Knex } from 'knex'
+import { type Knex } from 'knex'
 
-interface ConnectionConfig {
-  host: string
-  port: string
-  username: string
-  password: string
+export type CreateTableSchemaItem = {
+  type: keyof Knex.TableBuilder
+  params: Parameters<Knex.TableBuilder[keyof Knex.TableBuilder]>
+  nonNullable?: boolean
+  defaultTo?: unknown
 }
 
 export class TableHelper {
-  knex: Knex<unknown, unknown[]>
-
   constructor(
-    protected connectionConfig: ConnectionConfig,
-    protected database: string,
+    protected knex: Knex,
     protected tableName: string
-  ) {
-    this.knex = knex({
-      client: 'postgres',
-      connection: {
-        user: connectionConfig.username,
-        password: connectionConfig.password,
-        port: parseInt(connectionConfig.port),
-        host: connectionConfig.host,
-        database: database,
-      },
+  ) {}
+
+  createTable(schema: CreateTableSchemaItem[]) {
+    return this.knex.schema.createTable(this.tableName, (tableBuilder) => {
+      schema.forEach((item) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const column = tableBuilder[item.type](...item.params)
+
+        if (item.nonNullable) {
+          column.notNullable()
+          if (item.defaultTo !== undefined) column.defaultTo(item.defaultTo)
+        }
+      })
     })
+  }
+
+  dropTable() {
+    return this.knex.schema.dropTable(this.tableName)
   }
 
   // Метод findMany с параметрами limit, offset, where
