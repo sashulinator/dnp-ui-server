@@ -28,6 +28,10 @@ export class TableHelper {
     })
   }
 
+  renameTable(newTableName: string) {
+    return this.knex.schema.renameTable(this.tableName, newTableName)
+  }
+
   dropTable() {
     return this.knex.schema.dropTable(this.tableName)
   }

@@ -1,5 +1,5 @@
-import { Body, Controller as NestJSController, Search } from '@nestjs/common'
-import Service, { type ExploreParams } from './service'
+import { Body, Controller as NestJSController, Put, Search } from '@nestjs/common'
+import Service, { type ExploreParams, type RenameTableParams } from './service'
 import { type Explorer } from './dto'
 
 @NestJSController('api/v1/explorer')
@@ -19,5 +19,10 @@ export default class ExplorerController {
     params: ExploreParams
   ): Promise<Explorer> {
     return this.service.expore(params)
+  }
+
+  @Put('rename-table')
+  renameTable(params: RenameTableParams) {
+    this.service.renameTable(params)
   }
 }

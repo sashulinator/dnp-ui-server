@@ -2,6 +2,13 @@ import { Injectable } from '@nestjs/common'
 import type { Explorer, StoreConfig } from './dto'
 import { TableHelper, PostgresHelper, createFromStoreConfig } from '~/lib/knex'
 
+export interface RenameTableParams {
+  storeConfig: StoreConfig
+  database: string
+  tableName: string
+  newTableName: string
+}
+
 export interface ExploreParams {
   type: 'jdbc'
   paths: string[]
@@ -19,6 +26,12 @@ export default class ExplorerService {
       if (params.paths.length === 1) return this.getPostgresDatabase(params)
       return this.getPostgresTable(params)
     }
+  }
+
+  renameTable(params: RenameTableParams) {
+    const { storeConfig, database, tableName, newTableName } = params
+    const postgresHelper = new TableHelper(createFromStoreConfig(storeConfig, database), tableName)
+    return postgresHelper.renameTable(newTableName)
   }
 
   async getPostgresDatabase(params: ExploreParams): Promise<Explorer> {
