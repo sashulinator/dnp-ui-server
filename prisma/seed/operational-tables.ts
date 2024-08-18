@@ -13,7 +13,10 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
     name: defaultValues.name ?? createId(),
     nav: false,
     tableName: defaultValues.name ?? createId(),
-    tableSchema: {},
+    tableSchema: {
+      items: [],
+      defaultView: 'table',
+    },
     createdById: users[0].id,
     updatedById: users[0].id,
     ...defaultValues,

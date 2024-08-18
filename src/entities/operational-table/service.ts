@@ -7,6 +7,7 @@ import type { StoreConfig } from '../store-configs/dto'
 import { TableHelper } from '~/lib/knex'
 import { type CreateTableSchemaItem } from '~/lib/knex/table-helper'
 import { createFromStoreConfig } from '~/lib/knex'
+import { assertTableSchema } from './assertions'
 
 export type OperationalTable = PrismaOperationalTable
 export type CreateOperationalTable = Prisma.OperationalTableUncheckedCreateInput
@@ -93,7 +94,9 @@ export default class OperationalTableService extends CrudService<
     include?: Include
   }): Promise<OperationalTable> {
     const storeConfig = await this.getStoreConfig()
-    const tableSchema = params.data.tableSchema as { name: string }[]
+
+    assertTableSchema(params.data.tableSchema)
+    const tableSchema = params.data.tableSchema.items
 
     const newSchema: CreateTableSchemaItem[] = tableSchema.map((item) => ({
       type: 'string' as const,
