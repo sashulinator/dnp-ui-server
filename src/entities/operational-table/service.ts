@@ -57,14 +57,14 @@ export default class OperationalTableService extends CrudService<
   }
 
   async explore(params: ExploreParams) {
-    const operationlTable = await this.getUnique({ where: { kn: params.kn } })
+    const operationalTable = await this.getUnique({ where: { kn: params.kn } })
     const storeConfig = await this.getStoreConfig()
 
     const exploreParams: Required<ExplorerExploreParams> = {
       take: params.take || 100,
       skip: params.skip || 0,
       type: 'jdbc',
-      paths: [storeConfig.data.database, operationlTable.tableName],
+      paths: [storeConfig.data.database, operationalTable.tableName],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -73,7 +73,12 @@ export default class OperationalTableService extends CrudService<
       },
     }
 
-    return this.explorerService.expore(exploreParams)
+    const exploreData = await this.explorerService.expore(exploreParams)
+
+    return {
+      ...exploreData,
+      operationalTable,
+    }
   }
 
   async create(params: {

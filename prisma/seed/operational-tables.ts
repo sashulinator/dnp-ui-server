@@ -5,7 +5,9 @@ import { createId } from '@paralleldrive/cuid2'
 const operationalTableName = 'operationalTable'
 type CreateInput = Prisma.OperationalTableUncheckedCreateInput
 
-export const operationalTables = [_create({ kn: 'first', name: 'first', tableName: 'Translation' })] as const
+export const operationalTables = [
+  _create({ kn: 'translations', name: 'Переводы', tableName: 'Translation', nav: true }),
+] as const
 
 function _create(defaultValues: Partial<CreateInput>): CreateInput {
   const instance: CreateInput = {
@@ -14,7 +16,38 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
     nav: false,
     tableName: defaultValues.name ?? createId(),
     tableSchema: {
-      items: [],
+      items: [
+        {
+          id: 'id1',
+          columnName: 'id',
+          name: 'ID',
+          type: 'string',
+        },
+        {
+          id: 'id2',
+          columnName: 'key',
+          name: 'Ключ',
+          type: 'string',
+        },
+        {
+          id: 'id3',
+          columnName: 'ns',
+          name: 'Неймспейс',
+          type: 'string',
+        },
+        {
+          id: 'id4',
+          columnName: 'locale',
+          name: 'Локаль',
+          type: 'string',
+        },
+        {
+          id: 'id5',
+          columnName: 'data',
+          name: 'Содержание',
+          type: 'string',
+        },
+      ],
       defaultView: 'table',
     },
     createdById: users[0].id,
