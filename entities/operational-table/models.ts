@@ -72,12 +72,12 @@ export type TableSchema = v.InferOutput<typeof tableSchemaSchema>
 export const tableSchemaItemSchema = v.object({
   id: v.string(),
   name: v.string(),
-  key: v.string(),
+  columnName: v.string(),
   type: v.string(),
   relation: v.optional(
     v.object({
-      key: v.string(),
-      table: v.string(),
+      columnName: v.string(),
+      tableName: v.string(),
     })
   ),
 })
