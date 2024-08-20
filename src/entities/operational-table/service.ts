@@ -88,7 +88,7 @@ export default class OperationalTableService extends CrudService<
 
     const newSchema: CreateTableSchemaItem[] = tableSchema.map((item) => ({
       type: 'string' as const,
-      params: [item.key],
+      params: [item.columnName],
     }))
 
     const knex = createFromStoreConfig(storeConfig.data, storeConfig.data.database)
@@ -131,7 +131,7 @@ export default class OperationalTableService extends CrudService<
       for (let ui = 0; ui < currentTableSchema.items.length; ui++) {
         const currentItem = currentTableSchema.items[ui]
         if (updateItem.id !== currentItem.id) continue
-        if (updateItem.key !== currentItem.key) columnsToRename.push([currentItem, updateItem])
+        if (updateItem.columnName !== currentItem.columnName) columnsToRename.push([currentItem, updateItem])
       }
     }
 
@@ -151,10 +151,13 @@ export default class OperationalTableService extends CrudService<
       return knex.transaction(async (knexTrx) => {
         const tableHelper = new TableHelper(knexTrx, currentOperationalTable.tableName)
 
-        await tableHelper.dropColumns(columnsToDrop.map((item) => item.key))
-        await tableHelper.addColumns(columnsToAdd.map((item) => ({ type: 'string', params: [item.key] })))
+        await tableHelper.dropColumns(columnsToDrop.map((item) => item.columnName))
+        await tableHelper.addColumns(columnsToAdd.map((item) => ({ type: 'string', params: [item.columnName] })))
         await tableHelper.renameColumns(
-          columnsToRename.map(([currentItem, updateItem]) => ({ from: currentItem.key, to: updateItem.key }))
+          columnsToRename.map(([currentItem, updateItem]) => ({
+            from: currentItem.columnName,
+            to: updateItem.columnName,
+          }))
         )
 
         return prismaTrx.operationalTable.update(this._prepareSelectIncludeParams(params))
