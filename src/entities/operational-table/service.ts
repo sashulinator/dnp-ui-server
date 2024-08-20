@@ -8,6 +8,7 @@ import { TableHelper } from '~/lib/knex'
 import { type CreateTableSchemaItem } from '~/lib/knex/table-helper'
 import { createFromStoreConfig } from '~/lib/knex'
 import { assertTableSchema } from './assertions'
+import { type TableSchemaItem } from './dto'
 
 export type OperationalTable = PrismaOperationalTable
 export type CreateOperationalTable = Prisma.OperationalTableUncheckedCreateInput
@@ -75,19 +76,6 @@ export default class OperationalTableService extends CrudService<
     return this.explorerService.expore(exploreParams)
   }
 
-  /**
-   * В системе для промежуточной таблицы должна быть создана конфигурация хранилица,
-   * в которой указаны параметры подключения к базе данных
-   * @returns {Promise<StoreConfig>}
-   */
-  async getStoreConfig(): Promise<StoreConfig> {
-    const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: 'operational-tables' } })
-
-    if (!storeConfig) throw new HttpException('Create StoreConfig with kn="operational-tables"', HttpStatus.NOT_FOUND)
-
-    return storeConfig as unknown as StoreConfig
-  }
-
   async create(params: {
     data: CreateOperationalTable
     select?: Select
@@ -100,7 +88,7 @@ export default class OperationalTableService extends CrudService<
 
     const newSchema: CreateTableSchemaItem[] = tableSchema.map((item) => ({
       type: 'string' as const,
-      params: [item.name],
+      params: [item.key],
     }))
 
     const knex = createFromStoreConfig(storeConfig.data, storeConfig.data.database)
@@ -118,5 +106,73 @@ export default class OperationalTableService extends CrudService<
         return prismaTrx.operationalTable.create(this._prepareSelectIncludeParams(params))
       })
     })
+  }
+
+  async update(params: {
+    data: UpdateOperationalTable
+    select?: Select
+    include?: Include
+    where: WhereUniqueInput
+  }): Promise<OperationalTable> {
+    const currentOperationalTable = await this.getUnique({ where: params.where })
+    const storeConfig = await this.getStoreConfig()
+    const knex = createFromStoreConfig(storeConfig.data, storeConfig.data.database)
+
+    const currentTableSchema = currentOperationalTable.tableSchema
+    assertTableSchema(currentTableSchema, "Невалидные данные в Промежуточной таблице в поле 'tableSchema' в БД")
+
+    const updateTableSchema = params.data.tableSchema
+    assertTableSchema(updateTableSchema, "Невалидные данные в Промежуточной таблице в поле 'tableSchema'") // невозможная ошибка
+
+    const columnsToRename: [TableSchemaItem, TableSchemaItem][] = []
+
+    for (let ci = 0; ci < updateTableSchema.items.length; ci++) {
+      const updateItem = updateTableSchema.items[ci]
+      for (let ui = 0; ui < currentTableSchema.items.length; ui++) {
+        const currentItem = currentTableSchema.items[ui]
+        if (updateItem.id !== currentItem.id) continue
+        if (updateItem.key !== currentItem.key) columnsToRename.push([currentItem, updateItem])
+      }
+    }
+
+    // Если в новой схеме не находим колонки из текущей, то удалим их
+    const columnsToDrop: TableSchemaItem[] = currentTableSchema.items.filter((currentItem) => {
+      const found = updateTableSchema.items.find((itemToUpdate) => itemToUpdate.id === currentItem.id)
+      return !found
+    })
+
+    // Если в текущей схеме не находим колонки из новой, то добавим их
+    const columnsToAdd: TableSchemaItem[] = updateTableSchema.items.filter((itemToUpdate) => {
+      const found = currentTableSchema.items.find((currentItem) => currentItem.id === itemToUpdate.id)
+      return !found
+    })
+
+    return this.prisma.$transaction(async (prismaTrx) => {
+      return knex.transaction(async (knexTrx) => {
+        const tableHelper = new TableHelper(knexTrx, currentOperationalTable.tableName)
+
+        await tableHelper.dropColumns(columnsToDrop.map((item) => item.key))
+        await tableHelper.addColumns(columnsToAdd.map((item) => ({ type: 'string', params: [item.key] })))
+        await tableHelper.renameColumns(
+          columnsToRename.map(([currentItem, updateItem]) => ({ from: currentItem.key, to: updateItem.key }))
+        )
+
+        return prismaTrx.operationalTable.update(this._prepareSelectIncludeParams(params))
+      })
+    })
+  }
+
+  /**
+   * Получить конфигурацию хранилища
+   * Пояснение: в системе для промежуточных таблиц должна быть создана конфигурация хранилица,
+   * в которой указаны параметры подключения к базе данных
+   * @returns {Promise<StoreConfig>}
+   */
+  async getStoreConfig(): Promise<StoreConfig> {
+    const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: 'operational-tables' } })
+
+    if (!storeConfig) throw new HttpException('Create StoreConfig with kn="operational-tables"', HttpStatus.NOT_FOUND)
+
+    return storeConfig as unknown as StoreConfig
   }
 }

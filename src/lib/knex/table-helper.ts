@@ -13,6 +13,14 @@ export class TableHelper {
     protected tableName: string
   ) {}
 
+  renameTable(newTableName: string) {
+    return this.knex.schema.renameTable(this.tableName, newTableName)
+  }
+
+  dropTable() {
+    return this.knex.schema.dropTable(this.tableName)
+  }
+
   createTable(schema: CreateTableSchemaItem[]) {
     return this.knex.schema.createTable(this.tableName, (tableBuilder) => {
       schema.forEach((item) => {
@@ -28,12 +36,31 @@ export class TableHelper {
     })
   }
 
-  renameTable(newTableName: string) {
-    return this.knex.schema.renameTable(this.tableName, newTableName)
+  addColumns(schema: CreateTableSchemaItem[]) {
+    return this.knex.schema.alterTable(this.tableName, (tableBuilder) => {
+      schema.forEach((item) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const column = tableBuilder[item.type](...item.params)
+
+        if (item.nonNullable) {
+          column.notNullable()
+          if (item.defaultTo !== undefined) column.defaultTo(item.defaultTo)
+        }
+      })
+    })
   }
 
-  dropTable() {
-    return this.knex.schema.dropTable(this.tableName)
+  renameColumns(items: { from: string; to: string }[]) {
+    return this.knex.schema.alterTable(this.tableName, (tableBuilder) => {
+      items.forEach(({ from, to }) => tableBuilder.renameColumn(from, to))
+    })
+  }
+
+  dropColumns(names: string[]) {
+    return this.knex.schema.alterTable(this.tableName, (tableBuilder) => {
+      names.forEach((name) => tableBuilder.dropColumn(name))
+    })
   }
 
   // Метод findMany с параметрами limit, offset, where

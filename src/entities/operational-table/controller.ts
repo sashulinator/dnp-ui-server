@@ -1,13 +1,16 @@
 import { Body, Delete, Get, Controller as NestJSController, Param, Post, Put, Search, UsePipes } from '@nestjs/common'
 import * as v from 'valibot'
 import { ValibotPipe } from '~/shared/valibot.pipe'
-import { createOperationalTableSchema, updateOperationalTableSchema } from './dto'
+import {
+  createOperationalTableSchema,
+  updateOperationalTableSchema,
+  type CreateOperationalTable,
+  type UpdateOperationalTable,
+} from './dto'
 import Service, {
   type OrderByWithRelationInput,
   type Select,
-  type UpdateOperationalTable,
   type WhereInput,
-  type CreateOperationalTable,
   type WhereUniqueInput,
   type ExploreParams,
   type OperationalTable,
