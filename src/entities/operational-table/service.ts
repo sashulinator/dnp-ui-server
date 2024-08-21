@@ -22,6 +22,7 @@ export type Include = Prisma.OperationalTableInclude
 
 export type ExplorerFindManyParams = { kn: string; take: number; skip: number }
 export type ExplorerCreateParams = { kn: string; input: unknown }
+export type ExplorerUpdateParams = { kn: string; input: unknown }
 
 @Injectable()
 export default class OperationalTableService extends CrudService<
@@ -99,6 +100,30 @@ export default class OperationalTableService extends CrudService<
     }
 
     const row = await this.explorerService.createRow(createParams)
+
+    return {
+      row,
+      operationalTable,
+    }
+  }
+
+  async explorerUpdate(params: ExplorerUpdateParams) {
+    const operationalTable = await this.getUnique({ where: { kn: params.kn } })
+    const storeConfig = await this.getStoreConfig()
+
+    const updateParams: Required<CreateParams> = {
+      input: params.input,
+      type: 'postgres',
+      paths: [storeConfig.data.dbName, operationalTable.tableName],
+      storeConfig: {
+        host: storeConfig.data.host,
+        port: storeConfig.data.port,
+        username: storeConfig.data.username,
+        password: storeConfig.data.password,
+      },
+    }
+
+    const row = await this.explorerService.updateRow(updateParams)
 
     return {
       row,

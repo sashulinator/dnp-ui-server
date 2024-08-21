@@ -110,11 +110,15 @@ export default class ExplorerService {
 
   update(params: UpdateParams) {
     if (params.type === 'postgres') {
-      if (params.paths.length === 1) {
+      if (params.paths.length === 0) {
         throw new Error('Нельзя вносить изменения в базу данных! Возможно вы забыли указать в path название таблицы')
       }
-
-      return this.updateTable(params)
+      if (params.paths.length === 1) {
+        return this.updateTable(params)
+      }
+      if (params.paths.length === 2) {
+        return this.updateRow(params)
+      }
     }
   }
 
@@ -126,5 +130,13 @@ export default class ExplorerService {
 
     const postgresHelper = new TableHelper(createFromStoreConfig(storeConfig, dbName), tableName)
     return postgresHelper.renameTable(input.name)
+  }
+
+  updateRow(params: UpdateParams) {
+    const { storeConfig, paths, input } = params
+    const [dbName, tableName] = paths
+
+    const postgresHelper = new TableHelper(createFromStoreConfig(storeConfig, dbName), tableName)
+    return postgresHelper.updateRow(input as Record<string, unknown>)
   }
 }

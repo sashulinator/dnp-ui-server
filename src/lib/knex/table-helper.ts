@@ -25,6 +25,10 @@ export class TableHelper {
     return this.knex(this.tableName).insert(row)
   }
 
+  updateRow(row: Record<string, unknown>) {
+    return this.knex(this.tableName).update(row).where({ id: row.id })
+  }
+
   createTable(schema: CreateTableSchemaItem[]) {
     return this.knex.schema.createTable(this.tableName, (tableBuilder) => {
       schema.forEach((item) => {

@@ -13,6 +13,8 @@ import Service, {
   type WhereInput,
   type WhereUniqueInput,
   type ExplorerFindManyParams,
+  type ExplorerCreateParams,
+  type ExplorerUpdateParams,
   type OperationalTable,
 } from './service'
 
@@ -21,7 +23,23 @@ export default class OperationalTableController {
   constructor(private readonly service: Service) {}
 
   /**
-   * ------------ EXPLORE ------------
+   * ------------ EXPLORER CREATE ------------
+   */
+  @Post('explorer')
+  explorerCreate(@Body() body: ExplorerCreateParams) {
+    return this.service.explorerCreate(body)
+  }
+
+  /**
+   * ------------ EXPLORE UPDATE ------------
+   */
+  @Put('explorer')
+  explorerUpdate(@Body() body: ExplorerUpdateParams) {
+    return this.service.explorerUpdate(body)
+  }
+
+  /**
+   * ------------ EXPLORE FINMANY ------------
    */
   @Search('explorer')
   explorerFindMany(@Body() body: ExplorerFindManyParams) {
