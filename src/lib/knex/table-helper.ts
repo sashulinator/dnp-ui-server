@@ -21,6 +21,10 @@ export class TableHelper {
     return this.knex.schema.dropTable(this.tableName)
   }
 
+  createRow(row: Record<string, unknown>) {
+    return this.knex(this.tableName).insert(row)
+  }
+
   createTable(schema: CreateTableSchemaItem[]) {
     return this.knex.schema.createTable(this.tableName, (tableBuilder) => {
       schema.forEach((item) => {

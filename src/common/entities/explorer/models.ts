@@ -30,7 +30,7 @@ export type Item = v.InferOutput<typeof itemSchema>
  * type
  */
 
-export const typeSchema = v.union([v.literal('jdbc'), v.literal('s3'), v.literal('table'), v.literal('record')])
+export const typeSchema = v.union([v.literal('postgres'), v.literal('s3'), v.literal('table'), v.literal('row')])
 
 export type Type = v.InferOutput<typeof typeSchema>
 
@@ -50,10 +50,10 @@ export type Path = v.InferOutput<typeof pathSchema>
  */
 
 export const storeConfigSchema = v.object({
-  host: v.pipe(v.string(), v.nonEmpty()),
-  port: v.pipe(v.string(), v.nonEmpty()),
   username: v.pipe(v.string(), v.nonEmpty()),
   password: v.pipe(v.string(), v.nonEmpty()),
+  host: v.pipe(v.string(), v.nonEmpty()),
+  port: v.pipe(v.string(), v.nonEmpty()),
 })
 
 export type StoreConfig = v.InferOutput<typeof storeConfigSchema>

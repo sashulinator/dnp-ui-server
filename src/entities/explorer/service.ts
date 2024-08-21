@@ -1,16 +1,24 @@
 import { Injectable } from '@nestjs/common'
 import type { Explorer, StoreConfig } from './dto'
 import { TableHelper, PostgresHelper, createFromStoreConfig } from '~/lib/knex'
+import { has, isString } from '~/utils/core'
 
-export interface RenameTableParams {
+export interface UpdateParams {
+  paths: string[]
+  type: 'postgres'
   storeConfig: StoreConfig
-  database: string
-  tableName: string
-  newTableName: string
+  input: unknown
 }
 
-export interface ExploreParams {
-  type: 'jdbc'
+export interface CreateParams {
+  paths: string[]
+  type: 'postgres'
+  storeConfig: StoreConfig
+  input: unknown
+}
+
+export interface FindManyParams {
+  type: 'postgres'
   paths: string[]
   take?: number | undefined
   skip?: number | undefined
@@ -21,67 +29,102 @@ export interface ExploreParams {
 export default class ExplorerService {
   constructor() {}
 
-  async expore(params: ExploreParams): Promise<Explorer> {
-    if (params.type === 'jdbc') {
-      if (params.paths.length === 1) return this.getPostgresDatabase(params)
-      return this.getPostgresTable(params)
+  async findMany(params: FindManyParams): Promise<Explorer> {
+    if (params.type === 'postgres') {
+      if (params.paths.length === 1) return this.findManyPostgresTables(params)
+      return this.findManyPostgresRows(params)
     }
   }
 
-  renameTable(params: RenameTableParams) {
-    const { storeConfig, database, tableName, newTableName } = params
-    const postgresHelper = new TableHelper(createFromStoreConfig(storeConfig, database), tableName)
-    return postgresHelper.renameTable(newTableName)
-  }
-
-  async getPostgresDatabase(params: ExploreParams): Promise<Explorer> {
+  async findManyPostgresTables(params: FindManyParams): Promise<Explorer> {
     const { storeConfig, paths, take = 100, skip = 0 } = params
-    const [database] = paths
+    const [dbName] = paths
 
-    const postgresHelper = new PostgresHelper(createFromStoreConfig(storeConfig, database))
+    const postgresHelper = new PostgresHelper(createFromStoreConfig(storeConfig, dbName))
 
-    const [queriedTables, count] = await postgresHelper.findManyAndCountTables({ limit: take, offset: skip })
-
-    const items = queriedTables.map((table) => ({ type: 'table', name: table.tablename, data: {} }) as const)
+    const [tables, count] = await postgresHelper.findManyAndCountTables({ limit: take, offset: skip })
 
     return {
-      paths: [{ name: database, type: 'jdbc' }],
-      name: database,
-      type: 'jdbc',
-      items,
+      paths: [{ name: dbName, type: 'postgres' }],
+      type: 'postgres',
+      name: dbName,
       total: count,
+      items: tables.map((table) => ({ type: 'table', name: table.tablename, data: {} })),
     }
   }
 
-  async getPostgresTable(params: ExploreParams): Promise<Explorer> {
+  async findManyPostgresRows(params: FindManyParams): Promise<Explorer> {
     const { storeConfig, paths } = params
-    const [database, tableName] = paths
+    const [dbName, tableName] = paths
 
-    const knex = createFromStoreConfig(storeConfig, database)
+    const knex = createFromStoreConfig(storeConfig, dbName)
     const postgresHelper = new PostgresHelper(knex)
     const tableCrud = new TableHelper(knex, tableName)
 
     const [rows, count] = await tableCrud.findManyAndCount({ limit: params.take, offset: params.skip })
     const pk = await postgresHelper.getPrimaryKey(tableName)
 
-    const items = rows.map(
-      (record) =>
-        ({
-          type: 'record',
-          name: record[pk],
-          data: record,
-        }) as const
-    )
-
     return {
       paths: [
-        { name: database, type: 'jdbc' },
+        { name: dbName, type: 'postgres' },
         { name: tableName, type: 'table' },
       ],
       name: tableName,
       type: 'table',
-      items,
       total: count,
+      items: rows.map((row) => ({
+        type: 'row',
+        name: row[pk],
+        data: row,
+      })),
     }
+  }
+
+  /**
+   * ------------ CREATE ------------
+   */
+
+  create(params: CreateParams) {
+    if (params.type === 'postgres') {
+      if (params.paths.length === 0) {
+        throw new Error('Нельзя создавать базу данных! Возможно вы забыли указать в path название таблицы')
+      }
+      if (params.paths.length === 1) {
+        throw new Error('Создание таблицы не имплементированно!')
+      }
+      return this.createRow(params)
+    }
+  }
+
+  createRow(params: CreateParams) {
+    const { storeConfig, paths, input } = params
+    const [dbName, tableName] = paths
+
+    const postgresHelper = new TableHelper(createFromStoreConfig(storeConfig, dbName), tableName)
+    return postgresHelper.createRow(input as Record<string, unknown>)
+  }
+
+  /**
+   * ------------ UPDATE ------------
+   */
+
+  update(params: UpdateParams) {
+    if (params.type === 'postgres') {
+      if (params.paths.length === 1) {
+        throw new Error('Нельзя вносить изменения в базу данных! Возможно вы забыли указать в path название таблицы')
+      }
+
+      return this.updateTable(params)
+    }
+  }
+
+  updateTable(params: UpdateParams) {
+    const { storeConfig, paths, input } = params
+    const [dbName, tableName] = paths
+
+    if (!has(input, 'name') || !isString(input.name)) throw Error('Невалидные данные для внесения изменений')
+
+    const postgresHelper = new TableHelper(createFromStoreConfig(storeConfig, dbName), tableName)
+    return postgresHelper.renameTable(input.name)
   }
 }

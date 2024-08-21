@@ -8,32 +8,32 @@ type CreateInput = Prisma.StoreConfigUncheckedCreateInput
 export const storeConfigs = [
   _create({
     kn: 'operational-tables',
-    type: 'jdbc',
+    type: 'postgres',
     createdById: users[0].id,
     updatedById: users[0].id,
     createdAt: '2024-05-28T06:37:43.048Z',
     updatedAt: '2024-05-28T06:37:43.048Z',
     data: {
-      host: '10.4.40.2',
-      port: '5432',
       username: 'asavchenko',
       password: 'Orion123',
-      database: 'dnp_dev_1',
+      host: '10.4.40.2',
+      port: '5432',
+      dbName: 'dnp_dev_1',
     },
   }),
   _create({
     kn: 'target-tables',
-    type: 'jdbc',
+    type: 'postgres',
     createdById: users[0].id,
     updatedById: users[0].id,
     createdAt: '2024-05-28T06:37:43.048Z',
     updatedAt: '2024-05-28T06:37:43.048Z',
     data: {
-      host: '10.4.40.2',
-      port: '5432',
       username: 'asavchenko',
       password: 'Orion123',
-      database: 'dnp_dev_1',
+      host: '10.4.40.2',
+      port: '5432',
+      dbName: 'dnp_dev_1',
     },
   }),
 ] as const
@@ -41,15 +41,15 @@ export const storeConfigs = [
 function _create(defaultValues: Partial<CreateInput>): CreateInput {
   const instance: CreateInput = {
     kn: defaultValues.kn ?? createId(),
-    type: defaultValues.type ?? 'jdbc',
+    type: defaultValues.type ?? 'postgres',
     createdById: users[0].id,
     updatedById: users[0].id,
     data: {
-      host: '10.4.40.2',
-      port: '5432',
       username: 'asavchenko',
       password: 'Orion123',
-      database: 'dnp_dev_1',
+      host: '10.4.40.2',
+      port: '5432',
+      dbName: 'dnp_dev_1',
     },
     ...defaultValues,
   }

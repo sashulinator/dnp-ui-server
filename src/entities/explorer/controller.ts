@@ -1,5 +1,5 @@
 import { Body, Controller as NestJSController, Put, Search } from '@nestjs/common'
-import Service, { type ExploreParams, type RenameTableParams } from './service'
+import Service, { type FindManyParams, type UpdateParams } from './service'
 import { type Explorer } from './dto'
 
 @NestJSController('api/v1/explorer')
@@ -7,22 +7,20 @@ export default class ExplorerController {
   constructor(private readonly service: Service) {}
 
   /**
-   * ------------ EXPLORE ------------
+   * ------------ FETCH MANY ------------
    *
-   * Explore data in a store
-   *
-   * @param {number} params.skip The number of results to skip
+   * Fetch list of tables or rows from a database
    */
   @Search()
-  async explore(
+  async fetchMany(
     @Body()
-    params: ExploreParams
+    params: FindManyParams
   ): Promise<Explorer> {
-    return this.service.expore(params)
+    return this.service.findMany(params)
   }
 
-  @Put('rename-table')
-  renameTable(params: RenameTableParams) {
-    this.service.renameTable(params)
+  @Put()
+  update(params: UpdateParams) {
+    this.service.update(params)
   }
 }

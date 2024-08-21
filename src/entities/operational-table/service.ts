@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { type Prisma, type OperationalTable as PrismaOperationalTable } from '@prisma/client'
 import PrismaService from '../../shared/prisma/service'
-import ExplorerService, { type ExploreParams as ExplorerExploreParams } from '../explorer/service'
+import ExplorerService, { type FindManyParams, type CreateParams } from '../explorer/service'
 import { CrudService } from '~/shared/crud-service'
 import type { StoreConfig } from '../store-configs/dto'
 import { TableHelper } from '~/lib/knex'
@@ -20,7 +20,8 @@ export type OrderByWithRelationInput = Prisma.OperationalTableOrderByWithRelatio
 export type Select = Prisma.OperationalTableSelect
 export type Include = Prisma.OperationalTableInclude
 
-export type ExploreParams = { kn: string; take: number; skip: number }
+export type ExplorerFindManyParams = { kn: string; take: number; skip: number }
+export type ExplorerCreateParams = { kn: string; input: unknown }
 
 @Injectable()
 export default class OperationalTableService extends CrudService<
@@ -56,15 +57,15 @@ export default class OperationalTableService extends CrudService<
     )
   }
 
-  async explore(params: ExploreParams) {
+  async explorerFindMany(params: ExplorerFindManyParams) {
     const operationalTable = await this.getUnique({ where: { kn: params.kn } })
     const storeConfig = await this.getStoreConfig()
 
-    const exploreParams: Required<ExplorerExploreParams> = {
+    const findManyParams: Required<FindManyParams> = {
       take: params.take || 100,
       skip: params.skip || 0,
-      type: 'jdbc',
-      paths: [storeConfig.data.database, operationalTable.tableName],
+      type: 'postgres',
+      paths: [storeConfig.data.dbName, operationalTable.tableName],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -73,10 +74,34 @@ export default class OperationalTableService extends CrudService<
       },
     }
 
-    const exploreData = await this.explorerService.expore(exploreParams)
+    const explorer = await this.explorerService.findManyPostgresRows(findManyParams)
 
     return {
-      ...exploreData,
+      explorer,
+      operationalTable,
+    }
+  }
+
+  async explorerCreate(params: ExplorerCreateParams) {
+    const operationalTable = await this.getUnique({ where: { kn: params.kn } })
+    const storeConfig = await this.getStoreConfig()
+
+    const createParams: Required<CreateParams> = {
+      input: params.input,
+      type: 'postgres',
+      paths: [storeConfig.data.dbName, operationalTable.tableName],
+      storeConfig: {
+        host: storeConfig.data.host,
+        port: storeConfig.data.port,
+        username: storeConfig.data.username,
+        password: storeConfig.data.password,
+      },
+    }
+
+    const row = await this.explorerService.createRow(createParams)
+
+    return {
+      row,
       operationalTable,
     }
   }
@@ -96,7 +121,7 @@ export default class OperationalTableService extends CrudService<
       params: [item.columnName],
     }))
 
-    const knex = createFromStoreConfig(storeConfig.data, storeConfig.data.database)
+    const knex = createFromStoreConfig(storeConfig.data, storeConfig.data.dbName)
 
     return this.prisma.$transaction(async (prismaTrx) => {
       return knex.transaction(async (knexTrx) => {
@@ -121,7 +146,7 @@ export default class OperationalTableService extends CrudService<
   }): Promise<OperationalTable> {
     const currentOperationalTable = await this.getUnique({ where: params.where })
     const storeConfig = await this.getStoreConfig()
-    const knex = createFromStoreConfig(storeConfig.data, storeConfig.data.database)
+    const knex = createFromStoreConfig(storeConfig.data, storeConfig.data.dbName)
 
     const currentTableSchema = currentOperationalTable.tableSchema
     assertTableSchema(currentTableSchema, "Невалидные данные в Промежуточной таблице в поле 'tableSchema' в БД")

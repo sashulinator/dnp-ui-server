@@ -153,6 +153,6 @@ model Translation {
 }
 
 enum StoreType {
-  jdbc
+  postgres
   s3
 }

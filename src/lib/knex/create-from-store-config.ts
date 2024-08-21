@@ -3,7 +3,7 @@ import { type StoreConfig } from '~/entities/explorer/dto'
 
 export function createFromStoreConfig<T, K>(
   storeConfig: StoreConfig,
-  database: string,
+  dbName: string,
   client: string = 'postgres'
 ): Knex<T, K> {
   return knex<T, K>({
@@ -13,7 +13,7 @@ export function createFromStoreConfig<T, K>(
       password: storeConfig.password,
       host: storeConfig.host,
       port: parseInt(storeConfig.port),
-      database,
+      database: dbName,
     },
   })
 }

@@ -12,7 +12,7 @@ import Service, {
   type Select,
   type WhereInput,
   type WhereUniqueInput,
-  type ExploreParams,
+  type ExplorerFindManyParams,
   type OperationalTable,
 } from './service'
 
@@ -24,8 +24,8 @@ export default class OperationalTableController {
    * ------------ EXPLORE ------------
    */
   @Search('explorer')
-  explore(@Body() body: ExploreParams) {
-    return this.service.explore(body)
+  explorerFindMany(@Body() body: ExplorerFindManyParams) {
+    return this.service.explorerFindMany(body)
   }
 
   /**
