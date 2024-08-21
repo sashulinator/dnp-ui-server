@@ -25,6 +25,10 @@ export class TableHelper {
     return this.knex(this.tableName).insert(row)
   }
 
+  deleteRow(where: Record<string, unknown>) {
+    return this.knex(this.tableName).delete().where(where)
+  }
+
   updateRow(row: Record<string, unknown>) {
     return this.knex(this.tableName).update(row).where({ id: row.id })
   }

@@ -10,6 +10,13 @@ export interface UpdateParams {
   input: unknown
 }
 
+export interface DeleteParams {
+  paths: string[]
+  type: 'postgres'
+  storeConfig: StoreConfig
+  where: Record<string, unknown>
+}
+
 export interface CreateParams {
   paths: string[]
   type: 'postgres'
@@ -138,5 +145,17 @@ export default class ExplorerService {
 
     const postgresHelper = new TableHelper(createFromStoreConfig(storeConfig, dbName), tableName)
     return postgresHelper.updateRow(input as Record<string, unknown>)
+  }
+
+  /**
+   * ------------ DELETE ------------
+   */
+
+  deleteRow(params: DeleteParams) {
+    const { storeConfig, paths, where } = params
+    const [dbName, tableName] = paths
+
+    const postgresHelper = new TableHelper(createFromStoreConfig(storeConfig, dbName), tableName)
+    return postgresHelper.deleteRow(where)
   }
 }

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { type Prisma, type OperationalTable as PrismaOperationalTable } from '@prisma/client'
 import PrismaService from '../../shared/prisma/service'
-import ExplorerService, { type FindManyParams, type CreateParams } from '../explorer/service'
+import ExplorerService, { type FindManyParams, type CreateParams, type DeleteParams } from '../explorer/service'
 import { CrudService } from '~/shared/crud-service'
 import type { StoreConfig } from '../store-configs/dto'
 import { TableHelper } from '~/lib/knex'
@@ -22,6 +22,7 @@ export type Include = Prisma.OperationalTableInclude
 
 export type ExplorerFindManyParams = { kn: string; take: number; skip: number }
 export type ExplorerCreateParams = { kn: string; input: unknown }
+export type ExplorerDeleteParams = { kn: string; where: Record<string, unknown> }
 export type ExplorerUpdateParams = { kn: string; input: unknown }
 
 @Injectable()
@@ -79,6 +80,30 @@ export default class OperationalTableService extends CrudService<
 
     return {
       explorer,
+      operationalTable,
+    }
+  }
+
+  async explorerDelete(params: ExplorerDeleteParams) {
+    const operationalTable = await this.getUnique({ where: { kn: params.kn } })
+    const storeConfig = await this.getStoreConfig()
+
+    const deleteParams: Required<DeleteParams> = {
+      where: params.where,
+      type: 'postgres',
+      paths: [storeConfig.data.dbName, operationalTable.tableName],
+      storeConfig: {
+        host: storeConfig.data.host,
+        port: storeConfig.data.port,
+        username: storeConfig.data.username,
+        password: storeConfig.data.password,
+      },
+    }
+
+    const row = await this.explorerService.deleteRow(deleteParams)
+
+    return {
+      row,
       operationalTable,
     }
   }

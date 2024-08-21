@@ -16,6 +16,7 @@ import Service, {
   type ExplorerCreateParams,
   type ExplorerUpdateParams,
   type OperationalTable,
+  type ExplorerDeleteParams,
 } from './service'
 
 @NestJSController('api/v1/operational-tables')
@@ -36,6 +37,14 @@ export default class OperationalTableController {
   @Put('explorer')
   explorerUpdate(@Body() body: ExplorerUpdateParams) {
     return this.service.explorerUpdate(body)
+  }
+
+  /**
+   * ------------ EXPLORE DELETE ------------
+   */
+  @Delete('explorer')
+  explorerDelete(@Body() body: ExplorerDeleteParams) {
+    return this.service.explorerDelete(body)
   }
 
   /**
