@@ -9,7 +9,7 @@ import { userSchema } from '../user'
 
 export const baseStoreConfigSchema = v.object({
   kn: v.pipe(v.string(), v.nonEmpty()),
-  type: v.union([v.literal('jdbc'), v.literal('s3')]),
+  type: v.union([v.literal('postgres'), v.literal('s3')]),
   data: v.lazy(() => jdbsDataSchema),
   ...crudableSchema.entries,
 })
@@ -40,11 +40,11 @@ export type StoreConfig = v.InferOutput<typeof storeConfigSchema>
  */
 
 export const jdbsDataSchema = v.object({
-  host: v.pipe(v.string(), v.nonEmpty()),
-  port: v.pipe(v.string(), v.nonEmpty()),
-  database: v.pipe(v.string(), v.nonEmpty()),
   username: v.pipe(v.string(), v.nonEmpty()),
   password: v.pipe(v.string(), v.nonEmpty()),
+  host: v.pipe(v.string(), v.nonEmpty()),
+  port: v.pipe(v.string(), v.nonEmpty()),
+  dbName: v.pipe(v.string(), v.nonEmpty()),
 })
 
 export type JdbcData = v.InferOutput<typeof jdbsDataSchema>
