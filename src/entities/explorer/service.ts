@@ -1,31 +1,31 @@
 import { Injectable } from '@nestjs/common'
 import type { Explorer, StoreConfig } from './dto'
-import { TableHelper, PostgresHelper, createFromStoreConfig } from '~/lib/knex'
 import { has, isString } from '~/utils/core'
+import Database from '~/lib/database'
 
 export interface UpdateParams {
   paths: string[]
-  type: 'postgres'
+  type: 'postgres' | 's3'
   storeConfig: StoreConfig
   input: unknown
 }
 
 export interface DeleteParams {
   paths: string[]
-  type: 'postgres'
+  type: 'postgres' | 's3'
   storeConfig: StoreConfig
   where: Record<string, unknown>
 }
 
 export interface CreateParams {
   paths: string[]
-  type: 'postgres'
+  type: 'postgres' | 's3'
   storeConfig: StoreConfig
   input: unknown
 }
 
 export interface FindManyParams {
-  type: 'postgres'
+  type: 'postgres' | 's3'
   paths: string[]
   take?: number | undefined
   skip?: number | undefined
@@ -34,42 +34,59 @@ export interface FindManyParams {
 
 @Injectable()
 export default class ExplorerService {
-  constructor() {}
+  constructor(private database: Database) {}
 
   async findMany(params: FindManyParams): Promise<Explorer> {
-    if (params.type === 'postgres') {
-      if (params.paths.length === 1) return this.findManyPostgresTables(params)
-      return this.findManyPostgresRows(params)
+    if (params.type === 's3') {
+      throw new Error('Не имплементированно')
     }
+
+    if (params.paths.length === 1) return this.findManyAndCountTables(params)
+    return this.findManyAndCountRows(params)
   }
 
-  async findManyPostgresTables(params: FindManyParams): Promise<Explorer> {
-    const { storeConfig, paths, take = 100, skip = 0 } = params
+  async findManyAndCountTables(params: FindManyParams): Promise<Explorer> {
+    const { storeConfig, paths, type, take = 100, skip = 0 } = params
     const [dbName] = paths
 
-    const postgresHelper = new PostgresHelper(createFromStoreConfig(storeConfig, dbName))
+    this.database.setConfig({
+      client: type,
+      username: storeConfig.username,
+      password: storeConfig.password,
+      host: storeConfig.host,
+      port: storeConfig.port,
+      dbName,
+    })
 
-    const [tables, count] = await postgresHelper.findManyAndCountTables({ limit: take, offset: skip })
+    const [tables, count] = await this.database.findManyAndCountTables({ limit: take, offset: skip })
 
     return {
-      paths: [{ name: dbName, type: 'postgres' }],
-      type: 'postgres',
+      paths: [{ name: dbName, type }],
+      type,
       name: dbName,
       total: count,
       items: tables.map((table) => ({ type: 'table', name: table.tablename, data: {} })),
     }
   }
 
-  async findManyPostgresRows(params: FindManyParams): Promise<Explorer> {
-    const { storeConfig, paths } = params
+  async findManyAndCountRows(params: FindManyParams): Promise<Explorer> {
+    const { storeConfig, paths, type } = params
     const [dbName, tableName] = paths
 
-    const knex = createFromStoreConfig(storeConfig, dbName)
-    const postgresHelper = new PostgresHelper(knex)
-    const tableCrud = new TableHelper(knex, tableName)
+    this.database.setConfig({
+      client: type,
+      username: storeConfig.username,
+      password: storeConfig.password,
+      host: storeConfig.host,
+      port: storeConfig.port,
+      dbName,
+    })
 
-    const [rows, count] = await tableCrud.findManyAndCount({ limit: params.take, offset: params.skip })
-    const pk = await postgresHelper.getPrimaryKey(tableName)
+    const [rows, count] = await this.database.findManyAndCountRows(tableName, {
+      limit: params.take,
+      offset: params.skip,
+    })
+    const pk = await this.database.getPrimaryKey(tableName)
 
     return {
       paths: [
@@ -104,11 +121,19 @@ export default class ExplorerService {
   }
 
   createRow(params: CreateParams) {
-    const { storeConfig, paths, input } = params
+    const { storeConfig, paths, input, type } = params
     const [dbName, tableName] = paths
 
-    const postgresHelper = new TableHelper(createFromStoreConfig(storeConfig, dbName), tableName)
-    return postgresHelper.createRow(input as Record<string, unknown>)
+    this.database.setConfig({
+      client: type,
+      username: storeConfig.username,
+      password: storeConfig.password,
+      host: storeConfig.host,
+      port: storeConfig.port,
+      dbName,
+    })
+
+    return this.database.insertRow(tableName, input as Record<string, unknown>)
   }
 
   /**
@@ -130,21 +155,37 @@ export default class ExplorerService {
   }
 
   updateTable(params: UpdateParams) {
-    const { storeConfig, paths, input } = params
+    const { storeConfig, paths, input, type } = params
     const [dbName, tableName] = paths
 
     if (!has(input, 'name') || !isString(input.name)) throw Error('Невалидные данные для внесения изменений')
 
-    const postgresHelper = new TableHelper(createFromStoreConfig(storeConfig, dbName), tableName)
-    return postgresHelper.renameTable(input.name)
+    this.database.setConfig({
+      client: type,
+      username: storeConfig.username,
+      password: storeConfig.password,
+      host: storeConfig.host,
+      port: storeConfig.port,
+      dbName,
+    })
+
+    return this.database.renameTable(tableName, input.name)
   }
 
   updateRow(params: UpdateParams) {
-    const { storeConfig, paths, input } = params
+    const { storeConfig, paths, type, input } = params
     const [dbName, tableName] = paths
 
-    const postgresHelper = new TableHelper(createFromStoreConfig(storeConfig, dbName), tableName)
-    return postgresHelper.updateRow(input as Record<string, unknown>)
+    this.database.setConfig({
+      client: type,
+      username: storeConfig.username,
+      password: storeConfig.password,
+      host: storeConfig.host,
+      port: storeConfig.port,
+      dbName,
+    })
+
+    return this.database.updateRow(tableName, input as Record<string, unknown>)
   }
 
   /**
@@ -152,10 +193,18 @@ export default class ExplorerService {
    */
 
   deleteRow(params: DeleteParams) {
-    const { storeConfig, paths, where } = params
+    const { storeConfig, paths, type, where } = params
     const [dbName, tableName] = paths
 
-    const postgresHelper = new TableHelper(createFromStoreConfig(storeConfig, dbName), tableName)
-    return postgresHelper.deleteRow(where)
+    this.database.setConfig({
+      client: type,
+      username: storeConfig.username,
+      password: storeConfig.password,
+      host: storeConfig.host,
+      port: storeConfig.port,
+      dbName,
+    })
+
+    return this.database.deleteRow(tableName, where)
   }
 }

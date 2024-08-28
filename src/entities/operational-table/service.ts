@@ -4,11 +4,11 @@ import PrismaService from '../../shared/prisma/service'
 import ExplorerService, { type FindManyParams, type CreateParams, type DeleteParams } from '../explorer/service'
 import { CrudService } from '~/shared/crud-service'
 import type { StoreConfig } from '../store-configs/dto'
-import { TableHelper } from '~/lib/knex'
-import { type CreateTableSchemaItem } from '~/lib/knex/table-helper'
-import { createFromStoreConfig } from '~/lib/knex'
 import { assertTableSchema } from './assertions'
 import { type TableSchemaItem } from './dto'
+import Database from '~/lib/database'
+import { toDatabasConfig } from '../store-configs/lib/to-database-config'
+import { toDatabaseBuildColumnProps } from './lib/to-database-build-column-props'
 
 export type OperationalTable = PrismaOperationalTable
 export type CreateOperationalTable = Prisma.OperationalTableUncheckedCreateInput
@@ -21,6 +21,7 @@ export type Select = Prisma.OperationalTableSelect
 export type Include = Prisma.OperationalTableInclude
 
 export type ExplorerFindManyParams = { kn: string; take: number; skip: number }
+export type ExplorerFindManyByTableNameParams = { tableName: string; take: number; skip: number }
 export type ExplorerCreateParams = { kn: string; input: unknown }
 export type ExplorerDeleteParams = { kn: string; where: Record<string, unknown> }
 export type ExplorerUpdateParams = { kn: string; input: unknown }
@@ -33,7 +34,8 @@ export default class OperationalTableService extends CrudService<
 > {
   constructor(
     protected prisma: PrismaService,
-    private explorerService: ExplorerService
+    private explorerService: ExplorerService,
+    private database: Database
   ) {
     const include: Include = { updatedBy: true, createdBy: true }
     const orderBy: OrderByWithRelationInput = { updatedAt: 'desc' }
@@ -76,7 +78,7 @@ export default class OperationalTableService extends CrudService<
       },
     }
 
-    const explorer = await this.explorerService.findManyPostgresRows(findManyParams)
+    const explorer = await this.explorerService.findManyAndCountRows(findManyParams)
 
     return {
       explorer,
@@ -164,24 +166,19 @@ export default class OperationalTableService extends CrudService<
     const storeConfig = await this.getStoreConfig()
 
     assertTableSchema(params.data.tableSchema)
-    const tableSchema = params.data.tableSchema.items
+    const tableSchema = params.data.tableSchema
 
-    const newSchema: CreateTableSchemaItem[] = tableSchema.map((item) => ({
-      type: 'string' as const,
-      params: [item.columnName],
-    }))
-
-    const knex = createFromStoreConfig(storeConfig.data, storeConfig.data.dbName)
+    this.database.setConfig(toDatabasConfig(storeConfig))
 
     return this.prisma.$transaction(async (prismaTrx) => {
-      return knex.transaction(async (knexTrx) => {
-        const tableHelper = new TableHelper(knexTrx, params.data.tableName)
-
-        await tableHelper.createTable([
-          { type: 'increments', params: ['id', { primaryKey: true }] },
-          { type: 'string', params: ['_status'], defaultTo: '0' },
-          ...newSchema,
-        ])
+      return this.database.transaction(async (databaseTrx) => {
+        await databaseTrx.createTable(params.data.tableName, {
+          items: [
+            { columnName: '_id', type: 'increments' },
+            { columnName: '_status', type: 'string', defaultTo: '0' },
+            ...tableSchema.items.map(toDatabaseBuildColumnProps),
+          ],
+        })
 
         return prismaTrx.operationalTable.create(this._prepareSelectIncludeParams(params))
       })
@@ -196,7 +193,8 @@ export default class OperationalTableService extends CrudService<
   }): Promise<OperationalTable> {
     const currentOperationalTable = await this.getUnique({ where: params.where })
     const storeConfig = await this.getStoreConfig()
-    const knex = createFromStoreConfig(storeConfig.data, storeConfig.data.dbName)
+
+    this.database.setConfig(toDatabasConfig(storeConfig))
 
     const currentTableSchema = currentOperationalTable.tableSchema
     assertTableSchema(currentTableSchema, "Невалидные данные в Промежуточной таблице в поле 'tableSchema' в БД")
@@ -228,12 +226,16 @@ export default class OperationalTableService extends CrudService<
     })
 
     return this.prisma.$transaction(async (prismaTrx) => {
-      return knex.transaction(async (knexTrx) => {
-        const tableHelper = new TableHelper(knexTrx, currentOperationalTable.tableName)
-
-        await tableHelper.dropColumns(columnsToDrop.map((item) => item.columnName))
-        await tableHelper.addColumns(columnsToAdd.map((item) => ({ type: 'string', params: [item.columnName] })))
-        await tableHelper.renameColumns(
+      return this.database.transaction(async (databaseTrx) => {
+        await databaseTrx.dropColumns(
+          currentOperationalTable.tableName,
+          columnsToDrop.map((item) => item.columnName)
+        )
+        await databaseTrx.alterTable(currentOperationalTable.tableName, {
+          items: columnsToAdd.map(toDatabaseBuildColumnProps),
+        })
+        await databaseTrx.renameColumns(
+          currentOperationalTable.tableName,
           columnsToRename.map(([currentItem, updateItem]) => ({
             from: currentItem.columnName,
             to: updateItem.columnName,

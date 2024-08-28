@@ -8,8 +8,10 @@ import seedUsers from './users'
 import seedTableSchemas from './table-schemas'
 import seedTargetTables from './target-tables'
 import seedOperationalTables from './operational-tables'
+import seedOperationalTablesData from './operational-tables-data'
 
 const prisma = new PrismaClient()
+
 async function main() {
   await seedUsers(prisma)
   console.log('Users seeded')
@@ -34,14 +36,21 @@ async function main() {
 
   await seedTranslations(prisma)
   console.log('Translations seeded')
+
+  // knex
+
+  await seedOperationalTablesData()
+  console.log('OperationalTablesData seeded')
 }
 
-main()
-  .then(async () => {
-    await prisma.$disconnect()
-  })
-  .catch(async (e) => {
+;(async function app() {
+  try {
+    await main()
+    process.exit(0)
+  } catch (e) {
     console.error(e)
-    await prisma.$disconnect()
     process.exit(1)
-  })
+  } finally {
+    await prisma.$disconnect()
+  }
+})()

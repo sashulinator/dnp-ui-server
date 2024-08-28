@@ -6,7 +6,85 @@ const operationalTableName = 'operationalTable'
 type CreateInput = Prisma.OperationalTableUncheckedCreateInput
 
 export const operationalTables = [
-  _create({ kn: 'translations', name: 'Переводы', tableName: 'Translation', nav: true }),
+  _create({
+    kn: 'cars',
+    name: 'Автомобили',
+    tableName: 'cars',
+    nav: true,
+    tableSchema: {
+      items: [
+        {
+          id: 'id1',
+          columnName: 'carsId',
+          name: 'ID',
+          type: 'string',
+          unique: true,
+        },
+        {
+          id: 'id2',
+          columnName: 'brand',
+          name: 'Фирма',
+          type: 'string',
+        },
+        {
+          id: 'id3',
+          columnName: 'model',
+          name: 'Модель',
+          type: 'string',
+        },
+        {
+          id: 'id4',
+          columnName: 'year',
+          name: 'Год выпуска',
+          type: 'string',
+        },
+        {
+          id: 'id5',
+          columnName: 'employeesId',
+          name: 'Водитель',
+          type: 'employeesId',
+          relation: {
+            type: 'operationalTable',
+            kn: 'employees',
+            // TODO делаю tableName вместо kn потому что так проще сидить
+            tableName: 'employees',
+            columnName: 'employeesId',
+          },
+        },
+      ],
+      defaultView: 'table',
+    },
+  }),
+  _create({
+    kn: 'employees',
+    name: 'Работники',
+    tableName: 'employees',
+    nav: true,
+    tableSchema: {
+      items: [
+        {
+          id: 'id1',
+          columnName: 'employeesId',
+          name: 'ID',
+          type: 'string',
+          unique: true,
+        },
+        {
+          id: 'id2',
+          columnName: 'firstName',
+          name: 'Имя',
+          type: 'string',
+        },
+        {
+          id: 'id3',
+          columnName: 'secondName',
+          name: 'Имя',
+          type: 'string',
+        },
+      ],
+      defaultView: 'table',
+    },
+  }),
 ] as const
 
 function _create(defaultValues: Partial<CreateInput>): CreateInput {
@@ -19,32 +97,20 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
       items: [
         {
           id: 'id1',
-          columnName: 'id',
-          name: 'ID',
+          columnName: 'column1',
+          name: 'Колонка1',
           type: 'string',
         },
         {
           id: 'id2',
-          columnName: 'key',
-          name: 'Ключ',
+          columnName: 'column2',
+          name: 'Колонка2',
           type: 'string',
         },
         {
           id: 'id3',
-          columnName: 'ns',
-          name: 'Неймспейс',
-          type: 'string',
-        },
-        {
-          id: 'id4',
-          columnName: 'locale',
-          name: 'Локаль',
-          type: 'string',
-        },
-        {
-          id: 'id5',
-          columnName: 'data',
-          name: 'Содержание',
+          columnName: 'column3',
+          name: 'Колонка3',
           type: 'string',
         },
       ],
