@@ -10,4 +10,5 @@ module.exports = {
   importOrder: ['reset.css$', 'css$', '^@', '^[a-z]', '^~', '^.'],
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
+  importOrderParserPlugins: ['typescript', 'decorators-legacy'],
 }
