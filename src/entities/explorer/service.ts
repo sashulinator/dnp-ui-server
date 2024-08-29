@@ -7,7 +7,8 @@ export interface UpdateParams {
   paths: string[]
   type: 'postgres' | 's3'
   storeConfig: StoreConfig
-  input: unknown
+  input: Record<string, unknown>
+  where: Record<string, string>
 }
 
 export interface DeleteParams {
@@ -21,7 +22,7 @@ export interface CreateParams {
   paths: string[]
   type: 'postgres' | 's3'
   storeConfig: StoreConfig
-  input: unknown
+  input: Record<string, unknown>
 }
 
 export interface FindManyParams {
@@ -29,6 +30,7 @@ export interface FindManyParams {
   paths: string[]
   take?: number | undefined
   skip?: number | undefined
+  where?: Record<string, string>
   storeConfig: StoreConfig
 }
 
@@ -85,6 +87,7 @@ export default class ExplorerService {
     const [rows, count] = await this.database.findManyAndCountRows(tableName, {
       limit: params.take,
       offset: params.skip,
+      where: params.where,
     })
     const pk = await this.database.getPrimaryKey(tableName)
 
@@ -173,7 +176,7 @@ export default class ExplorerService {
   }
 
   updateRow(params: UpdateParams) {
-    const { storeConfig, paths, type, input } = params
+    const { storeConfig, paths, type, input, where } = params
     const [dbName, tableName] = paths
 
     this.database.setConfig({
@@ -185,7 +188,7 @@ export default class ExplorerService {
       dbName,
     })
 
-    return this.database.updateRow(tableName, input as Record<string, unknown>)
+    return this.database.updateRow(tableName, input, where)
   }
 
   /**

@@ -1,7 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { type Prisma, type OperationalTable as PrismaOperationalTable } from '@prisma/client'
 import PrismaService from '../../shared/prisma/service'
-import ExplorerService, { type FindManyParams, type CreateParams, type DeleteParams } from '../explorer/service'
+import ExplorerService, {
+  type FindManyParams,
+  type CreateParams,
+  type DeleteParams,
+  type UpdateParams,
+} from '../explorer/service'
 import { CrudService } from '~/shared/crud-service'
 import type { StoreConfig } from '../store-configs/dto'
 import { assertTableSchema } from './assertions'
@@ -20,11 +25,17 @@ export type OrderByWithRelationInput = Prisma.OperationalTableOrderByWithRelatio
 export type Select = Prisma.OperationalTableSelect
 export type Include = Prisma.OperationalTableInclude
 
-export type ExplorerFindManyParams = { kn: string; take: number; skip: number }
+export type ExplorerFindManyParams = {
+  kn: string
+  searchQuery: string
+  where: Record<string, string>
+  take: number
+  skip: number
+}
 export type ExplorerFindManyByTableNameParams = { tableName: string; take: number; skip: number }
-export type ExplorerCreateParams = { kn: string; input: unknown }
-export type ExplorerDeleteParams = { kn: string; where: Record<string, unknown> }
-export type ExplorerUpdateParams = { kn: string; input: unknown }
+export type ExplorerCreateParams = { kn: string; input: Record<string, unknown> }
+export type ExplorerDeleteParams = { kn: string; where: Record<string, string> }
+export type ExplorerUpdateParams = { kn: string; input: { _id: string } & Record<string, string> }
 
 @Injectable()
 export default class OperationalTableService extends CrudService<
@@ -65,9 +76,18 @@ export default class OperationalTableService extends CrudService<
     const operationalTable = await this.getUnique({ where: { kn: params.kn } })
     const storeConfig = await this.getStoreConfig()
 
+    assertTableSchema(operationalTable.tableSchema)
+    const where = params.searchQuery
+      ? operationalTable.tableSchema.items.reduce<Record<string, string>>((acc, item) => {
+          if (item.index) acc[item.columnName] = params.searchQuery
+          return acc
+        }, {})
+      : params.where
+
     const findManyParams: Required<FindManyParams> = {
       take: params.take || 100,
       skip: params.skip || 0,
+      where,
       type: 'postgres',
       paths: [storeConfig.data.dbName, operationalTable.tableName],
       storeConfig: {
@@ -138,8 +158,9 @@ export default class OperationalTableService extends CrudService<
     const operationalTable = await this.getUnique({ where: { kn: params.kn } })
     const storeConfig = await this.getStoreConfig()
 
-    const updateParams: Required<CreateParams> = {
+    const updateParams: Required<UpdateParams> = {
       input: params.input,
+      where: { _id: params.input._id },
       type: 'postgres',
       paths: [storeConfig.data.dbName, operationalTable.tableName],
       storeConfig: {

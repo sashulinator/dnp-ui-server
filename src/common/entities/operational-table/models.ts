@@ -73,11 +73,15 @@ export const tableSchemaItemSchema = v.object({
   id: v.string(),
   name: v.string(),
   columnName: v.string(),
+  defaultTo: v.optional(v.string()),
+  index: v.optional(v.boolean()),
+  nullable: v.optional(v.boolean()),
   type: v.string(),
   relation: v.optional(
     v.object({
+      type: v.union([v.literal('dictionary'), v.literal('operationalTable')]),
       columnName: v.string(),
-      tableName: v.string(),
+      kn: v.string(),
     })
   ),
 })

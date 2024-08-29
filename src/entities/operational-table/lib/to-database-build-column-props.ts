@@ -1,4 +1,5 @@
 import { type BuildColumnProps } from '~/lib/database'
+
 import { type TableSchemaItem } from '../dto'
 
 /**
@@ -8,12 +9,10 @@ import { type TableSchemaItem } from '../dto'
  * 2. Удаляем relation
  */
 export function toDatabaseBuildColumnProps(item: TableSchemaItem): BuildColumnProps {
-  const clone = { ...item }
-
-  delete clone.relation
-
   return {
-    ...clone,
+    columnName: item.columnName,
+    defaultTo: item?.defaultTo,
+    index: item?.index,
     type: 'string',
   }
 }

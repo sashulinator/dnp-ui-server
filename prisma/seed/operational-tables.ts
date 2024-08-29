@@ -1,6 +1,7 @@
-import { type Prisma, type PrismaClient } from '@prisma/client'
-import { users } from './users'
 import { createId } from '@paralleldrive/cuid2'
+import { type Prisma, type PrismaClient } from '@prisma/client'
+
+import { users } from './users'
 
 const operationalTableName = 'operationalTable'
 type CreateInput = Prisma.OperationalTableUncheckedCreateInput
