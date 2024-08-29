@@ -2,13 +2,18 @@ import { type BuildColumnProps } from '~/lib/database'
 import { type TableSchemaItem } from '../dto'
 
 /**
- * Для промежуточных таблиц колонки типа string
- * так как в таблицу может прилететь невалидное значение
- * и только стринг может его проглотить
+ * Так как в Промежуточные Таблицы может прилететь невалидные значения,
+ * а нам нужно чтобы она проглатывала всё
+ * 1. конвертируем тип колонки в string
+ * 2. Удаляем relation
  */
 export function toDatabaseBuildColumnProps(item: TableSchemaItem): BuildColumnProps {
+  const clone = { ...item }
+
+  delete clone.relation
+
   return {
-    ...item,
+    ...clone,
     type: 'string',
   }
 }
