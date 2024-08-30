@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import type { Explorer, StoreConfig } from './dto'
-import { has, isString } from '~/utils/core'
+
 import Database from '~/lib/database'
+import { has, isString } from '~/utils/core'
+
+import type { Explorer, StoreConfig } from './dto'
 
 export interface UpdateParams {
   paths: string[]
@@ -15,7 +17,7 @@ export interface DeleteParams {
   paths: string[]
   type: 'postgres' | 's3'
   storeConfig: StoreConfig
-  where: Record<string, unknown>
+  where: Record<string, string>
 }
 
 export interface CreateParams {

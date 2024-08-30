@@ -1,10 +1,11 @@
 import { type Knex, knex } from 'knex'
-import { type CreateTableSchema, createTable } from './lib/create-table'
+
 import { type Client } from './clients/interface'
 import { PostgresClient } from './clients/postgres'
-import { findManyRows } from './lib/find-many-rows'
-import countRows from './lib/count-rows'
 import { alterTable } from './lib/alter-table'
+import countRows from './lib/count-rows'
+import { type CreateTableSchema, createTable } from './lib/create-table'
+import { findManyRows } from './lib/find-many-rows'
 
 export type Config = {
   client: string
@@ -151,7 +152,7 @@ export default class Database {
   // Метод findMany с параметрами limit, offset, where
   async findManyRows(
     tableName: string,
-    params: { limit?: number; offset?: number; where?: Record<string, string> | undefined } = {}
+    params: { limit?: number; offset?: number; where?: Record<string, string> | undefined } = {},
   ): Promise<unknown[]> {
     return findManyRows(this.knex, tableName, params)
   }
@@ -163,7 +164,7 @@ export default class Database {
 
   async findManyAndCountRows(
     tableName: string,
-    params: { limit?: number; offset?: number; where?: Record<string, string> | undefined } = {}
+    params: { limit?: number; offset?: number; where?: Record<string, string> | undefined } = {},
   ): Promise<[unknown[], number]> {
     const findManyPromise = this.findManyRows(tableName, params)
     const countPromise = this.countRows(tableName, { where: params.where })

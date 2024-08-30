@@ -4,7 +4,7 @@ import { type Knex } from 'knex'
 export async function findManyRows(
   knex: Knex,
   tableName: string,
-  params: { limit?: number; offset?: number; where?: Record<string, string> | undefined } = {}
+  params: { limit?: number; offset?: number; where?: Record<string, string> | undefined } = {},
 ): Promise<unknown[]> {
   const { limit, offset, where } = params
   const queryBuilder = knex(tableName)

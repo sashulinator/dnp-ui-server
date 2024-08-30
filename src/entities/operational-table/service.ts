@@ -1,18 +1,20 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { type Prisma, type OperationalTable as PrismaOperationalTable } from '@prisma/client'
+
+import Database from '~/lib/database'
+import { CrudService } from '~/shared/crud-service'
+
 import PrismaService from '../../shared/prisma/service'
 import ExplorerService, {
-  type FindManyParams,
   type CreateParams,
   type DeleteParams,
+  type FindManyParams,
   type UpdateParams,
 } from '../explorer/service'
-import { CrudService } from '~/shared/crud-service'
 import type { StoreConfig } from '../store-configs/dto'
+import { toDatabasConfig } from '../store-configs/lib/to-database-config'
 import { assertTableSchema } from './assertions'
 import { type TableSchemaItem } from './dto'
-import Database from '~/lib/database'
-import { toDatabasConfig } from '../store-configs/lib/to-database-config'
 import { toDatabaseBuildColumnProps } from './lib/to-database-build-column-props'
 
 export type OperationalTable = PrismaOperationalTable
@@ -46,7 +48,7 @@ export default class OperationalTableService extends CrudService<
   constructor(
     protected prisma: PrismaService,
     private explorerService: ExplorerService,
-    private database: Database
+    private database: Database,
   ) {
     const include: Include = { updatedBy: true, createdBy: true }
     const orderBy: OrderByWithRelationInput = { updatedAt: 'desc' }
@@ -68,7 +70,7 @@ export default class OperationalTableService extends CrudService<
         findMany: prisma.operationalTable.findMany.bind(prisma),
         findUnique: prisma.operationalTable.findUnique.bind(prisma),
         transaction: prisma.$transaction.bind(prisma),
-      }
+      },
     )
   }
 
@@ -77,6 +79,7 @@ export default class OperationalTableService extends CrudService<
     const storeConfig = await this.getStoreConfig()
 
     assertTableSchema(operationalTable.tableSchema)
+
     const where = params.searchQuery
       ? operationalTable.tableSchema.items.reduce<Record<string, string>>((acc, item) => {
           if (item.index) acc[item.columnName] = params.searchQuery
@@ -250,7 +253,7 @@ export default class OperationalTableService extends CrudService<
       return this.database.transaction(async (databaseTrx) => {
         await databaseTrx.dropColumns(
           currentOperationalTable.tableName,
-          columnsToDrop.map((item) => item.columnName)
+          columnsToDrop.map((item) => item.columnName),
         )
         await databaseTrx.alterTable(currentOperationalTable.tableName, {
           items: columnsToAdd.map(toDatabaseBuildColumnProps),
@@ -260,7 +263,7 @@ export default class OperationalTableService extends CrudService<
           columnsToRename.map(([currentItem, updateItem]) => ({
             from: currentItem.columnName,
             to: updateItem.columnName,
-          }))
+          })),
         )
 
         return prismaTrx.operationalTable.update(this._prepareSelectIncludeParams(params))
