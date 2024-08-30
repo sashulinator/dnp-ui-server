@@ -1,2 +1,1 @@
-export const NAME_ONE = 'User'
-export const NAME_MANY = 'Users'
+export const NAME = 'User'
