@@ -1,7 +1,9 @@
 import * as v from 'valibot'
-import { userSchema } from '../user'
+
 import { getObjectKeys } from '~/common/lib/get-object-keys'
 import { crudableSchema } from '~/common/models/crudable'
+
+import { userSchema } from '../user'
 
 /**
  * BaseOperationalTable
@@ -82,8 +84,22 @@ export const tableSchemaItemSchema = v.object({
       type: v.union([v.literal('dictionary'), v.literal('operationalTable')]),
       columnName: v.string(),
       kn: v.string(),
-    })
+    }),
   ),
 })
 
 export type TableSchemaItem = v.InferOutput<typeof tableSchemaItemSchema>
+
+/**
+ * Row
+ */
+
+export const rowSchema = v.objectWithRest(
+  {
+    _id: v.string(),
+    _status: v.string(),
+  },
+  v.string(),
+)
+
+export type Row = v.InferOutput<typeof rowSchema>
