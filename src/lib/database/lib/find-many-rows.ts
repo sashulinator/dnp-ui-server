@@ -1,13 +1,16 @@
 import { type Knex } from 'knex'
 
+import type { Where } from '../types/where'
+import { buildWhereClause } from './build-where-clause'
+
 // Метод findMany с параметрами limit, offset, where
 export async function findManyRows(
   knex: Knex,
   tableName: string,
-  params: { limit?: number; offset?: number; where?: Record<string, string> | undefined } = {},
+  params: { limit?: number; offset?: number; where?: Where | undefined } = {},
 ): Promise<unknown[]> {
   const { limit, offset, where } = params
-  const queryBuilder = knex(tableName)
+  let queryBuilder = knex(tableName)
 
   // Добавляем ограничения (limit, offset)
   if (limit) {
@@ -20,9 +23,7 @@ export async function findManyRows(
   // Добавляем условие WHERE
   if (where) {
     // Преобразуем объект where в условия knex
-    for (const [key, value] of Object.entries(where)) {
-      queryBuilder.orWhereILike(key, value)
-    }
+    queryBuilder = buildWhereClause(queryBuilder, where)
   }
 
   const ret = await queryBuilder

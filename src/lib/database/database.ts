@@ -6,6 +6,7 @@ import { alterTable } from './lib/alter-table'
 import countRows from './lib/count-rows'
 import { type CreateTableSchema, createTable } from './lib/create-table'
 import { findManyRows } from './lib/find-many-rows'
+import type { Where } from './types/where'
 
 export type Config = {
   client: string
@@ -141,30 +142,30 @@ export default class Database {
     return this.knex(tableName).insert(row)
   }
 
-  deleteRow(tableName: string, where: Record<string, unknown>) {
+  deleteRow(tableName: string, where: Where | undefined) {
     return this.knex(tableName).delete().where(where)
   }
 
-  updateRow(tableName: string, row: Record<string, unknown>, where: Record<string, string>) {
+  updateRow(tableName: string, row: Record<string, unknown>, where: Where | undefined) {
     return this.knex(tableName).update(row).where(where)
   }
 
   // Метод findMany с параметрами limit, offset, where
   async findManyRows(
     tableName: string,
-    params: { limit?: number; offset?: number; where?: Record<string, string> | undefined } = {},
+    params: { limit?: number; offset?: number; where?: Where | undefined } = {},
   ): Promise<unknown[]> {
     return findManyRows(this.knex, tableName, params)
   }
 
   // Метод findMany с параметрами limit, offset, where
-  async countRows(tableName: string, params: { where?: Record<string, string> } = {}): Promise<number> {
+  async countRows(tableName: string, params: { where?: Where | undefined } = {}): Promise<number> {
     return countRows(this.knex, tableName, params)
   }
 
   async findManyAndCountRows(
     tableName: string,
-    params: { limit?: number; offset?: number; where?: Record<string, string> | undefined } = {},
+    params: { limit?: number; offset?: number; where?: Where | undefined } = {},
   ): Promise<[unknown[], number]> {
     const findManyPromise = this.findManyRows(tableName, params)
     const countPromise = this.countRows(tableName, { where: params.where })

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { type Prisma, type OperationalTable as PrismaOperationalTable } from '@prisma/client'
 
-import Database from '~/lib/database'
+import Database, { type Where } from '~/lib/database'
 import { CrudService } from '~/shared/crud-service'
 
 import PrismaService from '../../shared/prisma/service'
@@ -30,7 +30,7 @@ export type Include = Prisma.OperationalTableInclude
 export type ExplorerFindManyParams = {
   kn: string
   searchQuery: string
-  where: Record<string, string>
+  where: Where<Record<string, unknown>>
   take: number
   skip: number
 }
@@ -74,7 +74,7 @@ export default class OperationalTableService extends CrudService<
     )
   }
 
-  async explorerFindMany(params: ExplorerFindManyParams) {
+  async explorerFindManyAndCountRows(params: ExplorerFindManyParams) {
     const operationalTable = await this.getUnique({ where: { kn: params.kn } })
     const storeConfig = await this.getStoreConfig()
 
@@ -90,7 +90,7 @@ export default class OperationalTableService extends CrudService<
     const findManyParams: Required<FindManyParams> = {
       take: params.take || 100,
       skip: params.skip || 0,
-      where,
+      where: where as Where,
       type: 'postgres',
       paths: [storeConfig.data.dbName, operationalTable.tableName],
       storeConfig: {

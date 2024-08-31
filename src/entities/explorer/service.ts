@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import Database from '~/lib/database'
+import Database, { type Where } from '~/lib/database'
 import { has, isString } from '~/utils/core'
 
 import type { Explorer, StoreConfig } from './dto'
@@ -10,14 +10,14 @@ export interface UpdateParams {
   type: 'postgres' | 's3'
   storeConfig: StoreConfig
   input: Record<string, unknown>
-  where: Record<string, string>
+  where: Where
 }
 
 export interface DeleteParams {
   paths: string[]
   type: 'postgres' | 's3'
   storeConfig: StoreConfig
-  where: Record<string, string>
+  where: Where
 }
 
 export interface CreateParams {
@@ -32,7 +32,7 @@ export interface FindManyParams {
   paths: string[]
   take?: number | undefined
   skip?: number | undefined
-  where?: Record<string, string>
+  where?: Where | undefined
   storeConfig: StoreConfig
 }
 

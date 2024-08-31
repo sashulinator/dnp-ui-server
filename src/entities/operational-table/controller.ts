@@ -1,22 +1,25 @@
 import { Body, Delete, Get, Controller as NestJSController, Param, Post, Put, Search, UsePipes } from '@nestjs/common'
+
 import * as v from 'valibot'
+
 import { ValibotPipe } from '~/shared/valibot.pipe'
+
 import {
-  createOperationalTableSchema,
-  updateOperationalTableSchema,
   type CreateOperationalTable,
   type UpdateOperationalTable,
+  createOperationalTableSchema,
+  updateOperationalTableSchema,
 } from './dto'
 import Service, {
+  type ExplorerCreateParams,
+  type ExplorerDeleteParams,
+  type ExplorerFindManyParams,
+  type ExplorerUpdateParams,
+  type OperationalTable,
   type OrderByWithRelationInput,
   type Select,
   type WhereInput,
   type WhereUniqueInput,
-  type ExplorerFindManyParams,
-  type ExplorerCreateParams,
-  type ExplorerUpdateParams,
-  type OperationalTable,
-  type ExplorerDeleteParams,
 } from './service'
 
 @NestJSController('api/v1/operational-tables')
@@ -51,8 +54,8 @@ export default class OperationalTableController {
    * ------------ EXPLORE FINMANY ------------
    */
   @Search('explorer')
-  explorerFindMany(@Body() body: ExplorerFindManyParams) {
-    return this.service.explorerFindMany(body)
+  explorerFindManyAndCountRows(@Body() body: ExplorerFindManyParams) {
+    return this.service.explorerFindManyAndCountRows(body)
   }
 
   /**
@@ -126,7 +129,7 @@ export default class OperationalTableController {
     params: {
       where?: WhereInput
       select?: Select
-    } = {}
+    } = {},
   ): Promise<OperationalTable> {
     return this.service.findFirst(params)
   }
@@ -153,7 +156,7 @@ export default class OperationalTableController {
       where?: WhereInput
       orderBy?: OrderByWithRelationInput
       select?: Select
-    } = {}
+    } = {},
   ): Promise<{ items: OperationalTable[]; total: number }> {
     const [items, total] = await this.service.findAndCountMany(params)
 
