@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { type Prisma, type OperationalTable as PrismaOperationalTable } from '@prisma/client'
 
 import Database, { type Where } from '~/lib/database'
+import { type StringFilter } from '~/lib/database/types/where'
 import { CrudService } from '~/shared/crud-service'
 
 import PrismaService from '../../shared/prisma/service'
@@ -29,14 +30,15 @@ export type Include = Prisma.OperationalTableInclude
 
 export type ExplorerFindManyParams = {
   kn: string
-  searchQuery: string
-  where: Where<Record<string, unknown>>
+  searchQuery: StringFilter
+  where: Where
+  sort?: Record<string, 'asc' | 'desc'> | undefined
   take: number
   skip: number
 }
 export type ExplorerFindManyByTableNameParams = { tableName: string; take: number; skip: number }
 export type ExplorerCreateParams = { kn: string; input: Record<string, unknown> }
-export type ExplorerDeleteParams = { kn: string; where: Record<string, string> }
+export type ExplorerDeleteParams = { kn: string; where: Where }
 export type ExplorerUpdateParams = { kn: string; input: { _id: string } & Record<string, string> }
 
 @Injectable()
@@ -80,17 +82,18 @@ export default class OperationalTableService extends CrudService<
 
     assertTableSchema(operationalTable.tableSchema)
 
-    const where = params.searchQuery
-      ? operationalTable.tableSchema.items.reduce<Record<string, string>>((acc, item) => {
-          if (item.index) acc[item.columnName] = params.searchQuery
+    const searchOR = params.searchQuery
+      ? operationalTable.tableSchema.items.reduce<Record<string, StringFilter>[]>((acc, item) => {
+          if (item.index) acc.push({ [item.columnName]: params.searchQuery })
           return acc
-        }, {})
-      : params.where
+        }, [])
+      : []
 
     const findManyParams: Required<FindManyParams> = {
       take: params.take || 100,
       skip: params.skip || 0,
-      where: where as Where,
+      sort: params.sort,
+      where: { AND: [{ OR: searchOR }, params.where] },
       type: 'postgres',
       paths: [storeConfig.data.dbName, operationalTable.tableName],
       storeConfig: {

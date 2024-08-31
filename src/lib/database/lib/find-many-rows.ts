@@ -7,23 +7,30 @@ import { buildWhereClause } from './build-where-clause'
 export async function findManyRows(
   knex: Knex,
   tableName: string,
-  params: { limit?: number; offset?: number; where?: Where | undefined } = {},
+  params: {
+    limit?: number
+    offset?: number
+    where?: Where | undefined
+    sort?: Record<string, 'asc' | 'desc'> | undefined
+  } = {},
 ): Promise<unknown[]> {
-  const { limit, offset, where } = params
+  const { limit, offset, where, sort } = params
   let queryBuilder = knex(tableName)
 
-  // Добавляем ограничения (limit, offset)
   if (limit) {
     queryBuilder.limit(limit)
   }
   if (offset) {
     queryBuilder.offset(offset)
   }
-
-  // Добавляем условие WHERE
   if (where) {
     // Преобразуем объект where в условия knex
     queryBuilder = buildWhereClause(queryBuilder, where)
+  }
+  if (sort) {
+    Object.entries(sort).forEach(([columnName, order]) => {
+      queryBuilder = queryBuilder.orderBy(columnName, order)
+    })
   }
 
   const ret = await queryBuilder

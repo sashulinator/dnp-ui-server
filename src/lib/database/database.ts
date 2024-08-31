@@ -146,14 +146,21 @@ export default class Database {
     return this.knex(tableName).delete().where(where)
   }
 
-  updateRow(tableName: string, row: Record<string, unknown>, where: Where | undefined) {
-    return this.knex(tableName).update(row).where(where)
+  async updateRow(tableName: string, row: Record<string, unknown>, where: Where | undefined) {
+    await this.knex(tableName).update(row).where(where)
+    const ret = await this.knex(tableName).select('*').where(where).limit(1)
+    return ret[0]
   }
 
   // Метод findMany с параметрами limit, offset, where
   async findManyRows(
     tableName: string,
-    params: { limit?: number; offset?: number; where?: Where | undefined } = {},
+    params: {
+      limit?: number
+      offset?: number
+      where?: Where | undefined
+      sort?: Record<string, 'asc' | 'desc'> | undefined
+    } = {},
   ): Promise<unknown[]> {
     return findManyRows(this.knex, tableName, params)
   }
@@ -165,7 +172,12 @@ export default class Database {
 
   async findManyAndCountRows(
     tableName: string,
-    params: { limit?: number; offset?: number; where?: Where | undefined } = {},
+    params: {
+      limit?: number
+      offset?: number
+      where?: Where | undefined
+      sort?: Record<string, 'asc' | 'desc'> | undefined
+    } = {},
   ): Promise<[unknown[], number]> {
     const findManyPromise = this.findManyRows(tableName, params)
     const countPromise = this.countRows(tableName, { where: params.where })

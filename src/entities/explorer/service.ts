@@ -33,6 +33,7 @@ export interface FindManyParams {
   take?: number | undefined
   skip?: number | undefined
   where?: Where | undefined
+  sort?: Record<string, 'asc' | 'desc'> | undefined
   storeConfig: StoreConfig
 }
 
@@ -90,6 +91,7 @@ export default class ExplorerService {
       limit: params.take,
       offset: params.skip,
       where: params.where,
+      sort: params.sort,
     })
     const pk = await this.database.getPrimaryKey(tableName)
 
