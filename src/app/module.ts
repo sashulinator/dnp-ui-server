@@ -9,13 +9,13 @@ import PrismaModule from '../shared/prisma/module'
 import ExplorerModule from '../entities/explorer/module'
 import TargetTablesModule from '../entities/target-table/module'
 import OperationalTablesModule from '../entities/operational-table/module'
+import FilesModule from '../entities/files/module'
 import TranslationsModule from '../system/translations/module'
 
 @Module({
   controllers: [AppController],
   imports: [
     PrismaModule,
-
     NormalizationConfigModule,
     OperationalTablesModule,
     ProcessModule,
@@ -23,6 +23,7 @@ import TranslationsModule from '../system/translations/module'
     TranslationsModule,
     TargetTablesModule,
     ExplorerModule,
+    FilesModule,
   ],
   providers: [
     {
