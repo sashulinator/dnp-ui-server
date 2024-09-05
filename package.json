@@ -24,7 +24,8 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "postinstall": "husky init && prisma generate",
     "prepack": "pinst --disable",
-    "postpack": "pinst --enable"
+    "postpack": "pinst --enable",
+    "prepare": "husky"
   },
   "dependencies": {
     "@nestjs/common": "10.0.0",

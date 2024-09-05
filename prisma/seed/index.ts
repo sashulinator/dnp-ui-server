@@ -7,6 +7,7 @@ import seedStoreConfigs from './store-configs'
 import seedUsers from './users'
 import seedTableSchemas from './table-schemas'
 import seedTargetTables from './target-tables'
+import seedDictionaryTables from './dictionary-tables'
 import seedOperationalTables from './operational-tables'
 import seedOperationalTablesData from './operational-tables-data'
 
@@ -18,6 +19,9 @@ async function main() {
 
   await seedTableSchemas(prisma)
   console.log('TableSchemas seeded')
+
+  await seedDictionaryTables(prisma)
+  console.log('DictionaryTables seeded')
 
   await seedOperationalTables(prisma)
   console.log('OperationalTables seeded')
