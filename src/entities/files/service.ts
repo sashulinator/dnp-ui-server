@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, StreamableFile } from '@nestjs/common'
+
 import MinioService from '~/shared/minio/service'
 
 @Injectable()
@@ -10,7 +11,9 @@ export default class Service {
   }
 
   async getUnique(id: string) {
-    return await this.minio.getObject('dnp-datastore', id)
+    const stream = await this.minio.getObject('dnp-datastore', id)
+
+    return new StreamableFile(stream)
   }
 
   async delete(id: string) {
