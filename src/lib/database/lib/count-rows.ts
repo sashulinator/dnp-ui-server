@@ -3,7 +3,9 @@ import { type Knex } from 'knex'
 import { type Where } from '../types/where'
 import { buildWhereClause } from './build-where-clause'
 
-export default async function count(knex: Knex, tableName: string, params: { where?: Where } = {}): Promise<number> {
+export type CountRowsParams = { where?: Where }
+
+export default async function count(knex: Knex, tableName: string, params: CountRowsParams = {}): Promise<number> {
   const { where } = params
   const queryBuilder = knex<unknown, { count: string }>(tableName)
 

@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common'
 
-import Database, { type Where } from '~/lib/database'
+import Database, { type StringFilter, type Where } from '~/lib/database'
 import { has, isString } from '~/utils/core'
 
 import type { Explorer, StoreConfig } from './dto'
+
+export { Where, StringFilter }
 
 export interface UpdateParams {
   paths: string[]

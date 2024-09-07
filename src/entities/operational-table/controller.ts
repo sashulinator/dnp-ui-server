@@ -11,10 +11,6 @@ import {
   updateOperationalTableSchema,
 } from './dto'
 import Service, {
-  type ExplorerCreateParams,
-  type ExplorerDeleteParams,
-  type ExplorerFindManyParams,
-  type ExplorerUpdateParams,
   type OperationalTable,
   type OrderByWithRelationInput,
   type Select,
@@ -25,38 +21,6 @@ import Service, {
 @NestJSController('api/v1/operational-tables')
 export default class OperationalTableController {
   constructor(private readonly service: Service) {}
-
-  /**
-   * ------------ EXPLORER CREATE ------------
-   */
-  @Post('explorer')
-  explorerCreate(@Body() body: ExplorerCreateParams) {
-    return this.service.explorerCreate(body)
-  }
-
-  /**
-   * ------------ EXPLORE UPDATE ------------
-   */
-  @Put('explorer')
-  explorerUpdate(@Body() body: ExplorerUpdateParams) {
-    return this.service.explorerUpdate(body)
-  }
-
-  /**
-   * ------------ EXPLORE DELETE ------------
-   */
-  @Delete('explorer')
-  explorerDelete(@Body() body: ExplorerDeleteParams) {
-    return this.service.explorerDelete(body)
-  }
-
-  /**
-   * ------------ EXPLORE FINMANY ------------
-   */
-  @Search('explorer')
-  explorerFindManyAndCountRows(@Body() body: ExplorerFindManyParams) {
-    return this.service.explorerFindManyAndCountRows(body)
-  }
 
   /**
    * ------------ DELETE ------------

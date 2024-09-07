@@ -1,16 +1,27 @@
 import { type Knex } from 'knex'
 
 import { has } from '~/utils/core'
+import { BaseError } from '~/utils/error'
 
-import { type Where } from '../types/where'
+import {
+  type BooleanFilter,
+  type IntFilter,
+  type Match,
+  type MatchMode,
+  type StringFilter,
+  type Where,
+  isContainsMatch,
+  isEndsWithMatch,
+  isStartsWithMatch,
+} from '../types/where'
 
 // Функция для построения условий WHERE
-export function buildWhereClause(queryBuilder: Knex.QueryBuilder, originalWhere: Where): Knex.QueryBuilder {
-  const where = { ...originalWhere }
+export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where): Knex.QueryBuilder {
+  const clonedWhere = { ...where }
 
-  if (has(where, 'AND')) {
-    if (Array.isArray(where.AND)) {
-      const ANDARRAY = where.AND
+  if (has(clonedWhere, 'AND')) {
+    if (Array.isArray(clonedWhere.AND)) {
+      const ANDARRAY = clonedWhere.AND
 
       ANDARRAY.forEach((where) => {
         queryBuilder.where(function () {
@@ -19,25 +30,25 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, originalWhere:
       })
     } else {
       queryBuilder.where(function () {
-        buildWhereClause(this, where.AND as Where)
+        buildWhereClause(this, clonedWhere.AND as Where)
       })
     }
-    delete where.AND
+    delete clonedWhere.AND
   }
 
   // Обработка OR
-  if (has(where, 'OR')) {
-    for (const orClause of where.OR) {
+  if (has(clonedWhere, 'OR')) {
+    for (const orClause of clonedWhere.OR) {
       queryBuilder.orWhere(function () {
         buildWhereClause(this, orClause)
       })
     }
-    delete where.OR
+    delete clonedWhere.OR
   }
 
-  if (has(where, 'NOT')) {
-    if (Array.isArray(where.NOT)) {
-      const NOTARRAY = where.NOT
+  if (has(clonedWhere, 'NOT')) {
+    if (Array.isArray(clonedWhere.NOT)) {
+      const NOTARRAY = clonedWhere.NOT
       NOTARRAY.forEach((where) => {
         queryBuilder.whereNot(function () {
           buildWhereClause(this, where)
@@ -45,38 +56,46 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, originalWhere:
       })
     } else {
       queryBuilder.whereNot(() => {
-        buildWhereClause(this, where.NOT as Where)
+        buildWhereClause(this, clonedWhere.NOT as Where)
       })
     }
-    delete where.NOT
+    delete clonedWhere.NOT
   }
 
   // Обработка одиночных условий
-  for (const [columnName, value] of Object.entries(where)) {
-    if (typeof value === 'object' && has(value, 'contains')) {
-      queryBuilder.where(columnName, 'like', `%${value.contains}%`)
-    } else if (typeof value === 'object' && has(value, 'startsWith')) {
-      queryBuilder.where(columnName, 'like', `${value.startsWith}%`)
-    } else if (typeof value === 'object' && has(value, 'endsWith')) {
-      queryBuilder.where(columnName, 'like', `%${value.endsWith}`)
-    } else if (typeof value === 'object' && has(value, 'not')) {
-      queryBuilder.whereNot(columnName, value.not)
-    } else if (typeof value === 'object' && has(value, 'gt')) {
-      queryBuilder.where(columnName, '>', value.gt)
-    } else if (typeof value === 'object' && has(value, 'gte')) {
-      queryBuilder.where(columnName, '>=', value.gte)
-    } else if (typeof value === 'object' && has(value, 'lt')) {
-      queryBuilder.where(columnName, '<', value.lt)
-    } else if (typeof value === 'object' && has(value, 'lte')) {
-      queryBuilder.where(columnName, '<=', value.lte)
-    } else if (typeof value === 'object' && has(value, 'in')) {
-      //   queryBuilder.whereIn(columnName, value.in)
-      // } else if (typeof value === 'object' && has(value, 'notIn')) {
-      //   queryBuilder.whereNotIn(columnName, value.notIn)
+  for (const [columnName, value] of Object.entries(clonedWhere)) {
+    const filter = value as StringFilter | IntFilter | BooleanFilter
+
+    // Match
+    if (isContainsMatch(filter)) {
+      queryBuilder.where(columnName, _getLike(filter), `%${filter.contains}%`)
+    } else if (isStartsWithMatch(filter)) {
+      queryBuilder.where(columnName, _getLike(filter), `${filter.startsWith}%`)
+    } else if (isEndsWithMatch(filter)) {
+      queryBuilder.where(columnName, _getLike(filter), `%${filter.endsWith}`)
+      // Compare
+    } else if (typeof filter === 'object' && has(filter, 'gt')) {
+      queryBuilder.where(columnName, '>', filter.gt)
+    } else if (typeof filter === 'object' && has(filter, 'gte')) {
+      queryBuilder.where(columnName, '>=', filter.gte)
+    } else if (typeof filter === 'object' && has(filter, 'lt')) {
+      queryBuilder.where(columnName, '<', filter.lt)
+    } else if (typeof filter === 'object' && has(filter, 'lte')) {
+      queryBuilder.where(columnName, '<=', filter.lte)
+      // In
+    } else if (typeof filter === 'object' && has(filter, 'in')) {
+      queryBuilder.whereIn(columnName, filter.in as string[])
+    } else if (typeof filter === 'object' && has(filter, 'notIn')) {
+      queryBuilder.whereNotIn(columnName, filter.notIn as string[])
+      // Error
     } else {
-      queryBuilder.where(columnName, value)
+      throw new BaseError('Unknown Filter', { input: filter })
     }
   }
 
   return queryBuilder
+}
+
+function _getLike(match: Match & MatchMode): 'like' | 'ilike' {
+  if (match.mode !== 'insensitive') return 'like'
 }

@@ -1,19 +1,18 @@
 import { type Knex } from 'knex'
 
+import type { Sort } from '../types/sort'
 import type { Where } from '../types/where'
 import { buildWhereClause } from './build-where-clause'
 
+export type FindManyRowsParams = {
+  limit?: number | undefined
+  offset?: number | undefined
+  where?: Where | undefined
+  sort?: Sort | undefined
+}
+
 // Метод findMany с параметрами limit, offset, where
-export async function findManyRows(
-  knex: Knex,
-  tableName: string,
-  params: {
-    limit?: number
-    offset?: number
-    where?: Where | undefined
-    sort?: Record<string, 'asc' | 'desc'> | undefined
-  } = {},
-): Promise<unknown[]> {
+export async function findManyRows(knex: Knex, tableName: string, params: FindManyRowsParams = {}): Promise<unknown[]> {
   const { limit, offset, where, sort } = params
   let queryBuilder = knex(tableName)
 

@@ -3,9 +3,10 @@ import { type Knex, knex } from 'knex'
 import { type Client } from './clients/interface'
 import { PostgresClient } from './clients/postgres'
 import { alterTable } from './lib/alter-table'
-import countRows from './lib/count-rows'
+import countRows, { type CountRowsParams } from './lib/count-rows'
 import { type CreateTableSchema, createTable } from './lib/create-table'
-import { findManyRows } from './lib/find-many-rows'
+import { type FindManyRowsParams, findManyRows } from './lib/find-many-rows'
+import { type Row } from './types/row'
 import type { Where } from './types/where'
 
 export type Config = {
@@ -48,7 +49,7 @@ export default class Database {
   }
 
   /**
-   * Для внутреннего использования только! Потребитель ничего не должен нать про knex
+   * Для внутреннего использования только! Потребитель ничего не должен знать про knex
    * но без этого метода не получится реализовать транзакции
    */
   _setKnex(knex: Knex): this {
@@ -138,7 +139,7 @@ export default class Database {
    * Row
    */
 
-  insertRow(tableName: string, row: Record<string, unknown>) {
+  insertRow(tableName: string, row: Row) {
     return this.knex(tableName).insert(row)
   }
 
@@ -146,39 +147,23 @@ export default class Database {
     return this.knex(tableName).delete().where(where)
   }
 
-  async updateRow(tableName: string, row: Record<string, unknown>, where: Where | undefined) {
+  async updateRow(tableName: string, row: Row, where: Where | undefined) {
     await this.knex(tableName).update(row).where(where)
     const ret = await this.knex(tableName).select('*').where(where).limit(1)
     return ret[0]
   }
 
   // Метод findMany с параметрами limit, offset, where
-  async findManyRows(
-    tableName: string,
-    params: {
-      limit?: number
-      offset?: number
-      where?: Where | undefined
-      sort?: Record<string, 'asc' | 'desc'> | undefined
-    } = {},
-  ): Promise<unknown[]> {
+  async findManyRows(tableName: string, params: FindManyRowsParams = {}): Promise<unknown[]> {
     return findManyRows(this.knex, tableName, params)
   }
 
   // Метод findMany с параметрами limit, offset, where
-  async countRows(tableName: string, params: { where?: Where | undefined } = {}): Promise<number> {
+  async countRows(tableName: string, params: CountRowsParams = {}): Promise<number> {
     return countRows(this.knex, tableName, params)
   }
 
-  async findManyAndCountRows(
-    tableName: string,
-    params: {
-      limit?: number
-      offset?: number
-      where?: Where | undefined
-      sort?: Record<string, 'asc' | 'desc'> | undefined
-    } = {},
-  ): Promise<[unknown[], number]> {
+  async findManyAndCountRows(tableName: string, params: FindManyRowsParams = {}): Promise<[unknown[], number]> {
     const findManyPromise = this.findManyRows(tableName, params)
     const countPromise = this.countRows(tableName, { where: params.where })
     return Promise.all([findManyPromise, countPromise])
