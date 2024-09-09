@@ -1,7 +1,8 @@
-import { Delete, Get, Controller as NestJSController, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
+import { Delete, Get, Controller as NestJSController, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
-import Service from './service'
 import { createId } from '@paralleldrive/cuid2'
+
+import Service from './service'
 
 @NestJSController('api/v1/files')
 export default class Controller {
@@ -18,12 +19,12 @@ export default class Controller {
   }
 
   @Get(':id')
-  fetchFile(id: string) {
+  fetchFile(@Param('id') id: string) {
     return this.service.getUnique(id)
   }
 
   @Delete(':id')
-  async deleteFile(id: string) {
+  async deleteFile(@Param('id') id: string) {
     await this.service.delete(id)
     return { id }
   }
