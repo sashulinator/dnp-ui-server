@@ -8,6 +8,7 @@ import seedUsers from './users'
 import seedTableSchemas from './table-schemas'
 import seedTargetTables from './target-tables'
 import seedDictionaryTables from './dictionary-tables'
+import seedDictionaryTablesData from './dictionary-tables-data'
 import seedOperationalTables from './operational-tables'
 import seedOperationalTablesData from './operational-tables-data'
 
@@ -42,6 +43,9 @@ async function main() {
   console.log('Translations seeded')
 
   // knex
+
+  await seedDictionaryTablesData()
+  console.log('DictionaryTablesData seeded')
 
   await seedOperationalTablesData()
   console.log('OperationalTablesData seeded')

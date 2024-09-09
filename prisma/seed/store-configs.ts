@@ -36,6 +36,21 @@ export const storeConfigs = [
       dbName: 'dnp_dev_1',
     },
   }),
+  _create({
+    kn: 'dictionary-tables',
+    type: 'postgres',
+    createdById: users[0].id,
+    updatedById: users[0].id,
+    createdAt: '2024-05-28T06:37:43.048Z',
+    updatedAt: '2024-05-28T06:37:43.048Z',
+    data: {
+      username: 'asavchenko',
+      password: 'Orion123',
+      host: '10.4.40.2',
+      port: '5432',
+      dbName: 'dnp_dev_1',
+    },
+  }),
 ] as const
 
 function _create(defaultValues: Partial<CreateInput>): CreateInput {

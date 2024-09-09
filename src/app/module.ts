@@ -1,16 +1,18 @@
 import { Module } from '@nestjs/common'
 import { APP_FILTER } from '@nestjs/core'
-import AppController from './controller'
-import ExceptionFilter from './exception.filter'
+
+import DictionaryTableModule from '../entities/dictionary-table/module'
+import ExplorerModule from '../entities/explorer/module'
+import FilesModule from '../entities/files/module'
 import NormalizationConfigModule from '../entities/normalization-configs/module'
+import OperationalTablesModule from '../entities/operational-table/module'
 import ProcessModule from '../entities/processes/module'
 import StoreConfigModule from '../entities/store-configs/module'
-import PrismaModule from '../shared/prisma/module'
-import ExplorerModule from '../entities/explorer/module'
 import TargetTablesModule from '../entities/target-table/module'
-import OperationalTablesModule from '../entities/operational-table/module'
-import FilesModule from '../entities/files/module'
+import PrismaModule from '../shared/prisma/module'
 import TranslationsModule from '../system/translations/module'
+import AppController from './controller'
+import ExceptionFilter from './exception.filter'
 
 @Module({
   controllers: [AppController],
@@ -18,6 +20,7 @@ import TranslationsModule from '../system/translations/module'
     PrismaModule,
     NormalizationConfigModule,
     OperationalTablesModule,
+    DictionaryTableModule,
     ProcessModule,
     StoreConfigModule,
     TranslationsModule,

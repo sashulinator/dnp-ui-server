@@ -5,7 +5,7 @@ import { type DictionaryTable } from '../../src/entities/dictionary-table/dto'
 import Database from '../../src/lib/database'
 import { toDatabasConfig } from '../../src/entities/store-configs/lib/to-database-config'
 
-export default async function seedOperationalTables() {
+export default async function seedDictionaryTables() {
   const storeConfig = storeConfigs[0] as StoreConfig
   const database = new Database().setConfig(toDatabasConfig(storeConfig))
 
