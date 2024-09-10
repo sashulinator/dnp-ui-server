@@ -13,6 +13,7 @@ export const dictionaryTables = [
     tableName: 'Animals',
     nav: true,
     tableSchema: {
+      defaultView: 'table',
       items: [
         {
           id: 'animal_1',
@@ -61,9 +62,9 @@ export const dictionaryTables = [
           type: 'string',
           index: false,
           unique: false,
-        }
-      ]
-    }
+        },
+      ],
+    },
   }),
   _create({
     kn: 'employees',
@@ -71,6 +72,7 @@ export const dictionaryTables = [
     tableName: 'employees',
     nav: true,
     tableSchema: {
+      defaultView: 'table',
       items: [
         {
           id: 'id1',
@@ -95,7 +97,6 @@ export const dictionaryTables = [
           index: true,
         },
       ],
-      defaultView: 'table',
     },
   }),
 ] as const
@@ -107,6 +108,7 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
     nav: false,
     tableName: defaultValues.name ?? createId(),
     tableSchema: {
+      defaultView: 'table',
       items: [
         {
           id: 'id1',
@@ -127,7 +129,6 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
           type: 'string',
         },
       ],
-      defaultView: 'table',
     },
     createdById: users[0].id,
     updatedById: users[0].id,
