@@ -67,7 +67,7 @@ export const dictionaryTables = [
     },
   }),
   _create({
-    kn: 'employees',
+    kn: 'employeess',
     name: 'Работники',
     tableName: 'employees',
     nav: true,
