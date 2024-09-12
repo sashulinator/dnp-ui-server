@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common'
 
 import Database from '~/lib/database'
 
-import PrismaModule from '../../shared/prisma/module'
+import PrismaModule from '../prisma/module'
 import Controller from './controller'
 import Service from './service'
 

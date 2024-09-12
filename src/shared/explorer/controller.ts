@@ -1,6 +1,7 @@
 import { Body, Controller as NestJSController, Put, Search } from '@nestjs/common'
-import Service, { type FindManyParams, type UpdateParams } from './service'
+
 import { type Explorer } from './dto'
+import Service, { type FindManyParams, type UpdateParams } from './service'
 
 @NestJSController('api/v1/explorer')
 export default class ExplorerController {
@@ -14,7 +15,7 @@ export default class ExplorerController {
   @Search()
   async fetchMany(
     @Body()
-    params: FindManyParams
+    params: FindManyParams,
   ): Promise<Explorer> {
     return this.service.findMany(params)
   }

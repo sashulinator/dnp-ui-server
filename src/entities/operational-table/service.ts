@@ -4,8 +4,8 @@ import { type Prisma, type OperationalTable as PrismaOperationalTable } from '@p
 import Database from '~/lib/database'
 import { CrudService } from '~/shared/crud-service'
 
+import ExplorerService from '../../shared/explorer/service'
 import PrismaService from '../../shared/prisma/service'
-import ExplorerService from '../explorer/service'
 import type { StoreConfig } from '../store-configs/dto'
 import { toDatabasConfig } from '../store-configs/lib/to-database-config'
 import { assertTableSchema } from './assertions'
