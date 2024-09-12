@@ -1,3 +1,3 @@
 export interface MatchMode {
-  mode?: 'default' | 'insensitive'
+  caseSensitive?: boolean
 }

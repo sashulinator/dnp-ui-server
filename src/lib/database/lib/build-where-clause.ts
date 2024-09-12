@@ -55,7 +55,7 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where):
         })
       })
     } else {
-      queryBuilder.whereNot(() => {
+      queryBuilder.whereNot(function () {
         buildWhereClause(this, clonedWhere.NOT as Where)
       })
     }
@@ -87,8 +87,13 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where):
       queryBuilder.whereIn(columnName, filter.in as string[])
     } else if (typeof filter === 'object' && has(filter, 'notIn')) {
       queryBuilder.whereNotIn(columnName, filter.notIn as string[])
-      // Error
     } else {
+      if (typeof filter === 'string') {
+        queryBuilder.where(columnName, 'ilike', `${filter}%`)
+        return
+      }
+
+      // Error
       throw new BaseError('Unknown Filter', { input: filter })
     }
   }
@@ -97,5 +102,6 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where):
 }
 
 function _getLike(match: Match & MatchMode): 'like' | 'ilike' {
-  if (match.mode !== 'insensitive') return 'like'
+  if (match.caseSensitive) return 'like'
+  return 'ilike'
 }
