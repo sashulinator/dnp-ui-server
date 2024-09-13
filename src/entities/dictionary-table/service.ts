@@ -67,10 +67,8 @@ export default class DictionaryTableService extends CrudService<
     return this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
         await databaseTrx.createTable(params.data.tableName, {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          items: tableSchema.items as any,
+          items: [{ columnName: '_id', type: 'increments' }, ...(tableSchema.items as any[])],
         })
-
         return prismaTrx.dictionaryTable.create(this._prepareSelectIncludeParams(params))
       })
     })
