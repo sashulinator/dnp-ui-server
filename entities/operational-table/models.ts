@@ -2,6 +2,7 @@ import * as v from 'valibot'
 
 import { getObjectKeys } from '~/common/lib/get-object-keys'
 import { crudableSchema } from '~/common/models/crudable'
+import { schemaItemModel } from '~/common/shared/table-schema/model/model'
 
 import { userSchema } from '../user'
 
@@ -72,18 +73,12 @@ export type TableSchema = v.InferOutput<typeof tableSchemaSchema>
  */
 
 export const tableSchemaItemSchema = v.object({
-  id: v.string(),
-  name: v.string(),
-  columnName: v.string(),
-  defaultTo: v.optional(v.string()),
-  index: v.optional(v.boolean()),
-  nullable: v.optional(v.boolean()),
-  type: v.string(),
+  ...schemaItemModel.entries,
   relation: v.optional(
     v.object({
-      type: v.union([v.literal('dictionary'), v.literal('operationalTable')]),
+      type: v.union([v.literal('operationalTable'), v.literal('dictionaryTable')]),
       columnName: v.string(),
-      kn: v.string(),
+      kn: v.string(), // key name
     }),
   ),
 })
