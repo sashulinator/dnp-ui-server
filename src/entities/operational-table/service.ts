@@ -3,6 +3,7 @@ import { type Prisma, type OperationalTable as PrismaOperationalTable } from '@p
 
 import Database from '~/lib/database'
 import { CrudService } from '~/shared/crud-service'
+import { SYSNAME } from '~/shared/working-tables/constant/name'
 
 import ExplorerService from '../../shared/explorer/service'
 import PrismaService from '../../shared/prisma/service'
@@ -153,9 +154,9 @@ export default class OperationalTableService extends CrudService<
    * @returns {Promise<StoreConfig>}
    */
   async getStoreConfig(): Promise<StoreConfig> {
-    const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: 'operational-tables' } })
+    const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: SYSNAME } })
 
-    if (!storeConfig) throw new HttpException('Create StoreConfig with kn="operational-tables"', HttpStatus.NOT_FOUND)
+    if (!storeConfig) throw new HttpException(`StoreConfig with kn="${SYSNAME}" not found.`, HttpStatus.NOT_FOUND)
 
     return storeConfig as unknown as StoreConfig
   }
