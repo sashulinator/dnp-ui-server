@@ -74,6 +74,13 @@ export type TableSchema = v.InferOutput<typeof tableSchemaSchema>
 
 export const tableSchemaItemSchema = v.object({
   ...schemaItemModel.entries,
+  relation: v.optional(
+    v.object({
+      type: v.union([v.literal('operationalTable'), v.literal('dictionaryTable')]),
+      columnName: v.string(),
+      kn: v.string(), // key name
+    }),
+  ),
 })
 
 export type TableSchemaItem = v.InferOutput<typeof tableSchemaItemSchema>
