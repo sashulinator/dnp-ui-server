@@ -77,3 +77,16 @@ export const tableSchemaItemSchema = v.object({
 })
 
 export type TableSchemaItem = v.InferOutput<typeof tableSchemaItemSchema>
+
+/**
+ * Row
+ */
+
+export const rowSchema = v.objectWithRest(
+  {
+    _id: v.string(),
+  },
+  v.string(),
+)
+
+export type Row = v.InferOutput<typeof rowSchema>
