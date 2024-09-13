@@ -1,9 +1,10 @@
 import { type Knex } from 'knex'
+
 import { type Any } from '~/utils/core'
 
 export interface BuildColumnProps {
   columnName: string
-  type: 'string' | 'number' | 'boolean' | 'increments'
+  type: 'string' | 'number' | 'boolean' | 'increments' | 'date' | 'float'
   defaultTo?: Any | undefined
   unique?: boolean
   index?: boolean
