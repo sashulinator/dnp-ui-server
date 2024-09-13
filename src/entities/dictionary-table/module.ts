@@ -1,16 +1,18 @@
 import { Module } from '@nestjs/common'
 
 import Database from '~/lib/database'
+import ExplorerModule from '~/shared/explorer/module'
+import PrismaModule from '~/shared/prisma/module'
 
-import ExplorerModule from '../../shared/explorer/module'
-import PrismaModule from '../../shared/prisma/module'
 import Controller from './controller'
+import ExplorerController from './controller.explorer'
 import Service from './service'
+import ExplorerService from './service.explorer'
 
 @Module({
-  controllers: [Controller],
-  providers: [Service, Database],
+  controllers: [ExplorerController, Controller],
+  providers: [Service, ExplorerService, Database],
   imports: [PrismaModule, ExplorerModule],
-  exports: [Service],
+  exports: [Service, ExplorerService],
 })
 export default class DictionaryTableModule {}

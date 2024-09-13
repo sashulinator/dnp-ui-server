@@ -3,6 +3,7 @@ import { type Prisma, type DictionaryTable as PrismaDictionaryTable } from '@pri
 
 import Database from '~/lib/database'
 import { CrudService } from '~/shared/crud-service'
+import { SYSNAME } from '~/shared/working-tables/constant/name'
 
 import ExplorerService from '../../shared/explorer/service'
 import PrismaService from '../../shared/prisma/service'
@@ -67,6 +68,7 @@ export default class DictionaryTableService extends CrudService<
     return this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
         await databaseTrx.createTable(params.data.tableName, {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           items: [{ columnName: '_id', type: 'increments' }, ...(tableSchema.items as any[])],
         })
         return prismaTrx.dictionaryTable.create(this._prepareSelectIncludeParams(params))
@@ -144,9 +146,9 @@ export default class DictionaryTableService extends CrudService<
    * @returns {Promise<StoreConfig>}
    */
   async getStoreConfig(): Promise<StoreConfig> {
-    const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: 'dictionary-tables' } })
+    const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: SYSNAME } })
 
-    if (!storeConfig) throw new HttpException('Create StoreConfig with kn="dictionary-tables"', HttpStatus.NOT_FOUND)
+    if (!storeConfig) throw new HttpException(`Create StoreConfig with ${SYSNAME}`, HttpStatus.NOT_FOUND)
 
     return storeConfig as unknown as StoreConfig
   }

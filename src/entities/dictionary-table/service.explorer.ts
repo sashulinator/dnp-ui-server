@@ -21,20 +21,20 @@ export type ExplorerDeleteParams = { kn: string; where: Where }
 export type ExplorerUpdateParams = { kn: string; input: { _id: string } & Record<string, string> }
 
 @Injectable()
-export default class OperationalTableService {
+export default class DictionaryTableService {
   constructor(
     private explorerService: ExplorerService,
-    private operationalTableService: Service,
+    private dictionaryTableService: Service,
   ) {}
 
   async explorerFindManyAndCountRows(params: ExplorerFindManyParams) {
-    const operationalTable = await this.operationalTableService.getUnique({ where: { kn: params.kn } })
-    const storeConfig = await this.operationalTableService.getStoreConfig()
+    const dictionaryTable = await this.dictionaryTableService.getUnique({ where: { kn: params.kn } })
+    const storeConfig = await this.dictionaryTableService.getStoreConfig()
 
-    assertTableSchema(operationalTable.tableSchema)
+    assertTableSchema(dictionaryTable.tableSchema)
 
     const searchOR = params.searchQuery
-      ? operationalTable.tableSchema.items.reduce<Record<string, StringFilter>[]>((acc, item) => {
+      ? dictionaryTable.tableSchema.items.reduce<Record<string, StringFilter>[]>((acc, item) => {
           if (item.index) acc.push({ [item.columnName]: params.searchQuery })
           return acc
         }, [])
@@ -46,7 +46,7 @@ export default class OperationalTableService {
       sort: params.sort,
       where: { AND: [{ OR: searchOR }, params.where] },
       type: 'postgres',
-      paths: [storeConfig.data.dbName, operationalTable.tableName],
+      paths: [storeConfig.data.dbName, dictionaryTable.tableName],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -59,18 +59,18 @@ export default class OperationalTableService {
 
     return {
       explorer,
-      operationalTable,
+      dictionaryTable,
     }
   }
 
   async explorerDelete(params: ExplorerDeleteParams) {
-    const operationalTable = await this.operationalTableService.getUnique({ where: { kn: params.kn } })
-    const storeConfig = await this.operationalTableService.getStoreConfig()
+    const dictionaryTable = await this.dictionaryTableService.getUnique({ where: { kn: params.kn } })
+    const storeConfig = await this.dictionaryTableService.getStoreConfig()
 
     const deleteParams: Required<DeleteParams> = {
       where: params.where,
       type: 'postgres',
-      paths: [storeConfig.data.dbName, operationalTable.tableName],
+      paths: [storeConfig.data.dbName, dictionaryTable.tableName],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -83,18 +83,18 @@ export default class OperationalTableService {
 
     return {
       row,
-      operationalTable,
+      dictionaryTable,
     }
   }
 
   async explorerCreate(params: ExplorerCreateParams) {
-    const operationalTable = await this.operationalTableService.getUnique({ where: { kn: params.kn } })
-    const storeConfig = await this.operationalTableService.getStoreConfig()
+    const dictionaryTable = await this.dictionaryTableService.getUnique({ where: { kn: params.kn } })
+    const storeConfig = await this.dictionaryTableService.getStoreConfig()
 
     const createParams: Required<CreateParams> = {
       input: params.input,
       type: 'postgres',
-      paths: [storeConfig.data.dbName, operationalTable.tableName],
+      paths: [storeConfig.data.dbName, dictionaryTable.tableName],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -107,19 +107,19 @@ export default class OperationalTableService {
 
     return {
       row,
-      operationalTable,
+      dictionaryTable,
     }
   }
 
   async explorerUpdate(params: ExplorerUpdateParams) {
-    const operationalTable = await this.operationalTableService.getUnique({ where: { kn: params.kn } })
-    const storeConfig = await this.operationalTableService.getStoreConfig()
+    const dictionaryTable = await this.dictionaryTableService.getUnique({ where: { kn: params.kn } })
+    const storeConfig = await this.dictionaryTableService.getStoreConfig()
 
     const updateParams: Required<UpdateParams> = {
       input: params.input,
       where: { _id: params.input._id },
       type: 'postgres',
-      paths: [storeConfig.data.dbName, operationalTable.tableName],
+      paths: [storeConfig.data.dbName, dictionaryTable.tableName],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -132,7 +132,7 @@ export default class OperationalTableService {
 
     return {
       row,
-      operationalTable,
+      dictionaryTable,
     }
   }
 }
