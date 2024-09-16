@@ -1,8 +1,8 @@
 import * as v from 'valibot'
 import { normalizationConfigSchema } from '../normalization-config'
-import { creatableSchema } from '~/common/models/crudable'
-import { getObjectKeys } from '~/common/lib/get-object-keys'
 import { userSchema } from '../user'
+import { getObjectKeys } from '~/common/lib/get-object-keys'
+import { creatableSchema } from '~/common/models/crudable'
 
 /**
  * BaseProcess
