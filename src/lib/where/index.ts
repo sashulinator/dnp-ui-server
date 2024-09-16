@@ -1,1 +1,1 @@
-export * from '~/common/lib/where'
+export * from '~/common/shared/where'
