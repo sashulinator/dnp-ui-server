@@ -10,6 +10,8 @@ export const explorerSchema = v.object({
   type: v.lazy(() => typeSchema),
   items: v.array(v.lazy(() => itemSchema)),
   total: v.number(),
+  // Название ключа в items.data который является id
+  idKey: v.union([v.number(), v.string()]),
 })
 
 export type Explorer = v.InferOutput<typeof explorerSchema>
@@ -20,7 +22,6 @@ export type Explorer = v.InferOutput<typeof explorerSchema>
 
 export const itemSchema = v.object({
   type: v.lazy(() => typeSchema),
-  name: v.pipe(v.string(), v.nonEmpty()),
   data: v.union([v.object({}), v.never()]),
 })
 
