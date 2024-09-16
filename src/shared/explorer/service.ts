@@ -72,7 +72,8 @@ export default class ExplorerService {
       type,
       name: dbName,
       total: count,
-      items: tables.map((table) => ({ type: 'table', name: table.tablename, data: {} })),
+      idKey: 'name',
+      items: tables.map((table) => ({ type: 'table', data: { name: table.tablename } })),
     }
   }
 
@@ -105,9 +106,9 @@ export default class ExplorerService {
       name: tableName,
       type: 'table',
       total: count,
+      idKey: pk,
       items: rows.map((row) => ({
         type: 'row',
-        name: row[pk],
         data: row,
       })),
     }
