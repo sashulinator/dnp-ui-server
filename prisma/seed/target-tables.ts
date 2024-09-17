@@ -1,6 +1,5 @@
 import { type Prisma, type PrismaClient } from '@prisma/client'
 import { users } from './users'
-import { tableSchemas } from './table-schemas'
 import { createId } from '@paralleldrive/cuid2'
 
 const targetTableName = 'targetTable'
@@ -12,8 +11,31 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
   const instance: CreateInput = {
     kn: defaultValues.kn ?? createId(),
     name: defaultValues.name ?? createId(),
+    nav: false,
     tableName: defaultValues.name ?? createId(),
-    tableSchemaKn: tableSchemas[0].kn,
+    tableSchema: {
+      defaultView: 'table',
+      items: [
+        {
+          id: 'id1',
+          columnName: 'column1',
+          name: 'Колонка1',
+          type: 'string',
+        },
+        {
+          id: 'id2',
+          columnName: 'column2',
+          name: 'Колонка2',
+          type: 'string',
+        },
+        {
+          id: 'id3',
+          columnName: 'column3',
+          name: 'Колонка3',
+          type: 'string',
+        },
+      ],
+    },
     createdById: users[0].id,
     updatedById: users[0].id,
     ...defaultValues,

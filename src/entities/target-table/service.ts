@@ -1,217 +1,151 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { Prisma, type TargetTable as PrismaTargetTable } from '@prisma/client'
+import { type Prisma, type TargetTable as PrismaTargetTable } from '@prisma/client'
 
-import { isInstanceOf } from 'utils/core'
+import Database from '~/lib/database'
+import { CrudService } from '~/shared/crud-service'
+import { SYSNAME } from '~/shared/working-tables/constant/name'
 
+import ExplorerService from '../../shared/explorer/service'
 import PrismaService from '../../shared/prisma/service'
-import { type CreateTargetTable, type UpdateTargetTable } from './dto'
+import type { StoreConfig } from '../store-configs/dto'
+import { toDatabasConfig } from '../store-configs/lib/to-database-config'
+import { assertTableSchema } from './assertions'
+import { type TableSchemaItem } from './dto'
+
+export type TargetTable = PrismaTargetTable
+export type CreateTargetTable = Prisma.TargetTableUncheckedCreateInput
+export type UpdateTargetTable = Prisma.TargetTableUncheckedUpdateInput
 
 export type WhereUniqueInput = Prisma.TargetTableWhereUniqueInput
 export type WhereInput = Prisma.TargetTableWhereInput
 export type OrderByWithRelationInput = Prisma.TargetTableOrderByWithRelationInput
 export type Select = Prisma.TargetTableSelect
-
-const TAKE = 100
-const ORDER_BY: OrderByWithRelationInput = { updatedAt: 'desc' }
+export type Include = Prisma.TargetTableInclude
 
 @Injectable()
-export default class TargetTableService {
-  constructor(private prisma: PrismaService) {}
+export default class TargetTableService extends CrudService<TargetTable, CreateTargetTable, UpdateTargetTable> {
+  constructor(
+    protected prisma: PrismaService,
+    private explorerService: ExplorerService,
+    private database: Database,
+  ) {
+    const include: Include = { updatedBy: true, createdBy: true }
+    const orderBy: OrderByWithRelationInput = { updatedAt: 'desc' }
 
-  /**
-   * ------------ GET FIRST ------------
-   *
-   * Get the first targetTable that matches the given `whereUniqueInput`.
-   * If no targetTable is found, throw a `HttpException` with status `NOT_FOUND`.
-   *
-   * @param {WhereUniqueInput} whereUniqInput The `whereUniqueInput` to match
-   * @returns {Promise<PrismaTargetTable>} The found targetTable
-   * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no targetTable is found
-   */
-  async getFirst(whereUniqInput: WhereUniqueInput): Promise<PrismaTargetTable> {
-    return this.prisma.targetTable
-      .findFirstOrThrow({
-        where: whereUniqInput,
-      })
-      .catch((error) => {
-        if (!isInstanceOf(error, Prisma.PrismaClientKnownRequestError) || error.code !== 'P2025') throw error
-        throw new HttpException('Not found', HttpStatus.NOT_FOUND)
-      })
-  }
-
-  /**
-   * ------------ GET UNIQUE ------------
-   *
-   * Get the unique targetTable that matches the given `whereUniqueInput`.
-   * If no targetTable is found, throw a `HttpException` with status `NOT_FOUND`.
-   *
-   * @param {WhereUniqueInput} whereUniqInput The `whereUniqueInput` to match
-   * @returns {Promise<PrismaTargetTable>} The found targetTable
-   * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no targetTable is found
-   */
-  async getUnique(whereUniqInput: WhereUniqueInput): Promise<PrismaTargetTable> {
-    return this.prisma.targetTable
-      .findUniqueOrThrow({
-        where: whereUniqInput,
-      })
-      .catch((error) => {
-        if (!isInstanceOf(error, Prisma.PrismaClientKnownRequestError) || error.code !== 'P2025') throw error
-        throw new HttpException('Not found', HttpStatus.NOT_FOUND)
-      })
-  }
-
-  /**
-   * ------------ FIND FIRST ------------
-   *
-   * Find the first targetTable that matches the given `whereInput`
-   *
-   * @param {Object} params - The parameters for the query
-   * @param {WhereInput} params.where - A WHERE clause for the query
-   * @param {Select} params.select - A SELECT clause for the query
-   * @returns {Promise<PrismaTargetTable | null>} - The found targetTable or `null` if no targetTable is found
-   */
-  async findFirst(
-    params: {
-      where?: WhereInput
-      select?: Select
-    } = {}
-  ): Promise<PrismaTargetTable | null> {
-    return this.prisma.targetTable.findFirst(params)
-  }
-
-  /**
-   * ------------ FIND UNIQUE ------------
-   *
-   * Find the unique targetTable that matches the given `whereUniqueInput`.
-   * If no targetTable is found, return `null`.
-   *
-   * @param {WhereUniqueInput} whereUniqInput The `whereUniqueInput` to match
-   * @returns {Promise<PrismaTargetTable | null>} The found targetTable or `null` if no targetTable is found
-   */
-  async findUnique(whereUniqInput: WhereUniqueInput): Promise<PrismaTargetTable | null> {
-    return this.prisma.targetTable.findUnique({
-      where: whereUniqInput,
-    })
-  }
-
-  /**
-   * ------------ FIND MANY ------------
-   *
-   * Find many targetTables based on the given query parameters
-   *
-   * @param {number} params.skip The number of results to skip
-   * @param {number} params.take The number of results to return
-   * @param {WhereUniqueInput} params.cursor The cursor to start from
-   * @param {WhereInput} params.where A WHERE clause for the query
-   * @param {OrderByWithRelationInput} params.orderBy An ORDER BY clause for the query
-   * @returns {Promise<PrismaTargetTable[]>} A promise containing the targetTables
-   */
-  async findMany(
-    params: {
-      skip?: number
-      take?: number
-      cursor?: WhereUniqueInput
-      where?: WhereInput
-      orderBy?: OrderByWithRelationInput
-      select?: Select
-    } = {}
-  ): Promise<PrismaTargetTable[]> {
-    const { skip, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
-
-    return this.prisma.targetTable.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    })
-  }
-
-  /**
-   * ------------ FIND AND COUNT MANY ------------
-   *
-   * Find many targetTables and return the total count of the results
-   *
-   * @param {number} params.skip The number of results to skip
-   * @param {number} params.take The number of results to return
-   * @param {WhereUniqueInput} params.cursor The cursor to start from
-   * @param {WhereInput} params.where A WHERE clause for the query
-   * @param {OrderByWithRelationInput} params.orderBy An ORDER BY clause for the query
-   * @returns {Promise<[PrismaTargetTable[], number]>} A promise containing the targetTables and the total count of the results
-   */
-  async findAndCountMany(
-    params: {
-      skip?: number
-      take?: number
-      cursor?: WhereUniqueInput
-      where?: WhereInput
-      orderBy?: OrderByWithRelationInput
-      select?: Select
-    } = {}
-  ): Promise<[PrismaTargetTable[], number]> {
-    const { skip, select, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
-
-    const commonArgs = {
-      cursor,
-      where,
-      orderBy,
-    }
-
-    return this.prisma.$transaction([
-      this.prisma.targetTable.findMany({ ...commonArgs, take, skip, select }),
-      this.prisma.targetTable.count(commonArgs),
-    ])
-  }
-
-  /**
-   * ------------ CREATE ------------
-   *
-   * Create a new targetTable
-   *
-   * @param {CreateInput} createInput The data to create the targetTable with
-   * @returns {Promise<PrismaTargetTable>} A promise containing the created targetTable
-   * @throws {HttpException} HttpException with status code 409 if the targetTable already exists
-   */
-  async create(createInput: CreateTargetTable): Promise<PrismaTargetTable> {
-    const item = await this.prisma.targetTable.findUnique({ where: { kn: createInput.kn } })
-
-    if (item) {
-      throw new HttpException(`TargetTable with kn "${createInput.kn}" already exists`, HttpStatus.CONFLICT)
-    }
-
-    return this.prisma.targetTable.create({
-      data: {
-        ...createInput,
-        createdById: 'tz4a98xxat96iws9zmbrgj3a',
-        updatedById: 'tz4a98xxat96iws9zmbrgj3a',
+    super(
+      {
+        take: 100,
+        orderBy,
+        include,
       },
+      {
+        count: prisma.targetTable.count.bind(prisma),
+        create: prisma.targetTable.create.bind(prisma),
+        update: prisma.targetTable.update.bind(prisma),
+        delete: prisma.targetTable.delete.bind(prisma),
+        getFirst: prisma.targetTable.findFirstOrThrow.bind(prisma),
+        getUnique: prisma.targetTable.findUniqueOrThrow.bind(prisma),
+        findFirst: prisma.targetTable.findFirst.bind(prisma),
+        findMany: prisma.targetTable.findMany.bind(prisma),
+        findUnique: prisma.targetTable.findUnique.bind(prisma),
+        transaction: prisma.$transaction.bind(prisma),
+      },
+    )
+  }
+
+  async create(params: { data: CreateTargetTable; select?: Select; include?: Include }): Promise<TargetTable> {
+    const storeConfig = await this.getStoreConfig()
+
+    assertTableSchema(params.data.tableSchema)
+    const tableSchema = params.data.tableSchema
+
+    this.database.setConfig(toDatabasConfig(storeConfig))
+
+    return this.prisma.$transaction(async (prismaTrx) => {
+      return this.database.transaction(async (databaseTrx) => {
+        await databaseTrx.createTable(params.data.tableName, {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          items: [{ columnName: '_id', type: 'increments' }, ...(tableSchema.items as any[])],
+        })
+        return prismaTrx.targetTable.create(this._prepareSelectIncludeParams(params))
+      })
+    })
+  }
+
+  async update(params: {
+    data: UpdateTargetTable
+    select?: Select
+    include?: Include
+    where: WhereUniqueInput
+  }): Promise<TargetTable> {
+    const currentTargetTable = await this.getUnique({ where: params.where })
+    const storeConfig = await this.getStoreConfig()
+
+    this.database.setConfig(toDatabasConfig(storeConfig))
+
+    const currentTableSchema = currentTargetTable.tableSchema
+    assertTableSchema(currentTableSchema, "Невалидные данные в Целевой таблице в поле 'tableSchema' в БД")
+
+    const updateTableSchema = params.data.tableSchema
+    assertTableSchema(updateTableSchema, "Невалидные данные в Целевой таблице в поле 'tableSchema'") // невозможная ошибка
+
+    const columnsToRename: [TableSchemaItem, TableSchemaItem][] = []
+
+    for (let ci = 0; ci < updateTableSchema.items.length; ci++) {
+      const updateItem = updateTableSchema.items[ci]
+      for (let ui = 0; ui < currentTableSchema.items.length; ui++) {
+        const currentItem = currentTableSchema.items[ui]
+        if (updateItem.id !== currentItem.id) continue
+        if (updateItem.columnName !== currentItem.columnName) columnsToRename.push([currentItem, updateItem])
+      }
+    }
+
+    // Если в новой схеме не находим колонки из текущей, то удалим их
+    const columnsToDrop: TableSchemaItem[] = currentTableSchema.items.filter((currentItem) => {
+      const found = updateTableSchema.items.find((itemToUpdate) => itemToUpdate.id === currentItem.id)
+      return !found
+    })
+
+    // Если в текущей схеме не находим колонки из новой, то добавим их
+    const columnsToAdd: TableSchemaItem[] = updateTableSchema.items.filter((itemToUpdate) => {
+      const found = currentTableSchema.items.find((currentItem) => currentItem.id === itemToUpdate.id)
+      return !found
+    })
+
+    return this.prisma.$transaction(async (prismaTrx) => {
+      return this.database.transaction(async (databaseTrx) => {
+        await databaseTrx.dropColumns(
+          currentTargetTable.tableName,
+          columnsToDrop.map((item) => item.columnName),
+        )
+        await databaseTrx.alterTable(currentTargetTable.tableName, {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          items: columnsToAdd as any,
+        })
+        await databaseTrx.renameColumns(
+          currentTargetTable.tableName,
+          columnsToRename.map(([currentItem, updateItem]) => ({
+            from: currentItem.columnName,
+            to: updateItem.columnName,
+          })),
+        )
+
+        return prismaTrx.targetTable.update(this._prepareSelectIncludeParams(params))
+      })
     })
   }
 
   /**
-   * ------------ UPDATE ------------
-   *
-   * Update a targetTable
-   *
-   * @param {WhereUniqueInput} where A WHERE clause for the query
-   * @param {UpdateInput} data The data to update the targetTable with
-   * @returns {Promise<PrismaTargetTable>} A promise containing the updated targetTable
+   * Получить конфигурацию хранилища
+   * Пояснение: в системе для промежуточных таблиц должна быть создана конфигурация хранилица,
+   * в которой указаны параметры подключения к базе данных
+   * @returns {Promise<StoreConfig>}
    */
-  async update(where: WhereUniqueInput, data: UpdateTargetTable): Promise<PrismaTargetTable> {
-    return this.prisma.targetTable.update({ where, data })
-  }
+  async getStoreConfig(): Promise<StoreConfig> {
+    const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: SYSNAME } })
 
-  /**
-   * ------------ REMOVE ------------
-   *
-   * Remove a targetTable
-   *
-   * @param {WhereUniqueInput} where A WHERE clause for the query
-   * @returns {Promise<PrismaTargetTable>} A promise containing the removed targetTable
-   */
-  async remove(where: WhereUniqueInput): Promise<PrismaTargetTable> {
-    return this.prisma.targetTable.delete({
-      where,
-    })
+    if (!storeConfig) throw new HttpException(`Create StoreConfig with ${SYSNAME}`, HttpStatus.NOT_FOUND)
+
+    return storeConfig as unknown as StoreConfig
   }
 }
