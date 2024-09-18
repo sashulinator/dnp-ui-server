@@ -2,7 +2,7 @@ import * as v from 'valibot'
 
 import { getObjectKeys } from '~/common/lib/get-object-keys'
 import { crudableSchema } from '~/common/models/crudable'
-import { schemaItemModel } from '~/common/shared/table-schema/model/model'
+import { schemaItemModel } from '~/common/shared/working-table/table-schema/model/model'
 
 import { userSchema } from '../user'
 
