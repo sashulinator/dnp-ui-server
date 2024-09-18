@@ -74,8 +74,6 @@ model StoreConfig {
 model TableSchema {
   kn           String        @db.VarChar(24)
   data         Json
-  // relations
-  // targetTables TargetTable[]
   // meta
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -125,11 +123,8 @@ model TargetTable {
   kn            String      @db.VarChar(24)
   name          String      @db.VarChar(24)
   tableName     String      @db.VarChar(24)
-  // tableSchemaKn String      @db.VarChar(24)
   tableSchema Json
   nav         Boolean
-  // relations
-  // tableSchema   TableSchema @relation(fields: [tableSchemaKn], references: [kn])
   // meta
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
