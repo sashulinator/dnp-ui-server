@@ -11,11 +11,15 @@ export default class Controller {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    const fileName = `${createId()}-${file.originalname}`
+    const fileNameSplitted = file.originalname.split('.')
 
-    await this.service.create(file, fileName)
+    const fileExt = fileNameSplitted[fileNameSplitted.length - 1]
 
-    return { fileName }
+    const fileId = `${createId()}.${fileExt}`
+
+    await this.service.create(file, fileId)
+
+    return { fileId }
   }
 
   @Get(':id')
