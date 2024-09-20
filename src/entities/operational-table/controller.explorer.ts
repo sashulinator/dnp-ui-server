@@ -4,12 +4,21 @@ import Service, {
   type ExplorerCreateParams,
   type ExplorerDeleteParams,
   type ExplorerFindManyParams,
+  ExplorerImportParams,
   type ExplorerUpdateParams,
 } from './service.explorer'
 
 @NestJSController('api/v1/operational-tables/explorer')
 export default class OperationalTableController {
   constructor(private readonly service: Service) {}
+
+  /**
+   * ------------ IMPORT ------------
+   */
+  @Post('import')
+  async explorerImport(@Body() body: ExplorerImportParams) {
+    return this.service.explorerImport(body)
+  }
 
   /**
    * ------------ CREATE ------------

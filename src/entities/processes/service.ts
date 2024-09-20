@@ -1,8 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { type Prisma, type Process as PrismaProcess } from '@prisma/client'
-import MinioService from '~/shared/minio/service'
-import PrismaService from '../../shared/prisma/service'
+
 import { CrudService } from '~/shared/crud-service'
+import MinioService from '~/shared/minio/service'
+
+import PrismaService from '../../shared/prisma/service'
 
 export type Process = PrismaProcess
 export type CreateProcess = Prisma.ProcessUncheckedCreateInput
@@ -18,9 +20,9 @@ export type Select = Prisma.ProcessSelect
 export default class Service extends CrudService<Process, CreateProcess, UpdateProcess> {
   constructor(
     protected prisma: PrismaService,
-    protected minio: MinioService
+    protected minio: MinioService,
   ) {
-    const include: Include = { normalizationConfig: true, createdBy: true }
+    const include: Include = { createdBy: true }
     const orderBy: OrderByWithRelationInput = { createdAt: 'desc' }
 
     super(
@@ -40,8 +42,12 @@ export default class Service extends CrudService<Process, CreateProcess, UpdateP
         findMany: prisma.process.findMany.bind(prisma),
         findUnique: prisma.process.findUnique.bind(prisma),
         transaction: prisma.$transaction.bind(prisma),
-      }
+      },
     )
+  }
+
+  async createWithRuntimeConfig(params: { data: CreateProcess; select?: Select; include?: Include }): Promise<Process> {
+    return super.create(params)
   }
 
   async create(params: { data: CreateProcess; select?: Select; include?: Include }): Promise<Process> {
@@ -54,7 +60,7 @@ export default class Service extends CrudService<Process, CreateProcess, UpdateP
     if (!normalizationConfig) {
       throw new HttpException(
         `NormalizationConfig with id=${params.data.normalizationConfigId} not found`,
-        HttpStatus.NOT_FOUND
+        HttpStatus.NOT_FOUND,
       )
     }
 

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { createId } from '@paralleldrive/cuid2'
 
 import ExplorerService, {
   type CreateParams,
@@ -8,8 +9,11 @@ import ExplorerService, {
   type UpdateParams,
   type Where,
 } from '~/shared/explorer/service'
+import MinioService from '~/shared/minio/service'
 
+import ProcessService from '../processes/service'
 import { assertTableSchema } from './assertions'
+import { createImportOperationalTableNormalizationConfig } from './lib/create-import-operationtal-table-norm-config'
 import Service from './service'
 
 export type ExplorerFindManyParams = FindManyParams & {
@@ -19,12 +23,15 @@ export type ExplorerFindManyParams = FindManyParams & {
 export type ExplorerCreateParams = { kn: string; input: Record<string, unknown> }
 export type ExplorerDeleteParams = { kn: string; where: Where }
 export type ExplorerUpdateParams = { kn: string; input: { _id: string } & Record<string, string> }
+export type ExplorerImportParams = { fileId: string; tableName: string }
 
 @Injectable()
 export default class OperationalTableService {
   constructor(
     private explorerService: ExplorerService,
     private operationalTableService: Service,
+    protected processService: ProcessService,
+    protected minio: MinioService,
   ) {}
 
   async explorerFindManyAndCountRows(params: ExplorerFindManyParams) {
@@ -134,5 +141,43 @@ export default class OperationalTableService {
       row,
       operationalTable,
     }
+  }
+
+  async explorerImport(params: ExplorerImportParams) {
+    const fileNameSplitted = params.fileId.split('.')
+
+    const fileExt = fileNameSplitted[fileNameSplitted.length - 1]
+
+    // Prepare the filename and buffer for uploading to Minio
+    const configFileName = `${'operational-table-import-' + createId()}.json`
+    const buffer = JSON.stringify(
+      createImportOperationalTableNormalizationConfig(params.fileId, fileExt, params.tableName),
+    )
+
+    // Upload the normalizationConfig to Minio
+    await this.minio.putObject('import-runtime-configs', configFileName, buffer)
+
+    // Set the headers for the HTTP request
+    const headers = new Headers()
+    headers.set('Authorization', 'Basic ' + Buffer.from('airflow:airflow').toString('base64'))
+    headers.set('Content-Type', 'application/json;charset=UTF-8')
+
+    await fetch('http://10.4.40.30:8080/api/v1/dags/dnp_rest_api_trigger/dagRuns', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        conf: {
+          dnp_s3_config_path: `import-runtime-configs/${configFileName}`,
+        },
+      }),
+    })
+
+    return this.processService.createWithRuntimeConfig({
+      data: {
+        id: createId(),
+        type: 'import',
+        data: buffer,
+      },
+    })
   }
 }
