@@ -1,8 +1,17 @@
 import * as v from 'valibot'
-import { normalizationConfigSchema } from '../normalization-config'
-import { userSchema } from '../user'
+
 import { getObjectKeys } from '~/common/lib/get-object-keys'
 import { creatableSchema } from '~/common/models/crudable'
+
+import {
+  driverUniversalServicesSchema,
+  executableSchema,
+  normalizationConfigSchema,
+  preloadJarsSchema,
+  sdkSchema,
+  sparkSchema,
+} from '../normalization-config'
+import { userSchema } from '../user'
 
 /**
  * BaseProcess
@@ -11,6 +20,14 @@ import { creatableSchema } from '~/common/models/crudable'
 export const baseProcessSchema = v.object({
   id: v.pipe(v.string(), v.nonEmpty()),
   normalizationConfigId: v.pipe(v.string(), v.nonEmpty()),
+  type: v.pipe(v.string(), v.nonEmpty()),
+  data: v.object({
+    executables: v.array(executableSchema),
+    sdk: sdkSchema,
+    spark: sparkSchema,
+    'preload-jars': preloadJarsSchema,
+    'driver-universal-services': driverUniversalServicesSchema,
+  }),
   ...creatableSchema.entries,
 })
 
