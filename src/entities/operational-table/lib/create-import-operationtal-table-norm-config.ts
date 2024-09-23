@@ -39,8 +39,9 @@ export const createImportOperationalTableNormalizationConfig = (
           connections: {
             jdbc_base: {
               connection: {
-                url: 'jdbc:postgresql://10.4.40.2:5432/dnp_dev_1?user=asavchenko&password=Orion123',
+                url: 'jdbc:postgresql://10.4.40.11:5432/dnp_db?user=dnp_user&password=dnp_db_password',
                 schema: 'public',
+                truncate: 'true',
               },
             },
           },
