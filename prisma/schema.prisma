@@ -72,15 +72,15 @@ model StoreConfig {
 }
 
 model TableSchema {
-  kn           String        @db.VarChar(24)
-  data         Json
+  kn          String   @db.VarChar(24)
+  data        Json
   // meta
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  createdById  String        @db.VarChar(24)
-  updatedById  String        @db.VarChar(24)
-  createdBy    User          @relation("tableSchemasCreators", fields: [createdById], references: [id])
-  updatedBy    User          @relation("tableSchemasUpdaters", fields: [updatedById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String   @db.VarChar(24)
+  updatedById String   @db.VarChar(24)
+  createdBy   User     @relation("tableSchemasCreators", fields: [createdById], references: [id])
+  updatedBy   User     @relation("tableSchemasUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
 }
@@ -120,18 +120,18 @@ model DictionaryTable {
 }
 
 model TargetTable {
-  kn            String      @db.VarChar(24)
-  name          String      @db.VarChar(24)
-  tableName     String      @db.VarChar(24)
+  kn          String   @db.VarChar(24)
+  name        String   @db.VarChar(24)
+  tableName   String   @db.VarChar(24)
   tableSchema Json
   nav         Boolean
   // meta
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  createdById   String      @db.VarChar(24)
-  updatedById   String      @db.VarChar(24)
-  createdBy     User        @relation("targetTableCreators", fields: [createdById], references: [id])
-  updatedBy     User        @relation("targetTableUpdaters", fields: [updatedById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String   @db.VarChar(24)
+  updatedById String   @db.VarChar(24)
+  createdBy   User     @relation("targetTableCreators", fields: [createdById], references: [id])
+  updatedBy   User     @relation("targetTableUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
 }
