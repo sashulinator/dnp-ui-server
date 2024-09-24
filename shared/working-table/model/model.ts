@@ -34,12 +34,9 @@ export const schemaItemModelVariants = v.variant('type', [
   v.object({
     type: v.literal('string'),
     maxLength: v.number(),
-    decimalPlaces: v.optional(v.number()),
-    isNegativeAllowed: v.optional(v.boolean()),
   }),
   v.object({
     type: v.literal('integer'),
-    decimalPlaces: v.optional(v.number()),
     isNegativeAllowed: v.boolean(),
     maxLength: v.number(),
   }),
@@ -57,19 +54,16 @@ export const schemaItemModelVariants = v.variant('type', [
   }),
   v.object({
     type: v.literal('byte'),
-    decimalPlaces: v.optional(v.number()),
     isNegativeAllowed: v.boolean(),
     maxLength: v.number(),
   }),
   v.object({
     type: v.literal('short'),
-    decimalPlaces: v.optional(v.number()),
     isNegativeAllowed: v.boolean(),
     maxLength: v.number(),
   }),
   v.object({
     type: v.literal('long'),
-    decimalPlaces: v.optional(v.number()),
     isNegativeAllowed: v.boolean(),
     maxLength: v.number(),
   }),
@@ -81,15 +75,9 @@ export const schemaItemModelVariants = v.variant('type', [
   }),
   v.object({
     type: v.literal('boolean'),
-    decimalPlaces: v.optional(v.number()),
-    maxLength: v.optional(v.number()),
-    isNegativeAllowed: v.optional(v.boolean()),
   }),
   v.object({
     type: v.literal('date'),
-    decimalPlaces: v.optional(v.number()),
-    maxLength: v.optional(v.number()),
-    isNegativeAllowed: v.optional(v.boolean()),
   }),
 ])
 
