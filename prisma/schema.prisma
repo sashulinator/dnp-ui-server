@@ -25,9 +25,6 @@ model User {
   storeConfigCreators StoreConfig[] @relation("storeConfigCreators")
   storeConfigUpdaters StoreConfig[] @relation("storeConfigUpdaters")
 
-  tableSchemasCreators TableSchema[] @relation("tableSchemasCreators")
-  tableSchemasUpdaters TableSchema[] @relation("tableSchemasUpdaters")
-
   targetTableCreators TargetTable[] @relation("targetTableCreators")
   targetTableUpdaters TargetTable[] @relation("targetTableUpdaters")
 
@@ -67,20 +64,6 @@ model StoreConfig {
   updatedById String    @db.VarChar(24)
   createdBy   User      @relation("storeConfigCreators", fields: [createdById], references: [id])
   updatedBy   User      @relation("storeConfigUpdaters", fields: [updatedById], references: [id])
-
-  @@id([kn])
-}
-
-model TableSchema {
-  kn          String   @db.VarChar(24)
-  data        Json
-  // meta
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdById String   @db.VarChar(24)
-  updatedById String   @db.VarChar(24)
-  createdBy   User     @relation("tableSchemasCreators", fields: [createdById], references: [id])
-  updatedBy   User     @relation("tableSchemasUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
 }

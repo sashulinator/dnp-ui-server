@@ -1,25 +1,21 @@
 import { PrismaClient } from '@prisma/client'
 
-import { seedNormalizationConfigs } from './normalization-configs'
-import { seedProcesses } from './processes'
-import { seedTranslations } from './translations'
-import seedStoreConfigs from './store-configs'
-import seedUsers from './users'
-import seedTableSchemas from './table-schemas'
-import seedTargetTables from './target-tables'
 import seedDictionaryTables from './dictionary-tables'
 import seedDictionaryTablesData from './dictionary-tables-data'
+import { seedNormalizationConfigs } from './normalization-configs'
 import seedOperationalTables from './operational-tables'
 import seedOperationalTablesData from './operational-tables-data'
+import { seedProcesses } from './processes'
+import seedStoreConfigs from './store-configs'
+import seedTargetTables from './target-tables'
+import { seedTranslations } from './translations'
+import seedUsers from './users'
 
 const prisma = new PrismaClient()
 
 async function main() {
   await seedUsers(prisma)
   console.log('Users seeded')
-
-  await seedTableSchemas(prisma)
-  console.log('TableSchemas seeded')
 
   await seedDictionaryTables(prisma)
   console.log('DictionaryTables seeded')

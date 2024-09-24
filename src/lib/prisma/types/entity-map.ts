@@ -5,7 +5,6 @@ import type {
   Prisma,
   Process,
   StoreConfig,
-  TableSchema,
   TargetTable,
   Translation,
   User,
@@ -18,7 +17,6 @@ export type EntityMap = {
   process: Process
   storeConfig: StoreConfig
   normalizationConfig: NormalizationConfig
-  tableSchema: TableSchema
   targetTable: TargetTable
   operationalTable: OperationalTable
   dictionaryTable: DictionaryTable
