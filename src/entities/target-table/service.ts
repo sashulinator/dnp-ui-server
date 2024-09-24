@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { type Prisma, type TargetTable as PrismaTargetTable } from '@prisma/client'
 
 import Database from '~/lib/database'
-import { CrudService } from '~/shared/crud-service'
+import { Delegator } from '~/shared/crud/lib/delegator'
 import { SYSNAME } from '~/shared/working-tables/constant/name'
 
 import ExplorerService from '../../shared/explorer/service'
@@ -23,7 +23,7 @@ export type Select = Prisma.TargetTableSelect
 export type Include = Prisma.TargetTableInclude
 
 @Injectable()
-export default class TargetTableService extends CrudService<TargetTable, CreateTargetTable, UpdateTargetTable> {
+export default class TargetTableService extends Delegator<TargetTable, CreateTargetTable, UpdateTargetTable> {
   constructor(
     protected prisma: PrismaService,
     private explorerService: ExplorerService,

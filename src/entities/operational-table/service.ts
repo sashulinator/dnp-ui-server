@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { type Prisma, type OperationalTable as PrismaOperationalTable } from '@prisma/client'
 
 import Database from '~/lib/database'
-import { CrudService } from '~/shared/crud-service'
+import { CrudDelegator } from '~/shared/crud'
 import { SYSNAME } from '~/shared/working-tables/constant/name'
 
 import ExplorerService from '../../shared/explorer/service'
@@ -24,7 +24,7 @@ export type Select = Prisma.OperationalTableSelect
 export type Include = Prisma.OperationalTableInclude
 
 @Injectable()
-export default class OperationalTableService extends CrudService<
+export default class OperationalTableService extends CrudDelegator<
   OperationalTable,
   CreateOperationalTable,
   UpdateOperationalTable

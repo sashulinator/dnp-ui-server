@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 
-interface Delegate<TEntity, TCreateEntity, TUpdateEntity> {
+export interface Delegated<TEntity, TCreateEntity, TUpdateEntity> {
   getFirst: (params: {
     skip?: number
     take?: number
@@ -43,26 +43,26 @@ interface Delegate<TEntity, TCreateEntity, TUpdateEntity> {
 }
 
 @Injectable()
-export abstract class CrudService<TEntity, TCreateEntity, TUpdateEntity> {
+export abstract class Delegator<TEntity, TCreateEntity, TUpdateEntity> {
   constructor(
     public defaultParams: {
       take?: number
       orderBy?: Record<string, unknown>
       include?: Record<string, unknown>
     },
-    public delegate: Delegate<TEntity, TCreateEntity, TUpdateEntity>
+    private delegated: Delegated<TEntity, TCreateEntity, TUpdateEntity>,
   ) {}
 
   async count(params: { cursor?: _AnyRecord; where?: _AnyRecord }): Promise<number> {
-    return this.delegate.count(params)
+    return this.delegated.count(params)
   }
 
   async create(params: { data: TCreateEntity; select?: _AnyRecord; include?: _AnyRecord }): Promise<TEntity> {
-    return this.delegate.create(this._prepareSelectIncludeParams(params))
+    return this.delegated.create(this._prepareSelectIncludeParams(params))
   }
 
   async delete(params: { where: _AnyRecord; select?: _AnyRecord; include?: _AnyRecord }): Promise<TEntity> {
-    return this.delegate.delete(this._prepareSelectIncludeParams(params))
+    return this.delegated.delete(this._prepareSelectIncludeParams(params))
   }
 
   async update(params: {
@@ -71,7 +71,7 @@ export abstract class CrudService<TEntity, TCreateEntity, TUpdateEntity> {
     select?: _AnyRecord
     include?: _AnyRecord
   }): Promise<TEntity> {
-    return this.delegate.update(this._prepareSelectIncludeParams(params))
+    return this.delegated.update(this._prepareSelectIncludeParams(params))
   }
 
   async getFirst(
@@ -83,13 +83,13 @@ export abstract class CrudService<TEntity, TCreateEntity, TUpdateEntity> {
       orderBy?: Record<string, unknown>
       select?: Record<string, unknown>
       include?: Record<string, unknown>
-    } = {}
+    } = {},
   ): Promise<TEntity> {
-    return this.delegate.getFirst(this._prepareParams(params))
+    return this.delegated.getFirst(this._prepareParams(params))
   }
 
   async getUnique(params: { where: _AnyRecord; select?: _AnyRecord; include?: _AnyRecord }): Promise<TEntity> {
-    return this.delegate.getUnique(this._prepareSelectIncludeParams(params))
+    return this.delegated.getUnique(this._prepareSelectIncludeParams(params))
   }
 
   async findAndCountMany(
@@ -100,7 +100,7 @@ export abstract class CrudService<TEntity, TCreateEntity, TUpdateEntity> {
       where?: _AnyRecord
       orderBy?: _AnyRecord
       select?: _AnyRecord
-    } = {}
+    } = {},
   ): Promise<[TEntity[], number]> {
     const { skip, select, take = this.defaultParams.take, cursor, where } = params
 
@@ -109,9 +109,9 @@ export abstract class CrudService<TEntity, TCreateEntity, TUpdateEntity> {
       where,
     }
 
-    return this.delegate.transaction([
-      this.delegate.findMany(this._prepareParams({ ...commonArgs, take, skip, select })),
-      this.delegate.count(commonArgs),
+    return this.delegated.transaction([
+      this.delegated.findMany(this._prepareParams({ ...commonArgs, take, skip, select })),
+      this.delegated.count(commonArgs),
     ])
   }
 
@@ -124,9 +124,9 @@ export abstract class CrudService<TEntity, TCreateEntity, TUpdateEntity> {
       orderBy?: _AnyRecord
       select?: _AnyRecord
       include?: _AnyRecord
-    } = {}
+    } = {},
   ): Promise<TEntity | null> {
-    return this.delegate.findFirst(this._prepareParams(params))
+    return this.delegated.findFirst(this._prepareParams(params))
   }
 
   async findMany(
@@ -137,13 +137,13 @@ export abstract class CrudService<TEntity, TCreateEntity, TUpdateEntity> {
       where?: _AnyRecord
       orderBy?: _AnyRecord
       select?: _AnyRecord
-    } = {}
+    } = {},
   ): Promise<TEntity[]> {
-    return this.delegate.findMany(this._prepareParams(params))
+    return this.delegated.findMany(this._prepareParams(params))
   }
 
   async findUnique(params: { where: _AnyRecord; select?: _AnyRecord; include?: _AnyRecord }): Promise<TEntity> {
-    return this.delegate.findUnique(this._prepareSelectIncludeParams(params))
+    return this.delegated.findUnique(this._prepareSelectIncludeParams(params))
   }
 
   _prepareParams<

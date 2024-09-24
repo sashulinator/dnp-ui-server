@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { type Prisma, type Process as PrismaProcess } from '@prisma/client'
 
-import { CrudService } from '~/shared/crud-service'
+import { CrudDelegator } from '~/shared/crud'
 import MinioService from '~/shared/minio/service'
 
 import PrismaService from '../../shared/prisma/service'
@@ -17,7 +17,7 @@ export type OrderByWithRelationInput = Prisma.ProcessOrderByWithRelationInput
 export type Select = Prisma.ProcessSelect
 
 @Injectable()
-export default class Service extends CrudService<Process, CreateProcess, UpdateProcess> {
+export default class Service extends CrudDelegator<Process, CreateProcess, UpdateProcess> {
   constructor(
     protected prisma: PrismaService,
     protected minio: MinioService,
@@ -34,8 +34,8 @@ export default class Service extends CrudService<Process, CreateProcess, UpdateP
       {
         count: prisma.process.count.bind(prisma),
         create: prisma.process.create.bind(prisma),
-        delete: CrudService.notAllowed,
-        update: CrudService.notAllowed,
+        delete: CrudDelegator.notAllowed,
+        update: CrudDelegator.notAllowed,
         getFirst: prisma.process.findFirstOrThrow.bind(prisma),
         getUnique: prisma.process.findUniqueOrThrow.bind(prisma),
         findFirst: prisma.process.findFirst.bind(prisma),

@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { type Prisma, type DictionaryTable as PrismaDictionaryTable } from '@prisma/client'
 
 import Database from '~/lib/database'
-import { CrudService } from '~/shared/crud-service'
+import { CrudDelegator } from '~/shared/crud'
 import { SYSNAME } from '~/shared/working-tables/constant/name'
 
 import ExplorerService from '../../shared/explorer/service'
@@ -23,7 +23,7 @@ export type Select = Prisma.DictionaryTableSelect
 export type Include = Prisma.DictionaryTableInclude
 
 @Injectable()
-export default class DictionaryTableService extends CrudService<
+export default class DictionaryTableService extends CrudDelegator<
   DictionaryTable,
   CreateDictionaryTable,
   UpdateDictionaryTable
