@@ -63,7 +63,7 @@ export type UpdateDictionaryTable = v.InferOutput<typeof updateDictionaryTableSc
 
 export const tableSchemaSchema = v.object({
   defaultView: v.union([v.literal('tree'), v.literal('table')]),
-  items: v.array(v.lazy(() => tableSchemaItemSchema)),
+  items: v.array(v.lazy(() => schemaItemModel)),
 })
 
 export type TableSchema = v.InferOutput<typeof tableSchemaSchema>
@@ -72,9 +72,7 @@ export type TableSchema = v.InferOutput<typeof tableSchemaSchema>
  * TableSchemaItem
  */
 
-export const tableSchemaItemSchema = v.object({
-  ...schemaItemModel.entries,
-})
+export const tableSchemaItemSchema = v.intersect([schemaItemModel])
 
 export type TableSchemaItem = v.InferOutput<typeof tableSchemaItemSchema>
 

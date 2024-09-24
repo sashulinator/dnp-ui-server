@@ -72,9 +72,7 @@ export type TableSchema = v.InferOutput<typeof tableSchemaSchema>
  * TableSchemaItem
  */
 
-export const tableSchemaItemSchema = v.object({
-  ...schemaItemModel.entries,
-})
+export const tableSchemaItemSchema = v.intersect([schemaItemModel])
 
 export type TableSchemaItem = v.InferOutput<typeof tableSchemaItemSchema>
 
