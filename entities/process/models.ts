@@ -1,8 +1,8 @@
 import * as v from 'valibot'
 
-import { getObjectKeys } from '~/common/lib/get-object-keys'
-import { creatableSchema } from '~/common/models/crudable'
+import { creatableModel } from '~/common/shared/crud/models/crudable'
 
+import { getKeys } from '../../shared/dictionary'
 import {
   driverUniversalServicesSchema,
   executableSchema,
@@ -22,13 +22,13 @@ export const baseProcessSchema = v.object({
   normalizationConfigId: v.pipe(v.string(), v.nonEmpty()),
   type: v.pipe(v.string(), v.nonEmpty()),
   data: v.object({
-    executables: v.array(executableSchema),
+    executables: v.array(v.lazy(() => executableSchema)),
     sdk: sdkSchema,
     spark: sparkSchema,
     'preload-jars': preloadJarsSchema,
     'driver-universal-services': driverUniversalServicesSchema,
   }),
-  ...creatableSchema.entries,
+  ...creatableModel.entries,
 })
 
 export type BaseProcess = v.InferOutput<typeof baseProcessSchema>
@@ -56,7 +56,7 @@ export type Process = v.InferOutput<typeof processSchema>
  * CreateProcess
  */
 
-export const createProcessSchema = v.omit(baseProcessSchema, ['id', ...getObjectKeys(creatableSchema.entries)])
+export const createProcessSchema = v.omit(baseProcessSchema, ['id', ...getKeys(creatableModel.entries)])
 
 export type CreateProcess = v.InferOutput<typeof createProcessSchema>
 
@@ -64,6 +64,6 @@ export type CreateProcess = v.InferOutput<typeof createProcessSchema>
  * UpdateProcess
  */
 
-export const updateProcessSchema = v.omit(baseProcessSchema, ['id', ...getObjectKeys(creatableSchema.entries)])
+export const updateProcessSchema = v.omit(baseProcessSchema, ['id', ...getKeys(creatableModel.entries)])
 
 export type UpdateProcess = v.InferOutput<typeof updateProcessSchema>

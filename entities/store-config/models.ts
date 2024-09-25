@@ -1,6 +1,7 @@
 import * as v from 'valibot'
-import { getObjectKeys } from '../../lib/get-object-keys'
-import { crudableSchema } from '../../models/crudable'
+
+import { crudableModel } from '../../shared/crud/models/crudable'
+import { getKeys } from '../../shared/dictionary'
 import { userSchema } from '../user'
 
 /**
@@ -11,7 +12,7 @@ export const baseStoreConfigSchema = v.object({
   kn: v.pipe(v.string(), v.nonEmpty()),
   type: v.union([v.literal('postgres'), v.literal('s3')]),
   data: v.lazy(() => jdbsDataSchema),
-  ...crudableSchema.entries,
+  ...crudableModel.entries,
 })
 
 export type BaseStoreConfig = v.InferOutput<typeof baseStoreConfigSchema>
@@ -53,7 +54,7 @@ export type JdbcData = v.InferOutput<typeof jdbsDataSchema>
  * CreateStoreConfig
  */
 
-export const createStoreConfigSchema = v.omit(baseStoreConfigSchema, getObjectKeys(crudableSchema.entries))
+export const createStoreConfigSchema = v.omit(baseStoreConfigSchema, getKeys(crudableModel.entries))
 
 export type CreateStoreConfig = v.InferOutput<typeof createStoreConfigSchema>
 
@@ -61,6 +62,6 @@ export type CreateStoreConfig = v.InferOutput<typeof createStoreConfigSchema>
  * UpdateStoreConfig
  */
 
-export const updateStoreConfigSchema = v.omit(baseStoreConfigSchema, getObjectKeys(crudableSchema.entries))
+export const updateStoreConfigSchema = v.omit(baseStoreConfigSchema, getKeys(crudableModel.entries))
 
 export type UpdateStoreConfig = v.InferOutput<typeof updateStoreConfigSchema>

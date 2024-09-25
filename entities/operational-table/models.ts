@@ -1,8 +1,8 @@
 import * as v from 'valibot'
 
-import { getObjectKeys } from '~/common/lib/get-object-keys'
-import { crudableSchema } from '~/common/models/crudable'
+import { crudableModel } from '~/common/shared/crud/models/crudable'
 
+import { getKeys } from '../../shared/dictionary'
 import { columnModel, databaseTableModel } from '../../shared/working-table'
 import { userSchema } from '../user'
 
@@ -17,7 +17,7 @@ export const baseOperationalTableSchema = v.object({
   tableName: v.string(),
   tableSchema: v.lazy(() => tableSchemaSchema),
   // meta
-  ...crudableSchema.entries,
+  ...crudableModel.entries,
 })
 
 export type BaseOperationalTable = v.InferOutput<typeof baseOperationalTableSchema>
@@ -45,7 +45,7 @@ export type OperationalTable = v.InferOutput<typeof operationalTableSchema>
  * CreateOperationalTable
  */
 
-export const createOperationalTableSchema = v.omit(baseOperationalTableSchema, getObjectKeys(crudableSchema.entries))
+export const createOperationalTableSchema = v.omit(baseOperationalTableSchema, getKeys(crudableModel.entries))
 
 export type CreateOperationalTable = v.InferOutput<typeof createOperationalTableSchema>
 
@@ -53,7 +53,7 @@ export type CreateOperationalTable = v.InferOutput<typeof createOperationalTable
  * UpdateOperationalTable
  */
 
-export const updateOperationalTableSchema = v.omit(baseOperationalTableSchema, getObjectKeys(crudableSchema.entries))
+export const updateOperationalTableSchema = v.omit(baseOperationalTableSchema, getKeys(crudableModel.entries))
 
 export type UpdateOperationalTable = v.InferOutput<typeof updateOperationalTableSchema>
 
