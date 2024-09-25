@@ -21,6 +21,7 @@ export const operationalTables = [
           type: 'string',
           index: true,
           unique: true,
+          maxLength: 50,
         },
         {
           id: 'id2',
@@ -28,6 +29,7 @@ export const operationalTables = [
           name: 'Фирма',
           type: 'string',
           index: true,
+          maxLength: 50,
         },
         {
           id: 'id3',
@@ -35,18 +37,21 @@ export const operationalTables = [
           name: 'Модель',
           type: 'string',
           index: true,
+          maxLength: 50,
         },
         {
           id: 'id4',
           columnName: 'year',
           name: 'Год выпуска',
           type: 'string',
+          maxLength: 50,
         },
         {
           id: 'id5',
           columnName: 'employeesId',
           name: 'Водитель',
-          type: 'employeesId',
+          type: 'string',
+          maxLength: 50,
           relation: {
             type: 'operationalTable',
             kn: 'employees',
@@ -73,6 +78,7 @@ export const operationalTables = [
           type: 'string',
           unique: true,
           index: true,
+          maxLength: 50,
         },
         {
           id: 'id2',
@@ -80,6 +86,7 @@ export const operationalTables = [
           name: 'Имя',
           type: 'string',
           index: true,
+          maxLength: 50,
         },
         {
           id: 'id3',
@@ -87,6 +94,7 @@ export const operationalTables = [
           name: 'Фамилия',
           type: 'string',
           index: true,
+          maxLength: 50,
         },
       ],
       defaultView: 'table',

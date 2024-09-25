@@ -1,6 +1,7 @@
-import { type Prisma, type PrismaClient } from '@prisma/client'
-import { users } from './users'
 import { createId } from '@paralleldrive/cuid2'
+import { type Prisma, type PrismaClient } from '@prisma/client'
+
+import { users } from './users'
 
 const targetTableName = 'targetTable'
 type CreateInput = Prisma.TargetTableUncheckedCreateInput
@@ -21,18 +22,21 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
           columnName: 'column1',
           name: 'Колонка1',
           type: 'string',
+          maxLength: 50,
         },
         {
           id: 'id2',
           columnName: 'column2',
           name: 'Колонка2',
           type: 'string',
+          maxLength: 50,
         },
         {
           id: 'id3',
           columnName: 'column3',
           name: 'Колонка3',
           type: 'string',
+          maxLength: 50,
         },
       ],
     },

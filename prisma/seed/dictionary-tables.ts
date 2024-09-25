@@ -22,6 +22,7 @@ export const dictionaryTables = [
           type: 'string',
           index: true,
           unique: true,
+          maxLength: 50,
         },
         {
           id: 'animal_2',
@@ -30,6 +31,7 @@ export const dictionaryTables = [
           type: 'string',
           index: false,
           unique: false,
+          maxLength: 50,
         },
         {
           id: 'animal_3',
@@ -38,6 +40,7 @@ export const dictionaryTables = [
           type: 'string',
           index: true,
           unique: false,
+          maxLength: 50,
         },
         {
           id: 'animal_4',
@@ -46,6 +49,7 @@ export const dictionaryTables = [
           type: 'string',
           index: false,
           unique: false,
+          maxLength: 50,
         },
         {
           id: 'animal_5',
@@ -54,6 +58,7 @@ export const dictionaryTables = [
           type: 'string',
           index: false,
           unique: false,
+          maxLength: 50,
         },
         {
           id: 'animal_6',
@@ -62,6 +67,7 @@ export const dictionaryTables = [
           type: 'string',
           index: false,
           unique: false,
+          maxLength: 50,
         },
       ],
     },
@@ -81,6 +87,7 @@ export const dictionaryTables = [
           type: 'string',
           unique: true,
           index: true,
+          maxLength: 50,
         },
         {
           id: 'id2',
@@ -88,6 +95,7 @@ export const dictionaryTables = [
           name: 'Имя',
           type: 'string',
           index: true,
+          maxLength: 50,
         },
         {
           id: 'id3',
@@ -95,6 +103,7 @@ export const dictionaryTables = [
           name: 'Фамилия',
           type: 'string',
           index: true,
+          maxLength: 50,
         },
       ],
     },
