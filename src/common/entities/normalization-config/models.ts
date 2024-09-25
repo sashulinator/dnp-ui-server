@@ -1,7 +1,9 @@
 import * as v from 'valibot'
-import { baseProcessSchema } from '../process'
-import { crudableSchema } from '~/common/models/crudable'
+
 import { getObjectKeys } from '~/common/lib/get-object-keys'
+import { crudableModel } from '~/common/shared/crud/models/crudable'
+
+import { baseProcessSchema } from '../process'
 import { userSchema } from '../user'
 
 /**
@@ -69,7 +71,7 @@ export const baseNormalizationConfigSchema = v.object({
     'preload-jars': preloadJarsSchema,
     'driver-universal-services': driverUniversalServicesSchema,
   }),
-  ...crudableSchema.entries,
+  ...crudableModel.entries,
 })
 
 export type BaseNormalizationConfig = v.InferOutput<typeof baseNormalizationConfigSchema>
@@ -104,7 +106,7 @@ export type NormalizationConfig = v.InferOutput<typeof normalizationConfigSchema
 export const createNormalizationConfigSchema = v.omit(baseNormalizationConfigSchema, [
   'id',
   'v',
-  ...getObjectKeys(crudableSchema.entries),
+  ...getObjectKeys(crudableModel.entries),
 ])
 
 export type CreateNormalizationConfig = v.InferOutput<typeof createNormalizationConfigSchema>
@@ -115,7 +117,7 @@ export type CreateNormalizationConfig = v.InferOutput<typeof createNormalization
 
 export const updateNormalizationConfigSchema = v.omit(baseNormalizationConfigSchema, [
   'v',
-  ...getObjectKeys(crudableSchema.entries),
+  ...getObjectKeys(crudableModel.entries),
 ])
 
 export type UpdateNormalizationConfig = v.InferOutput<typeof updateNormalizationConfigSchema>
