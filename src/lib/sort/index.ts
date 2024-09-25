@@ -1,1 +1,1 @@
-export * from '~/common/lib/sort'
+export * from '~/common/shared/sort'

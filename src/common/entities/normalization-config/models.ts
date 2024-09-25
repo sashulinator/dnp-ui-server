@@ -1,8 +1,8 @@
 import * as v from 'valibot'
 
-import { getObjectKeys } from '~/common/lib/get-object-keys'
 import { crudableModel } from '~/common/shared/crud/models/crudable'
 
+import { getKeys } from '../../shared/dictionary'
 import { baseProcessSchema } from '../process'
 import { userSchema } from '../user'
 
@@ -65,7 +65,7 @@ export const baseNormalizationConfigSchema = v.object({
   name: v.pipe(v.string(), v.nonEmpty()),
   last: v.boolean(),
   data: v.object({
-    executables: v.array(executableSchema),
+    executables: v.array(v.lazy(() => executableSchema)),
     sdk: sdkSchema,
     spark: sparkSchema,
     'preload-jars': preloadJarsSchema,
@@ -106,7 +106,7 @@ export type NormalizationConfig = v.InferOutput<typeof normalizationConfigSchema
 export const createNormalizationConfigSchema = v.omit(baseNormalizationConfigSchema, [
   'id',
   'v',
-  ...getObjectKeys(crudableModel.entries),
+  ...getKeys(crudableModel.entries),
 ])
 
 export type CreateNormalizationConfig = v.InferOutput<typeof createNormalizationConfigSchema>
@@ -117,7 +117,7 @@ export type CreateNormalizationConfig = v.InferOutput<typeof createNormalization
 
 export const updateNormalizationConfigSchema = v.omit(baseNormalizationConfigSchema, [
   'v',
-  ...getObjectKeys(crudableModel.entries),
+  ...getKeys(crudableModel.entries),
 ])
 
 export type UpdateNormalizationConfig = v.InferOutput<typeof updateNormalizationConfigSchema>

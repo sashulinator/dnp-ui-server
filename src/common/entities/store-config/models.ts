@@ -1,7 +1,7 @@
 import * as v from 'valibot'
 
-import { getObjectKeys } from '../../lib/get-object-keys'
 import { crudableModel } from '../../shared/crud/models/crudable'
+import { getKeys } from '../../shared/dictionary'
 import { userSchema } from '../user'
 
 /**
@@ -54,7 +54,7 @@ export type JdbcData = v.InferOutput<typeof jdbsDataSchema>
  * CreateStoreConfig
  */
 
-export const createStoreConfigSchema = v.omit(baseStoreConfigSchema, getObjectKeys(crudableModel.entries))
+export const createStoreConfigSchema = v.omit(baseStoreConfigSchema, getKeys(crudableModel.entries))
 
 export type CreateStoreConfig = v.InferOutput<typeof createStoreConfigSchema>
 
@@ -62,6 +62,6 @@ export type CreateStoreConfig = v.InferOutput<typeof createStoreConfigSchema>
  * UpdateStoreConfig
  */
 
-export const updateStoreConfigSchema = v.omit(baseStoreConfigSchema, getObjectKeys(crudableModel.entries))
+export const updateStoreConfigSchema = v.omit(baseStoreConfigSchema, getKeys(crudableModel.entries))
 
 export type UpdateStoreConfig = v.InferOutput<typeof updateStoreConfigSchema>

@@ -1,8 +1,8 @@
 import * as v from 'valibot'
 
-import { getObjectKeys } from '~/common/lib/get-object-keys'
 import { crudableModel } from '~/common/shared/crud/models/crudable'
 
+import { getKeys } from '../../shared/dictionary'
 import { columnModel, databaseTableModel } from '../../shared/working-table'
 import { userSchema } from '../user'
 
@@ -45,7 +45,7 @@ export type DictionaryTable = v.InferOutput<typeof dictionaryTableSchema>
  * CreateDictionaryTable
  */
 
-export const createDictionaryTableSchema = v.omit(baseDictionaryTableSchema, getObjectKeys(crudableModel.entries))
+export const createDictionaryTableSchema = v.omit(baseDictionaryTableSchema, getKeys(crudableModel.entries))
 
 export type CreateDictionaryTable = v.InferOutput<typeof createDictionaryTableSchema>
 
@@ -53,7 +53,7 @@ export type CreateDictionaryTable = v.InferOutput<typeof createDictionaryTableSc
  * UpdateDictionaryTable
  */
 
-export const updateDictionaryTableSchema = v.omit(baseDictionaryTableSchema, getObjectKeys(crudableModel.entries))
+export const updateDictionaryTableSchema = v.omit(baseDictionaryTableSchema, getKeys(crudableModel.entries))
 
 export type UpdateDictionaryTable = v.InferOutput<typeof updateDictionaryTableSchema>
 
