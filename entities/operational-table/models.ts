@@ -2,8 +2,8 @@ import * as v from 'valibot'
 
 import { getObjectKeys } from '~/common/lib/get-object-keys'
 import { crudableSchema } from '~/common/models/crudable'
-import { schemaItemModel } from '~/common/shared/working-table/table-schema/model/model'
 
+import { columnModel, databaseTableModel } from '../../shared/working-table'
 import { userSchema } from '../user'
 
 /**
@@ -61,10 +61,12 @@ export type UpdateOperationalTable = v.InferOutput<typeof updateOperationalTable
  * TableSchema
  */
 
-export const tableSchemaSchema = v.object({
-  defaultView: v.union([v.literal('tree'), v.literal('table')]),
-  items: v.array(v.lazy(() => tableSchemaItemSchema)),
-})
+export const tableSchemaSchema = v.intersect([
+  databaseTableModel,
+  v.object({
+    defaultView: v.union([v.literal('tree'), v.literal('table')]),
+  }),
+])
 
 export type TableSchema = v.InferOutput<typeof tableSchemaSchema>
 
@@ -72,18 +74,7 @@ export type TableSchema = v.InferOutput<typeof tableSchemaSchema>
  * TableSchemaItem
  */
 
-export const tableSchemaItemSchema = v.intersect([
-  schemaItemModel,
-  v.object({
-    relation: v.optional(
-      v.object({
-        type: v.union([v.literal('operationalTable'), v.literal('dictionaryTable')]),
-        columnName: v.string(),
-        kn: v.string(), // key name
-      }),
-    ),
-  }),
-])
+export const tableSchemaItemSchema = columnModel
 
 export type TableSchemaItem = v.InferOutput<typeof tableSchemaItemSchema>
 

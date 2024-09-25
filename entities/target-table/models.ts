@@ -2,8 +2,8 @@ import * as v from 'valibot'
 
 import { getObjectKeys } from '~/common/lib/get-object-keys'
 import { crudableSchema } from '~/common/models/crudable'
-import { schemaItemModel } from '~/common/shared/working-table/table-schema/model/model'
 
+import { columnModel, databaseTableModel } from '../../shared/working-table'
 import { userSchema } from '../user'
 
 /**
@@ -61,10 +61,7 @@ export type UpdateTargetTable = v.InferOutput<typeof updateTargetTableSchema>
  * TableSchema
  */
 
-export const tableSchemaSchema = v.object({
-  defaultView: v.union([v.literal('tree'), v.literal('table')]),
-  items: v.array(v.lazy(() => tableSchemaItemSchema)),
-})
+export const tableSchemaSchema = databaseTableModel
 
 export type TableSchema = v.InferOutput<typeof tableSchemaSchema>
 
@@ -72,7 +69,7 @@ export type TableSchema = v.InferOutput<typeof tableSchemaSchema>
  * TableSchemaItem
  */
 
-export const tableSchemaItemSchema = v.intersect([schemaItemModel])
+export const tableSchemaItemSchema = columnModel
 
 export type TableSchemaItem = v.InferOutput<typeof tableSchemaItemSchema>
 

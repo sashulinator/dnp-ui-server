@@ -1,36 +1,20 @@
 import * as v from 'valibot'
 
 /**
- * Schema
+ * DatabaseTable
  */
 
-export const schemaModel = v.object({
-  items: v.array(v.lazy(() => schemaItemModel)),
+export const databaseTableModel = v.object({
+  items: v.array(v.lazy(() => columnModel)),
 })
 
-export type Schema = v.InferOutput<typeof schemaModel>
+export type DatabaseTable = v.InferOutput<typeof databaseTableModel>
 
 /**
- * SchemaItem
+ * Column
  */
 
-export const schemaItemModelBase = v.object({
-  id: v.string(),
-  name: v.string(),
-  columnName: v.string(),
-  defaultTo: v.optional(v.string()),
-  index: v.optional(v.boolean()),
-  nullable: v.optional(v.boolean()),
-  relation: v.optional(
-    v.object({
-      columnName: v.string(),
-      kn: v.string(),
-    }),
-  ),
-})
-
-// Добавляем варианты для type и связанных полей
-export const schemaItemModelVariants = v.variant('type', [
+export const columnTypeModel = v.variant('type', [
   v.object({
     type: v.literal('string'),
     maxLength: v.number(),
@@ -81,9 +65,28 @@ export const schemaItemModelVariants = v.variant('type', [
   }),
 ])
 
-type SchemaItemBase = v.InferOutput<typeof schemaItemModelBase>
-type SchemaItemVariants = v.InferOutput<typeof schemaItemModelVariants>
+export const columnModel = v.intersect([
+  columnTypeModel,
+  v.object({
+    id: v.string(),
+    name: v.string(),
+    columnName: v.string(),
+    defaultTo: v.optional(v.string()),
+    index: v.optional(v.boolean()),
+    nullable: v.optional(v.boolean()),
+    relation: v.optional(v.lazy(() => relationModel)),
+  }),
+])
 
-export const schemaItemModel = v.intersect([schemaItemModelBase, schemaItemModelVariants])
+export type Column = v.InferOutput<typeof columnModel>
 
-export type SchemaItem = SchemaItemBase & SchemaItemVariants
+/**
+ * Relation
+ */
+
+export const relationModel = v.object({
+  columnName: v.string(),
+  kn: v.string(),
+})
+
+export type Relation = v.InferOutput<typeof columnModel>
