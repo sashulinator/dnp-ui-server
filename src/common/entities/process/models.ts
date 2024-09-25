@@ -23,10 +23,10 @@ export const baseProcessSchema = v.object({
   type: v.pipe(v.string(), v.nonEmpty()),
   data: v.object({
     executables: v.array(v.lazy(() => executableSchema)),
-    sdk: sdkSchema,
-    spark: sparkSchema,
-    'preload-jars': preloadJarsSchema,
-    'driver-universal-services': driverUniversalServicesSchema,
+    sdk: v.lazy(() => sdkSchema),
+    spark: v.lazy(() => sparkSchema),
+    'preload-jars': v.lazy(() => preloadJarsSchema),
+    'driver-universal-services': v.lazy(() => driverUniversalServicesSchema),
   }),
   ...creatableModel.entries,
 })
