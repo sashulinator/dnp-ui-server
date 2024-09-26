@@ -1,21 +1,15 @@
 import * as v from 'valibot'
 
-import {
-  columnModel as dtColumnModel,
-  databaseTableModel as dtDatabaseTableModel,
-  relationModel as dtRelationModel,
-} from '../../database-table'
+import { columnModel as dtColumnModel, relationModel as dtRelationModel } from '../../database-table'
 
 /**
  * DatabaseTable
  */
 
-export const databaseTableModel = v.intersect([
-  dtDatabaseTableModel,
-  v.object({
-    defaultView: v.union([v.literal('tree'), v.literal('table')]),
-  }),
-])
+export const databaseTableModel = v.object({
+  items: v.array(dtColumnModel),
+  defaultView: v.union([v.literal('tree'), v.literal('table')]),
+})
 
 export type DatabaseTable = v.InferOutput<typeof databaseTableModel>
 

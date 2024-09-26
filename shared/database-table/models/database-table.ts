@@ -1,16 +1,6 @@
 import * as v from 'valibot'
 
 /**
- * DatabaseTable
- */
-
-export const databaseTableModel = v.object({
-  items: v.array(v.lazy(() => columnModel)),
-})
-
-export type DatabaseTable = v.InferOutput<typeof databaseTableModel>
-
-/**
  * Column
  */
 
