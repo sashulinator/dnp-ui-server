@@ -1,7 +1,1 @@
-export type In<T extends string | number> =
-  | {
-      in?: T[]
-    }
-  | {
-      notIn?: T[]
-    }
+export type In = 'in' | 'notIn'

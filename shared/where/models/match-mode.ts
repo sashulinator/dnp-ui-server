@@ -1,3 +1,3 @@
-export interface MatchMode {
+export type MatchMode = {
   caseSensitive?: boolean
 }

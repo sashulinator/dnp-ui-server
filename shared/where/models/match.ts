@@ -1,10 +1,1 @@
-export type Match =
-  | {
-      contains?: string
-    }
-  | {
-      startsWith?: string
-    }
-  | {
-      endsWith?: string
-    }
+export type Match = 'contains' | 'startsWith' | 'endsWith'
