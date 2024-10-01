@@ -61,7 +61,7 @@ export default class TargetTableService extends Delegator<TargetTable, CreateTar
 
     this.database.setConfig(toDatabasConfig(storeConfig))
 
-    return this.prisma.$transaction(async (prismaTrx) => {
+    const ret = this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
         await databaseTrx.createTable(params.data.tableName, {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,6 +70,10 @@ export default class TargetTableService extends Delegator<TargetTable, CreateTar
         return prismaTrx.targetTable.create(this._prepareSelectIncludeParams(params))
       })
     })
+
+    this.database.disconnect()
+
+    return ret
   }
 
   async update(params: {
@@ -112,7 +116,7 @@ export default class TargetTableService extends Delegator<TargetTable, CreateTar
       return !found
     })
 
-    return this.prisma.$transaction(async (prismaTrx) => {
+    const ret = this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
         await databaseTrx.dropColumns(
           currentTargetTable.tableName,
@@ -133,6 +137,10 @@ export default class TargetTableService extends Delegator<TargetTable, CreateTar
         return prismaTrx.targetTable.update(this._prepareSelectIncludeParams(params))
       })
     })
+
+    this.database.disconnect()
+
+    return ret
   }
 
   /**

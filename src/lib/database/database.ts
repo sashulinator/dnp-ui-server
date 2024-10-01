@@ -68,6 +68,10 @@ export default class Database {
    * Database
    */
 
+  disconnect() {
+    this._knex.destroy()
+  }
+
   disableForeignKeyConstraints() {
     return this.clientDelegate.disableForeignKeyConstraints()
   }

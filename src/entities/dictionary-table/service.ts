@@ -65,7 +65,7 @@ export default class DictionaryTableService extends CrudDelegator<
 
     this.database.setConfig(toDatabasConfig(storeConfig))
 
-    return this.prisma.$transaction(async (prismaTrx) => {
+    const ret = this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
         await databaseTrx.createTable(params.data.tableName, {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,6 +74,10 @@ export default class DictionaryTableService extends CrudDelegator<
         return prismaTrx.dictionaryTable.create(this._prepareSelectIncludeParams(params))
       })
     })
+
+    this.database.disconnect()
+
+    return ret
   }
 
   async update(params: {
@@ -116,7 +120,7 @@ export default class DictionaryTableService extends CrudDelegator<
       return !found
     })
 
-    return this.prisma.$transaction(async (prismaTrx) => {
+    const ret = this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
         await databaseTrx.dropColumns(
           currentDictionaryTable.tableName,
@@ -137,6 +141,10 @@ export default class DictionaryTableService extends CrudDelegator<
         return prismaTrx.dictionaryTable.update(this._prepareSelectIncludeParams(params))
       })
     })
+
+    this.database.disconnect()
+
+    return ret
   }
 
   /**

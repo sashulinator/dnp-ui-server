@@ -70,7 +70,7 @@ export default class OperationalTableService extends CrudDelegator<
 
     this.database.setConfig(toDatabasConfig(storeConfig))
 
-    return this.prisma.$transaction(async (prismaTrx) => {
+    const ret = this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
         await databaseTrx.createTable(params.data.tableName, {
           items: [
@@ -83,6 +83,10 @@ export default class OperationalTableService extends CrudDelegator<
         return prismaTrx.operationalTable.create(this._prepareSelectIncludeParams(params))
       })
     })
+
+    this.database.disconnect()
+
+    return ret
   }
 
   async update(params: {
@@ -125,7 +129,7 @@ export default class OperationalTableService extends CrudDelegator<
       return !found
     })
 
-    return this.prisma.$transaction(async (prismaTrx) => {
+    const ret = this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
         await databaseTrx.dropColumns(
           currentOperationalTable.tableName,
@@ -145,6 +149,10 @@ export default class OperationalTableService extends CrudDelegator<
         return prismaTrx.operationalTable.update(this._prepareSelectIncludeParams(params))
       })
     })
+
+    this.database.disconnect()
+
+    return ret
   }
 
   /**

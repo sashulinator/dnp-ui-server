@@ -67,6 +67,8 @@ export default class ExplorerService {
 
     const [tables, count] = await this.database.findManyAndCountTables({ limit: take, offset: skip })
 
+    this.database.disconnect()
+
     return {
       paths: [{ name: dbName, type }],
       type,
@@ -97,6 +99,8 @@ export default class ExplorerService {
       sort: params.sort,
     })
     const pk = await this.database.getPrimaryKey(tableName)
+
+    this.database.disconnect()
 
     return {
       paths: [
@@ -143,7 +147,11 @@ export default class ExplorerService {
       dbName,
     })
 
-    return this.database.insertRow(tableName, input as Record<string, unknown>)
+    const ret = this.database.insertRow(tableName, input as Record<string, unknown>)
+
+    this.database.disconnect()
+
+    return ret
   }
 
   /**
@@ -179,7 +187,11 @@ export default class ExplorerService {
       dbName,
     })
 
-    return this.database.renameTable(tableName, input.name)
+    const ret = this.database.renameTable(tableName, input.name)
+
+    this.database.disconnect()
+
+    return ret
   }
 
   updateRow(params: UpdateParams) {
@@ -195,7 +207,11 @@ export default class ExplorerService {
       dbName,
     })
 
-    return this.database.updateRow(tableName, input, where)
+    const ret = this.database.updateRow(tableName, input, where)
+
+    this.database.disconnect()
+
+    return ret
   }
 
   /**
@@ -215,6 +231,10 @@ export default class ExplorerService {
       dbName,
     })
 
-    return this.database.deleteRow(tableName, where)
+    const ret = this.database.deleteRow(tableName, where)
+
+    this.database.disconnect()
+
+    return ret
   }
 }
