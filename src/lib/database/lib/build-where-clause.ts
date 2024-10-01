@@ -76,6 +76,8 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where):
       // Compare
     } else if (typeof filter === 'object' && has(filter, 'gt')) {
       queryBuilder.where(columnName, '>', filter.gt)
+    } else if (typeof filter === 'object' && has(filter, 'equals')) {
+      queryBuilder.where(columnName, '=', filter.equals)
     } else if (typeof filter === 'object' && has(filter, 'gte')) {
       queryBuilder.where(columnName, '>=', filter.gte)
     } else if (typeof filter === 'object' && has(filter, 'lt')) {
