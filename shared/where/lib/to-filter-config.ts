@@ -19,6 +19,11 @@ export function toFilterConfig(filter: StringFilter | IntFilter | IsFilter): Fil
       return acc
     }
 
+    if (key === 'not') {
+      acc.not = value as boolean
+      return acc
+    }
+
     acc.type = key as Comparison
     acc.value = value as string
 

@@ -10,6 +10,9 @@ export function toFilter(filterConfig: FilterConfig): StringFilter | IntFilter {
   if (filterConfig.caseSensitive !== undefined) {
     filter.caseSensitive = filterConfig.caseSensitive
   }
+  if (filterConfig.not !== undefined) {
+    filter.not = filterConfig.not
+  }
 
   return filter
 }
