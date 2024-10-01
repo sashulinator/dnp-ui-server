@@ -67,12 +67,18 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where):
     const filter = value as StringFilter | IntFilter | BooleanFilter
 
     // Match
-    if (isContainsMatch(filter)) {
-      queryBuilder.where(columnName, _getLike(filter), `%${filter.contains}%`)
+    if (typeof filter === 'object' && has(filter, 'match')) {
+      queryBuilder[has(filter, 'not') ? 'whereNot' : 'where'](
+        columnName,
+        _getLike(filter as any),
+        filter.match as string,
+      )
+    } else if (isContainsMatch(filter)) {
+      queryBuilder[has(filter, 'not') ? 'whereNot' : 'where'](columnName, _getLike(filter), `%${filter.contains}%`)
     } else if (isStartsWithMatch(filter)) {
-      queryBuilder.where(columnName, _getLike(filter), `${filter.startsWith}%`)
+      queryBuilder[has(filter, 'not') ? 'whereNot' : 'where'](columnName, _getLike(filter), `${filter.startsWith}%`)
     } else if (isEndsWithMatch(filter)) {
-      queryBuilder.where(columnName, _getLike(filter), `%${filter.endsWith}`)
+      queryBuilder[has(filter, 'not') ? 'whereNot' : 'where'](columnName, _getLike(filter), `%${filter.endsWith}`)
       // Compare
     } else if (typeof filter === 'object' && has(filter, 'gt')) {
       queryBuilder.where(columnName, '>', filter.gt)
@@ -89,6 +95,11 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where):
       queryBuilder.whereIn(columnName, filter.in as string[])
     } else if (typeof filter === 'object' && has(filter, 'notIn')) {
       queryBuilder.whereNotIn(columnName, filter.notIn as string[])
+      // is
+    } else if (typeof filter === 'object' && has(filter, 'is')) {
+      queryBuilder.where(columnName, 'is', filter.is as null)
+    } else if (typeof filter === 'object' && has(filter, 'not')) {
+      queryBuilder.whereNot(columnName, filter.not)
     } else {
       if (typeof filter === 'string') {
         queryBuilder.where(columnName, 'ilike', `${filter}%`)
