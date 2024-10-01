@@ -134,7 +134,7 @@ export default class ExplorerService {
     }
   }
 
-  createRow(params: CreateParams) {
+  async createRow(params: CreateParams) {
     const { storeConfig, paths, input, type } = params
     const [dbName, tableName] = paths
 
@@ -147,7 +147,7 @@ export default class ExplorerService {
       dbName,
     })
 
-    const ret = this.database.insertRow(tableName, input as Record<string, unknown>)
+    const ret = await this.database.insertRow(tableName, input as Record<string, unknown>)
 
     this.database.disconnect()
 
@@ -172,7 +172,7 @@ export default class ExplorerService {
     }
   }
 
-  updateTable(params: UpdateParams) {
+  async updateTable(params: UpdateParams) {
     const { storeConfig, paths, input, type } = params
     const [dbName, tableName] = paths
 
@@ -187,14 +187,14 @@ export default class ExplorerService {
       dbName,
     })
 
-    const ret = this.database.renameTable(tableName, input.name)
+    const ret = await this.database.renameTable(tableName, input.name)
 
     this.database.disconnect()
 
     return ret
   }
 
-  updateRow(params: UpdateParams) {
+  async updateRow(params: UpdateParams) {
     const { storeConfig, paths, type, input, where } = params
     const [dbName, tableName] = paths
 
@@ -207,7 +207,7 @@ export default class ExplorerService {
       dbName,
     })
 
-    const ret = this.database.updateRow(tableName, input, where)
+    const ret = await this.database.updateRow(tableName, input, where)
 
     this.database.disconnect()
 
@@ -218,7 +218,7 @@ export default class ExplorerService {
    * ------------ DELETE ------------
    */
 
-  deleteRow(params: DeleteParams) {
+  async deleteRow(params: DeleteParams) {
     const { storeConfig, paths, type, where } = params
     const [dbName, tableName] = paths
 
@@ -231,7 +231,7 @@ export default class ExplorerService {
       dbName,
     })
 
-    const ret = this.database.deleteRow(tableName, where)
+    const ret = await this.database.deleteRow(tableName, where)
 
     this.database.disconnect()
 
