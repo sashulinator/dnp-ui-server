@@ -2,7 +2,8 @@
  * lib
  */
 
-export { getFilterConfig } from './lib/get-filter-config'
+export { toFilterConfig } from './lib/to-filter-config'
+export { toFilter } from './lib/to-filter'
 
 /**
  * models

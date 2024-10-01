@@ -3,7 +3,7 @@ import { type FilterConfig } from '../models/filter-config'
 import { type IntFilter } from '../models/int-filter'
 import type { StringFilter } from '../models/string-filter'
 
-export function getFilterConfig(filter: StringFilter | IntFilter): FilterConfig {
+export function toFilterConfig(filter: StringFilter | IntFilter): FilterConfig {
   const ret: FilterConfig = {
     type: 'startsWith',
     caseSensitive: undefined,
