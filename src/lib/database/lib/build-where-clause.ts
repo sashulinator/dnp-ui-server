@@ -106,6 +106,6 @@ function _getLike(match: { caseSensitive?: boolean }): 'like' | 'ilike' {
 }
 
 function _getWhereOrWhereNot(match: { not?: boolean }): 'where' | 'whereNot' {
-  if (match.not) return 'where'
-  return 'whereNot'
+  if (match.not) return 'whereNot'
+  return 'where'
 }
