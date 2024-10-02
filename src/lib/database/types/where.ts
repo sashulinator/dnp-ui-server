@@ -6,7 +6,4 @@ export {
   type Match,
   type MatchMode,
   type BooleanFilter,
-  isContainsMatch,
-  isEndsWithMatch,
-  isStartsWithMatch,
 } from '~/lib/where'

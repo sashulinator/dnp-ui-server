@@ -3,17 +3,7 @@ import { type Knex } from 'knex'
 import { has } from '~/utils/core'
 import { BaseError } from '~/utils/error'
 
-import {
-  type BooleanFilter,
-  type IntFilter,
-  type Match,
-  type MatchMode,
-  type StringFilter,
-  type Where,
-  isContainsMatch,
-  isEndsWithMatch,
-  isStartsWithMatch,
-} from '../types/where'
+import { type BooleanFilter, type IntFilter, type StringFilter, type Where } from '../types/where'
 
 // Функция для построения условий WHERE
 export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where): Knex.QueryBuilder {
@@ -68,17 +58,13 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where):
 
     // Match
     if (typeof filter === 'object' && has(filter, 'match')) {
-      queryBuilder[has(filter, 'not') ? 'whereNot' : 'where'](
-        columnName,
-        _getLike(filter as any),
-        filter.match as string,
-      )
-    } else if (isContainsMatch(filter)) {
-      queryBuilder[has(filter, 'not') ? 'whereNot' : 'where'](columnName, _getLike(filter), `%${filter.contains}%`)
-    } else if (isStartsWithMatch(filter)) {
-      queryBuilder[has(filter, 'not') ? 'whereNot' : 'where'](columnName, _getLike(filter), `${filter.startsWith}%`)
-    } else if (isEndsWithMatch(filter)) {
-      queryBuilder[has(filter, 'not') ? 'whereNot' : 'where'](columnName, _getLike(filter), `%${filter.endsWith}`)
+      queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), filter.match as string)
+    } else if (typeof filter === 'object' && has(filter, 'contains')) {
+      queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), `%${filter.contains}%`)
+    } else if (typeof filter === 'object' && has(filter, 'startsWith')) {
+      queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), `${filter.startsWith}%`)
+    } else if (typeof filter === 'object' && has(filter, 'endsWith')) {
+      queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), `%${filter.endsWith}`)
       // Compare
     } else if (typeof filter === 'object' && has(filter, 'gt')) {
       queryBuilder.where(columnName, '>', filter.gt)
@@ -114,7 +100,12 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where):
   return queryBuilder
 }
 
-function _getLike(match: Match & MatchMode): 'like' | 'ilike' {
+function _getLike(match: { caseSensitive?: boolean }): 'like' | 'ilike' {
   if (match.caseSensitive) return 'like'
   return 'ilike'
+}
+
+function _getWhereOrWhereNot(match: { not?: boolean }): 'where' | 'whereNot' {
+  if (match.not) return 'where'
+  return 'whereNot'
 }
