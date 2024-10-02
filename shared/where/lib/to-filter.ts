@@ -4,7 +4,7 @@ import type { StringFilter } from '../models/string-filter'
 
 export function toFilter(filterConfig: FilterConfig): StringFilter | IntFilter {
   const filter: StringFilter | IntFilter = {
-    [filterConfig.type as 'contains']: filterConfig.value as string,
+    [filterConfig.type as 'contains']: filterConfig.value,
   }
 
   if (filterConfig.caseSensitive !== undefined) {

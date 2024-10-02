@@ -8,7 +8,7 @@ export function toFilterConfig(filter: StringFilter | IntFilter | IsFilter): Fil
   const ret: FilterConfig = {
     type: 'startsWith',
     caseSensitive: undefined,
-    value: undefined,
+    value: null,
   }
 
   if (!filter) return ret

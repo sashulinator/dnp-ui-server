@@ -8,5 +8,5 @@ import type { MatchMode } from './match-mode'
 
 export type FilterConfig = Undefinable<MatchMode> & {
   type: Comparison | Match | In | Is
-  value: string | undefined
+  value: string | null
 }
