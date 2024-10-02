@@ -7,8 +7,9 @@ import type { StringFilter } from '../models/string-filter'
 export function toFilterConfig(filter: StringFilter | IntFilter | IsFilter): FilterConfig {
   const ret: FilterConfig = {
     type: 'startsWith',
-    caseSensitive: undefined,
     value: null,
+    caseSensitive: undefined,
+    notMode: undefined,
   }
 
   if (!filter) return ret
@@ -19,8 +20,8 @@ export function toFilterConfig(filter: StringFilter | IntFilter | IsFilter): Fil
       return acc
     }
 
-    if (key === 'not') {
-      acc.not = value as boolean
+    if (key === 'notMode') {
+      acc.notMode = value as boolean
       return acc
     }
 
