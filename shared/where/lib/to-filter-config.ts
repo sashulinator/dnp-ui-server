@@ -1,4 +1,4 @@
-import { type Comparison } from '../models/comparison'
+import { type ComparisonKey } from '../models/comparison'
 import { type FilterConfig } from '../models/filter-config'
 import { type IntFilter } from '../models/int-filter'
 import { type IsFilter } from '../models/is-filter'
@@ -25,7 +25,7 @@ export function toFilterConfig(filter: StringFilter | IntFilter | IsFilter): Fil
       return acc
     }
 
-    acc.type = key as Comparison
+    acc.type = key as ComparisonKey
     acc.value = value as string
 
     return acc
