@@ -63,15 +63,19 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where):
     if (typeof filter === 'object' && has(filter, MATCH.match)) {
       if (filter.match === null) return
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), filter.match)
+      if (filter.notMode) queryBuilder.orWhere(columnName, 'is', null)
     } else if (typeof filter === 'object' && has(filter, MATCH.contains)) {
       if (filter.contains === null) return
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), `%${filter.contains}%`)
+      if (filter.notMode) queryBuilder.orWhere(columnName, 'is', null)
     } else if (typeof filter === 'object' && has(filter, MATCH.startsWith)) {
       if (filter.startsWith === null) return
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), `${filter.startsWith}%`)
+      if (filter.notMode) queryBuilder.orWhere(columnName, 'is', null)
     } else if (typeof filter === 'object' && has(filter, MATCH.endsWith)) {
       if (filter.endsWith === null) return
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), `%${filter.endsWith}`)
+      if (filter.notMode) queryBuilder.orWhere(columnName, 'is', null)
 
       /**
        * compare
