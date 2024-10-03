@@ -8,6 +8,7 @@ import { columnModel as dtColumnModel, relationModel as dtRelationModel } from '
 
 export const databaseTableModel = v.object({
   items: v.array(dtColumnModel),
+  description: v.optional(v.string()),
   defaultView: v.union([v.literal('tree'), v.literal('table')]),
 })
 
