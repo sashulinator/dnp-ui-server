@@ -1,5 +1,6 @@
 import { type Knex } from 'knex'
 
+import { COMPARISON, IN, IS, MATCH } from '~/lib/where'
 import { has } from '~/utils/core'
 import { BaseError } from '~/utils/error'
 
@@ -56,41 +57,60 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where):
   for (const [columnName, value] of Object.entries(clonedWhere)) {
     const filter = value as StringFilter | IntFilter | BooleanFilter
 
-    // Match
-    if (typeof filter === 'object' && has(filter, 'match')) {
+    /**
+     * match
+     */
+    if (typeof filter === 'object' && has(filter, MATCH.match)) {
       if (filter.match === null) return
-      queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), filter.match as string)
-    } else if (typeof filter === 'object' && has(filter, 'contains')) {
+      queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), filter.match)
+    } else if (typeof filter === 'object' && has(filter, MATCH.contains)) {
       if (filter.contains === null) return
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), `%${filter.contains}%`)
-    } else if (typeof filter === 'object' && has(filter, 'startsWith')) {
+    } else if (typeof filter === 'object' && has(filter, MATCH.startsWith)) {
       if (filter.startsWith === null) return
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), `${filter.startsWith}%`)
-    } else if (typeof filter === 'object' && has(filter, 'endsWith')) {
+    } else if (typeof filter === 'object' && has(filter, MATCH.endsWith)) {
       if (filter.endsWith === null) return
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), `%${filter.endsWith}`)
-      // Compare
-    } else if (typeof filter === 'object' && has(filter, 'gt')) {
-      queryBuilder.where(columnName, '>', filter.gt)
-    } else if (typeof filter === 'object' && has(filter, 'equals')) {
-      queryBuilder.where(columnName, '=', filter.equals)
-    } else if (typeof filter === 'object' && has(filter, 'gte')) {
-      queryBuilder.where(columnName, '>=', filter.gte)
-    } else if (typeof filter === 'object' && has(filter, 'lt')) {
-      queryBuilder.where(columnName, '<', filter.lt)
-    } else if (typeof filter === 'object' && has(filter, 'lte')) {
-      queryBuilder.where(columnName, '<=', filter.lte)
-      // In
-    } else if (typeof filter === 'object' && has(filter, 'in')) {
+
+      /**
+       * compare
+       */
+    } else if (typeof filter === 'object' && has(filter, COMPARISON.gt)) {
+      if (filter.gt === null) return
+      queryBuilder[_getWhereOrWhereNot(filter)](columnName, '>', filter.gt)
+    } else if (typeof filter === 'object' && has(filter, COMPARISON.equals)) {
+      if (filter.equals === null) return
+      queryBuilder[_getWhereOrWhereNot(filter)](columnName, '=', filter.equals)
+    } else if (typeof filter === 'object' && has(filter, COMPARISON.gte)) {
+      if (filter.gte === null) return
+      queryBuilder[_getWhereOrWhereNot(filter)](columnName, '>=', filter.gte)
+    } else if (typeof filter === 'object' && has(filter, COMPARISON.lt)) {
+      if (filter.lt === null) return
+      queryBuilder[_getWhereOrWhereNot(filter)](columnName, '<', filter.lt)
+    } else if (typeof filter === 'object' && has(filter, COMPARISON.lte)) {
+      if (filter.lte === null) return
+      queryBuilder[_getWhereOrWhereNot(filter)](columnName, '<=', filter.lte)
+
+      /**
+       * in
+       */
+    } else if (typeof filter === 'object' && has(filter, IN.in)) {
       queryBuilder.whereIn(columnName, filter.in as string[])
-    } else if (typeof filter === 'object' && has(filter, 'notIn')) {
+    } else if (typeof filter === 'object' && has(filter, IN.notIn)) {
       queryBuilder.whereNotIn(columnName, filter.notIn as string[])
-      // is
-    } else if (typeof filter === 'object' && has(filter, 'is')) {
+
+      /**
+       * is
+       */
+    } else if (typeof filter === 'object' && has(filter, IS.is)) {
       queryBuilder.where(columnName, 'is', filter.is as null)
-    } else if (typeof filter === 'object' && has(filter, 'not')) {
+    } else if (typeof filter === 'object' && has(filter, IS.not)) {
       queryBuilder.whereNot(columnName, filter.not)
     } else {
+      /**
+       * string
+       */
       if (typeof filter === 'string') {
         queryBuilder.where(columnName, 'ilike', `${filter}%`)
         return
@@ -103,6 +123,10 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where):
 
   return queryBuilder
 }
+
+/**
+ * private
+ */
 
 function _getLike(match: { caseSensitive?: boolean }): 'like' | 'ilike' {
   if (match.caseSensitive) return 'like'

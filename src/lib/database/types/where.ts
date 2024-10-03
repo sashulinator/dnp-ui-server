@@ -3,7 +3,7 @@ export {
   type ReplaceValueByFilter,
   type StringFilter,
   type IntFilter,
-  type Match,
+  type MatchKey as Match,
   type MatchMode,
   type BooleanFilter,
 } from '~/lib/where'
