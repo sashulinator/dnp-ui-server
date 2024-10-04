@@ -1,10 +1,9 @@
 import * as v from 'valibot'
 
-import { crudableModel } from '~/common/shared/crud/models/crudable'
-
-import { getKeys } from '../../shared/dictionary'
-import { columnModel, databaseTableModel } from '../../shared/working-table'
-import { userSchema } from '../user'
+import { crudableModel } from '../../../shared/crud/models/crudable'
+import { getKeys } from '../../../shared/dictionary'
+import { columnModel, databaseTableModel } from '../../../shared/working-table'
+import { userSchema } from '../../user'
 
 /**
  * BaseOperationalTable
