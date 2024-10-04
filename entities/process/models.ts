@@ -3,15 +3,18 @@ import * as v from 'valibot'
 import { creatableModel } from '~/common/shared/crud/models/crudable'
 
 import { getKeys } from '../../shared/dictionary'
-import {
-  driverUniversalServicesSchema,
-  executableSchema,
-  normalizationConfigSchema,
-  preloadJarsSchema,
-  sdkSchema,
-  sparkSchema,
-} from '../normalization-config'
 import { userSchema } from '../user'
+
+export const processType = {
+  IMPORT: 'IMPORT',
+  EXPORT: 'EXPORT',
+  REPORT: 'REPORT',
+  NORMALIZATION: 'NORMALIZATION',
+} as const
+
+type ProcessTypeKey = keyof typeof processType
+
+export type ProcessType = (typeof processType)[ProcessTypeKey]
 
 /**
  * BaseProcess
@@ -19,15 +22,12 @@ import { userSchema } from '../user'
 
 export const baseProcessSchema = v.object({
   id: v.pipe(v.string(), v.nonEmpty()),
+  type: v.enum(processType),
   normalizationConfigId: v.pipe(v.string(), v.nonEmpty()),
-  type: v.pipe(v.string(), v.nonEmpty()),
-  data: v.object({
-    executables: v.array(v.lazy(() => executableSchema)),
-    sdk: v.lazy(() => sdkSchema),
-    spark: v.lazy(() => sparkSchema),
-    'preload-jars': v.lazy(() => preloadJarsSchema),
-    'driver-universal-services': v.lazy(() => driverUniversalServicesSchema),
-  }),
+  normalizationConfigVersion: v.number(),
+  eventTrackingId: v.number(),
+  tableId: v.pipe(v.string(), v.nonEmpty()),
+  runtimeConfigData: v.string(),
   ...creatableModel.entries,
 })
 
@@ -37,9 +37,19 @@ export type BaseProcess = v.InferOutput<typeof baseProcessSchema>
  * Relations
  */
 
+export const processEventSchema = v.object({
+  id: v.pipe(v.string(), v.nonEmpty()),
+  event: v.pipe(v.string(), v.nonEmpty()),
+  calculation_id: v.number(),
+  procedure_id: v.pipe(v.string(), v.nonEmpty()),
+  step: v.number(),
+  timestamp: v.pipe(v.string(), v.nonEmpty()),
+})
+
 export const processRelationsSchema = v.object({
-  normalizationConfig: v.lazy(() => normalizationConfigSchema),
+  // normalizationConfig: v.lazy(() => normalizationConfigSchema),
   createdBy: v.lazy(() => userSchema),
+  events: v.lazy(() => v.array(processEventSchema)),
 })
 
 export type ProcessRelations = v.InferOutput<typeof processRelationsSchema>
