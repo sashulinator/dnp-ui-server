@@ -4,6 +4,7 @@ import type {
   OperationalTable,
   Prisma,
   Process,
+  ProcessEvent,
   StoreConfig,
   TargetTable,
   Translation,
@@ -15,6 +16,7 @@ import { check } from '~/utils/types/test'
 export type EntityMap = {
   user: User
   process: Process
+  processEvent: ProcessEvent
   storeConfig: StoreConfig
   normalizationConfig: NormalizationConfig
   targetTable: TargetTable

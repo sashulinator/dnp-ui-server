@@ -1,3 +1,5 @@
+import { ProcessType } from '@prisma/client'
+
 import * as v from 'valibot'
 
 import { creatableModel } from '~/common/shared/crud/models/crudable'
@@ -19,9 +21,12 @@ import { userSchema } from '../user'
 
 export const baseProcessSchema = v.object({
   id: v.pipe(v.string(), v.nonEmpty()),
+  type: v.enum_(ProcessType),
   normalizationConfigId: v.pipe(v.string(), v.nonEmpty()),
-  type: v.pipe(v.string(), v.nonEmpty()),
-  data: v.object({
+  normalizationConfigVersion: v.number(),
+  eventTrackingId: v.number(),
+  tableId: v.pipe(v.string(), v.nonEmpty()),
+  runtimeConfigData: v.object({
     executables: v.array(v.lazy(() => executableSchema)),
     sdk: v.lazy(() => sdkSchema),
     spark: v.lazy(() => sparkSchema),

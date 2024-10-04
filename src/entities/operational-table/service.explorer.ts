@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { createId } from '@paralleldrive/cuid2'
+import { ProcessType } from '@prisma/client'
 
 import ExplorerService, {
   type CreateParams,
@@ -10,6 +11,7 @@ import ExplorerService, {
   type Where,
 } from '~/shared/explorer/service'
 import MinioService from '~/shared/minio/service'
+import { random } from '~/utils/core'
 
 import ProcessService from '../processes/service'
 import { assertTableSchema } from './assertions'
@@ -23,7 +25,7 @@ export type ExplorerFindManyParams = FindManyParams & {
 export type ExplorerCreateParams = { kn: string; input: Record<string, unknown> }
 export type ExplorerDeleteParams = { kn: string; where: Where }
 export type ExplorerUpdateParams = { kn: string; input: { _id: string } & Record<string, string> }
-export type ExplorerImportParams = { fileId: string; tableName: string }
+export type ExplorerImportParams = { fileId: string; operationalTableId: string; tableName: string }
 
 @Injectable()
 export default class OperationalTableService {
@@ -144,6 +146,7 @@ export default class OperationalTableService {
   }
 
   async explorerImport(params: ExplorerImportParams) {
+    const trackingId = random(0, 10000000)
     const fileNameSplitted = params.fileId.split('.')
 
     const fileExt = fileNameSplitted[fileNameSplitted.length - 1]
@@ -151,7 +154,14 @@ export default class OperationalTableService {
     // Prepare the filename and buffer for uploading to Minio
     const configFileName = `${'operational-table-import-' + createId()}.json`
     const buffer = JSON.stringify(
-      createImportOperationalTableNormalizationConfig(params.fileId, fileExt, params.tableName),
+      createImportOperationalTableNormalizationConfig({
+        sourceFileName: params.fileId,
+        fileExtension: fileExt,
+        destinationTable: params.tableName,
+        trackingId,
+      }),
+      null,
+      4,
     )
 
     // Upload the normalizationConfig to Minio
@@ -175,8 +185,10 @@ export default class OperationalTableService {
     return this.processService.createWithRuntimeConfig({
       data: {
         id: createId(),
-        type: 'import',
-        data: buffer,
+        type: ProcessType.IMPORT,
+        runtimeConfigData: buffer,
+        tableId: params.operationalTableId,
+        eventTrackingId: trackingId,
       },
     })
   }

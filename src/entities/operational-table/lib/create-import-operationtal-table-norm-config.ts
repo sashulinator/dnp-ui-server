@@ -1,8 +1,16 @@
-export const createImportOperationalTableNormalizationConfig = (
-  sourceFileName: string,
-  fileExtension: string,
-  destinationTable: string,
-) => {
+interface CreateConfigParams {
+  sourceFileName: string
+  fileExtension: string
+  destinationTable: string
+  trackingId: number
+}
+
+export const createImportOperationalTableNormalizationConfig = ({
+  sourceFileName,
+  fileExtension,
+  destinationTable,
+  trackingId,
+}: CreateConfigParams) => {
   const format = fileExtension === 'csv' ? 'csv' : 'excel'
 
   return {
@@ -71,6 +79,26 @@ export const createImportOperationalTableNormalizationConfig = (
         'ru.datatech.sdk.service.procedure.ProcedureConfigFactory',
       ],
     },
+    // 'preload-listeners': {
+    //   'upload-pool-size': 1,
+    //   'listeners-packs': [
+    //     {
+    //       artifact: {
+    //         name: 'dnp-listeners-pack',
+    //         version: '2.0.0-beta',
+    //       },
+    //       'listeners-classes-configs': [
+    //         {
+    //           'class-name': 'ru.datatech.engine.eventsystem.listener.DnpStatusLogger',
+    //           config: {
+    //             url: 'jdbc:postgresql://10.4.40.11:5432/dnp_db?user=dnp_user&password=dnp_db_password',
+    //             table: 'public.ProcessEvent',
+    //           },
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // },
     'preload-jars': [
       {
         name: 'dnp-common/artifacts/functions/DnpFunctions',
@@ -80,6 +108,9 @@ export const createImportOperationalTableNormalizationConfig = (
     'driver-universal-services': ['ru.datatech.functions.DnpStringFunctions', 'ru.datatech.functions.DnpTaxFunctions'],
     executables: [
       {
+        indentity: {
+          id: 'DnpDataPostprocessing',
+        },
         'computable-config': {
           'computable-name': 'dnp-common/artifacts/procedures/DnpDataPostprocessing',
           version: '0.0.1',
@@ -90,6 +121,7 @@ export const createImportOperationalTableNormalizationConfig = (
         },
       },
     ],
+    'calc-id': trackingId,
     spark: {
       'app.name': 'dnp-demo-dev',
     },

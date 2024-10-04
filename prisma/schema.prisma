@@ -41,14 +41,38 @@ model User {
 }
 
 model Process {
-  id                    String   @db.VarChar(24)
-  type                  String
-  data                  Json
-  normalizationConfigId String?  @db.VarChar(24)
+  id                         String         @db.VarChar(24)
+  type                       ProcessType
+  runtimeConfigData          Json?
+  tableId                    String         @db.VarChar(24)
+  normalizationConfigId      String?        @db.VarChar(24)
+  normalizationConfigVersion Int?
+  eventTrackingId            Int            @unique
+  // relations
+  events                     ProcessEvent[]
   // meta
-  createdAt             DateTime @default(now())
-  createdById           String?  @db.VarChar(24)
-  createdBy             User?    @relation("processCreators", fields: [createdById], references: [id])
+  createdAt                  DateTime       @default(now())
+  createdById                String?        @db.VarChar(24)
+  createdBy                  User?          @relation("processCreators", fields: [createdById], references: [id])
+
+  @@id([id])
+}
+
+enum ProcessType {
+  NORMALIZATION
+  REPORT
+  IMPORT
+  EXPORT
+}
+
+model ProcessEvent {
+  id             String   @db.VarChar(24)
+  event          String   @db.VarChar(24)
+  calculation    Process  @relation(fields: [calculation_id], references: [eventTrackingId])
+  calculation_id Int
+  procedure_id   String   @db.VarChar(24)
+  step           Int
+  timestamp      DateTime
 
   @@id([id])
 }
