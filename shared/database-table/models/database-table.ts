@@ -66,6 +66,7 @@ export const columnModel = v.intersect([
     columnName: v.string(),
     defaultTo: v.optional(v.string()),
     index: v.optional(v.boolean()),
+    primary: v.optional(v.boolean()),
     nullable: v.optional(v.boolean()),
     unique: v.optional(v.boolean()),
     relation: v.optional(v.lazy(() => relationModel)),
