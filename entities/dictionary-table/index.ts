@@ -2,7 +2,7 @@
  * constants
  */
 
-export { NAME } from './constants/name'
+export { NAME, SLICE_NAME } from './constants/name'
 
 /**
  * lib
