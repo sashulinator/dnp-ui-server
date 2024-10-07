@@ -1,1 +1,1 @@
-export * from '~/common/entities/dictionary-table/models'
+export * from '~/common/entities/dictionary-table/models/dictionary-table'

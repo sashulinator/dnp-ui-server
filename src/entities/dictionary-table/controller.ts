@@ -7,8 +7,8 @@ import { ValibotPipe } from '~/shared/valibot.pipe'
 import {
   type CreateDictionaryTable,
   type UpdateDictionaryTable,
-  createDictionaryTableSchema,
-  updateDictionaryTableSchema,
+  createDictionaryTableModel,
+  updateDictionaryTableModel,
 } from './dto'
 import Service, {
   type DictionaryTable,
@@ -44,7 +44,7 @@ export default class DictionaryTableController {
    * @returns A promise that resolves when the operationalTable is updated
    */
   @Put()
-  @UsePipes(new ValibotPipe(v.object({ input: updateDictionaryTableSchema })))
+  @UsePipes(new ValibotPipe(v.object({ input: updateDictionaryTableModel })))
   update(@Body() body: { input: UpdateDictionaryTable }): Promise<DictionaryTable> {
     return this.service.update({ data: { ...body.input, updatedById: 'system' }, where: { kn: body.input.kn } })
   }
@@ -58,7 +58,7 @@ export default class DictionaryTableController {
    * @returns {Promise<DictionaryTable>} A promise that resolves to the created operationalTable
    */
   @Post()
-  @UsePipes(new ValibotPipe(v.object({ input: createDictionaryTableSchema })))
+  @UsePipes(new ValibotPipe(v.object({ input: createDictionaryTableModel })))
   create(@Body() body: { input: CreateDictionaryTable }): Promise<DictionaryTable> {
     return this.service.create({
       data: { ...body.input, createdById: 'system', updatedById: 'system' },

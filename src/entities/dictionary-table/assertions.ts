@@ -1,1 +1,1 @@
-export * from '~/common/entities/dictionary-table/assertions'
+export * from '~/common/entities/dictionary-table/lib/assertions'

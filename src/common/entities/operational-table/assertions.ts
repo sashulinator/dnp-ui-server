@@ -1,6 +1,8 @@
 import * as v from 'valibot'
-import { type TableSchema, tableSchemaSchema } from './models'
+
 import { BaseError } from '~/utils/error'
+
+import { type TableSchema, tableSchemaSchema } from './models/operational-table'
 
 export function isTableSchema(input: unknown): input is TableSchema {
   const { issues } = v.safeParse(tableSchemaSchema, input)

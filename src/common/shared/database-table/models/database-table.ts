@@ -6,6 +6,9 @@ import * as v from 'valibot'
 
 export const columnTypeModel = v.variant('type', [
   v.object({
+    type: v.literal('increments'),
+  }),
+  v.object({
     type: v.literal('string'),
     maxLength: v.number(),
   }),
@@ -63,7 +66,9 @@ export const columnModel = v.intersect([
     columnName: v.string(),
     defaultTo: v.optional(v.string()),
     index: v.optional(v.boolean()),
+    primary: v.optional(v.boolean()),
     nullable: v.optional(v.boolean()),
+    unique: v.optional(v.boolean()),
     relation: v.optional(v.lazy(() => relationModel)),
   }),
 ])
