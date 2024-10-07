@@ -54,11 +54,11 @@ export const dictionaryTables = [
           id: 'id1',
           columnName: 'id',
           name: 'ID',
-          type: 'string',
+          type: 'integer',
           index: true,
-          unique: false,
           primary: true,
           maxLength: 50,
+          isNegativeAllowed: false,
         },
         {
           id: 'id2',

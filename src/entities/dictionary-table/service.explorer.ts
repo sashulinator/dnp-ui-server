@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
+import Database from '~/lib/database'
 import ExplorerService, {
   type CreateParams,
   type DeleteParams,
@@ -18,13 +19,14 @@ export type ExplorerFindManyParams = FindManyParams & {
 }
 export type ExplorerCreateParams = { kn: string; input: Record<string, unknown> }
 export type ExplorerDeleteParams = { kn: string; where: Where }
-export type ExplorerUpdateParams = { kn: string; input: { _id: string } & Record<string, string> }
+export type ExplorerUpdateParams = { kn: string; input: Record<string | number, string>; where: Where }
 
 @Injectable()
 export default class DictionaryTableService {
   constructor(
     private explorerService: ExplorerService,
     private dictionaryTableService: Service,
+    private database: Database,
   ) {}
 
   async explorerFindManyAndCountRows(params: ExplorerFindManyParams) {
@@ -40,10 +42,23 @@ export default class DictionaryTableService {
         }, [])
       : []
 
+    this.database.setConfig({
+      client: 'postgres',
+      host: storeConfig.data.host,
+      port: storeConfig.data.port,
+      username: storeConfig.data.username,
+      password: storeConfig.data.password,
+      dbName: storeConfig.data.dbName,
+    })
+
+    const pk = await this.database.getPrimaryKey(dictionaryTable.tableName)
+
+    this.database.disconnect()
+
     const findManyParams: Required<FindManyParams> = {
       take: params.take || 100,
       skip: params.skip || 0,
-      sort: params.sort,
+      sort: pk ? { [pk]: 'asc' } : params.sort,
       where: { AND: [{ OR: searchOR }, params.where] },
       type: 'postgres',
       paths: [storeConfig.data.dbName, dictionaryTable.tableName],
@@ -117,7 +132,7 @@ export default class DictionaryTableService {
 
     const updateParams: Required<UpdateParams> = {
       input: params.input,
-      where: { _id: params.input._id },
+      where: params.where,
       type: 'postgres',
       paths: [storeConfig.data.dbName, dictionaryTable.tableName],
       storeConfig: {
