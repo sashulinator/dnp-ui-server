@@ -1,14 +1,15 @@
-import { type Prisma, type PrismaClient } from '@prisma/client'
 import { createId } from '@paralleldrive/cuid2'
-import { users } from './users'
+import { type Prisma, type PrismaClient } from '@prisma/client'
+
+import vitalSeedList from './users/vital-seed-list'
 
 export const normalizationConfig1: Prisma.NormalizationConfigUncheckedCreateInput = {
   id: 'tz4a98xxat96iws9zmbrgj3a',
   v: 1,
   name: 'first',
   last: true,
-  createdById: users[0].id,
-  updatedById: users[0].id,
+  createdById: vitalSeedList[0].id,
+  updatedById: vitalSeedList[0].id,
   createdAt: '2024-05-28T06:37:43.048Z',
   updatedAt: '2024-05-28T06:37:43.048Z',
   data: getData(),

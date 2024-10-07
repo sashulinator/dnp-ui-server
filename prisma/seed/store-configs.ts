@@ -2,7 +2,7 @@ import { createId } from '@paralleldrive/cuid2'
 import { type Prisma, type PrismaClient } from '@prisma/client'
 
 import { SYSNAME } from '../../src/shared/working-tables/constant/name'
-import { users } from './users'
+import vitalSeedList from './users/vital-seed-list'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const parseDbUrl = require('parse-database-url')
@@ -28,8 +28,8 @@ export const storeConfigs = [
   _create({
     kn: SYSNAME,
     type: 'postgres',
-    createdById: users[0].id,
-    updatedById: users[0].id,
+    createdById: vitalSeedList[0].id,
+    updatedById: vitalSeedList[0].id,
     createdAt: '2024-05-28T06:37:43.048Z',
     updatedAt: '2024-05-28T06:37:43.048Z',
     data: {
@@ -46,8 +46,8 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
   const instance: CreateInput = {
     kn: defaultValues.kn ?? createId(),
     type: defaultValues.type ?? 'postgres',
-    createdById: users[0].id,
-    updatedById: users[0].id,
+    createdById: vitalSeedList[0].id,
+    updatedById: vitalSeedList[0].id,
     data: {
       username: 'asavchenko',
       password: 'Orion123',

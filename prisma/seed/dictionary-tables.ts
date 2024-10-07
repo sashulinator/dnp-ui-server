@@ -1,73 +1,43 @@
 import { createId } from '@paralleldrive/cuid2'
 import { type Prisma, type PrismaClient } from '@prisma/client'
 
-import { users } from './users'
+import vitalSeedList from './users/vital-seed-list'
 
 const dictionaryTableName = 'dictionaryTable'
 type CreateInput = Prisma.DictionaryTableUncheckedCreateInput
 
 export const dictionaryTables = [
   _create({
-    kn: 'dictionary',
-    name: 'Виды животных',
-    tableName: 'Animals',
+    kn: 'countries',
+    name: 'Страны',
+    tableName: 'countries',
     nav: true,
     tableSchema: {
       defaultView: 'table',
       items: [
         {
-          id: 'animal_1',
-          columnName: 'ID',
-          name: 'ID',
+          id: 'id1',
+          columnName: 'code',
+          name: 'Код',
           type: 'string',
-          index: true,
           primary: true,
-          maxLength: 50,
+          maxLength: 2,
         },
         {
-          id: 'animal_2',
-          columnName: 'Название',
+          id: 'id2',
+          columnName: 'name',
           name: 'Название',
           type: 'string',
-          index: false,
           unique: false,
           maxLength: 50,
         },
         {
-          id: 'animal_3',
-          columnName: 'Тип',
-          name: 'Тип',
+          id: 'id3',
+          columnName: 'dial_code',
+          name: 'Телефоный код',
           type: 'string',
-          index: true,
           unique: false,
-          maxLength: 50,
-        },
-        {
-          id: 'animal_4',
-          columnName: 'Среда обитания',
-          name: 'Среда обитания',
-          type: 'string',
-          index: false,
-          unique: false,
-          maxLength: 50,
-        },
-        {
-          id: 'animal_5',
-          columnName: 'Размер',
-          name: 'Размер',
-          type: 'string',
-          index: false,
-          unique: false,
-          maxLength: 50,
-        },
-        {
-          id: 'animal_6',
-          columnName: 'Вес',
-          name: 'Вес',
-          type: 'string',
-          index: false,
-          unique: false,
-          maxLength: 50,
+          maxLength: 5,
         },
       ],
     },
@@ -75,13 +45,13 @@ export const dictionaryTables = [
   _create({
     kn: 'employeess',
     name: 'Работники',
-    tableName: 'employees',
+    tableName: 'workers',
     nav: true,
     tableSchema: {
       defaultView: 'table',
       items: [
         {
-          id: 'id888',
+          id: 'id1',
           columnName: 'id',
           name: 'ID',
           type: 'string',
@@ -92,7 +62,7 @@ export const dictionaryTables = [
         },
         {
           id: 'id2',
-          columnName: 'firstName',
+          columnName: 'firstname',
           name: 'Имя',
           type: 'string',
           index: true,
@@ -101,12 +71,63 @@ export const dictionaryTables = [
         },
         {
           id: 'id3',
-          columnName: 'secondName',
+          columnName: 'secondname',
           name: 'Фамилия',
           type: 'string',
           index: false,
           unique: false,
           maxLength: 50,
+        },
+        {
+          id: 'id4',
+          columnName: 'sex',
+          name: 'Пол',
+          type: 'string',
+          unique: false,
+          maxLength: 10,
+        },
+        {
+          id: 'id5',
+          columnName: 'age',
+          name: 'Возраст',
+          type: 'integer',
+          unique: false,
+          maxLength: 3,
+          isNegativeAllowed: false,
+        },
+      ],
+    },
+  }),
+  _create({
+    kn: 'rfSubjects',
+    name: 'Субьекты РФ',
+    tableName: 'rf_subjects',
+    nav: true,
+    tableSchema: {
+      defaultView: 'table',
+      items: [
+        {
+          id: 'id1',
+          columnName: 'capital',
+          name: 'Столица',
+          type: 'string',
+          maxLength: 50,
+        },
+        {
+          id: 'id2',
+          columnName: 'name',
+          name: 'Название',
+          type: 'string',
+          unique: false,
+          maxLength: 50,
+        },
+        {
+          id: 'id3',
+          columnName: 'region_code',
+          name: 'Код региона',
+          type: 'string',
+          primary: true,
+          maxLength: 3,
         },
       ],
     },
@@ -145,8 +166,8 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
         },
       ],
     },
-    createdById: users[0].id,
-    updatedById: users[0].id,
+    createdById: vitalSeedList[0].id,
+    updatedById: vitalSeedList[0].id,
     ...defaultValues,
   }
   return instance

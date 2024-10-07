@@ -1,7 +1,7 @@
 import { createId } from '@paralleldrive/cuid2'
 import { type Prisma, type PrismaClient, ProcessType } from '@prisma/client'
 
-import { users } from './users'
+import vitalSeedList from './users/vital-seed-list'
 
 const processes1: Prisma.ProcessUncheckedCreateInput = {
   id: 'tz4a98xxat96iws9zmbrgj3a',
@@ -9,7 +9,7 @@ const processes1: Prisma.ProcessUncheckedCreateInput = {
   tableId: 'cars',
   eventTrackingId: 0,
   runtimeConfigData: '',
-  createdById: users[0].id,
+  createdById: vitalSeedList[0].id,
 }
 
 export async function seedProcesses(prisma: PrismaClient) {

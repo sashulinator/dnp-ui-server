@@ -2,6 +2,9 @@ import { type DictionaryTable } from '../../src/entities/dictionary-table/dto'
 import { type StoreConfig } from '../../src/entities/store-configs/dto'
 import { toDatabasConfig } from '../../src/entities/store-configs/lib/to-database-config'
 import Database from '../../src/lib/database'
+import rfSubjects from './dictionary-table/rf-subjects'
+import countryList from './dictionary-table/seed-list.country'
+import userList from './dictionary-table/seed-list.users'
 import { dictionaryTables } from './dictionary-tables'
 import { storeConfigs } from './store-configs'
 
@@ -9,7 +12,23 @@ export default async function seedDictionaryTables() {
   const storeConfig = storeConfigs[0] as StoreConfig
   const database = new Database().setConfig(toDatabasConfig(storeConfig))
 
-  // Employees
+  // countries
+
+  const countriesOt = dictionaryTables[0] as DictionaryTable
+
+  await database.dropTableIfExists(countriesOt.tableName)
+
+  await database.createTable(countriesOt.tableName, {
+    items: [...(countriesOt.tableSchema.items as any)],
+  })
+
+  const countriesPromises = countryList.map((row) => {
+    return database.insertRow(countriesOt.tableName, row)
+  })
+
+  await Promise.all(countriesPromises)
+
+  // employees
 
   const employeesdt = dictionaryTables[1] as DictionaryTable
 
@@ -19,39 +38,25 @@ export default async function seedDictionaryTables() {
     items: employeesdt.tableSchema.items as any,
   })
 
-  const employeesRows = new Array(3).fill(undefined).map((_, i) => {
-    return employeesdt.tableSchema.items.reduce((acc, item) => {
-      acc[item.columnName] = `seeded-${item.columnName}-${i}`
-      return acc
-    }, {})
-  })
-
-  const employeesPromises = employeesRows.map((row) => {
+  const employeesPromises = userList.map((row) => {
     return database.insertRow(employeesdt.tableName, row)
   })
 
   await Promise.all(employeesPromises)
 
-  // Cars
+  // rfSubject
 
-  const carsOt = dictionaryTables[0] as DictionaryTable
+  const rfSubjectOt = dictionaryTables[2] as DictionaryTable
 
-  await database.dropTableIfExists(carsOt.tableName)
+  await database.dropTableIfExists(rfSubjectOt.tableName)
 
-  await database.createTable(carsOt.tableName, {
-    items: [...(carsOt.tableSchema.items as any)],
+  await database.createTable(rfSubjectOt.tableName, {
+    items: [...(rfSubjectOt.tableSchema.items as any)],
   })
 
-  const carsRows = new Array(3).fill(undefined).map((_, i) => {
-    return carsOt.tableSchema.items.reduce((acc, item) => {
-      acc[item.columnName] = `seeded-${item.columnName}-${i}`
-      return acc
-    }, {})
+  const rfSubjectPromises = rfSubjects.map((row) => {
+    return database.insertRow(rfSubjectOt.tableName, row)
   })
 
-  const carsPromises = carsRows.map((row) => {
-    return database.insertRow(carsOt.tableName, row)
-  })
-
-  await Promise.all(carsPromises)
+  await Promise.all(rfSubjectPromises)
 }
