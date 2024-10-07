@@ -14,7 +14,9 @@ export const explorerSchema = v.object({
   idKey: v.union([v.number(), v.string()]),
 })
 
-export type Explorer = v.InferOutput<typeof explorerSchema>
+export type Explorer<TItem extends Item = Item> = Omit<v.InferOutput<typeof explorerSchema>, 'items'> & {
+  items: TItem[]
+}
 
 /**
  * Item
