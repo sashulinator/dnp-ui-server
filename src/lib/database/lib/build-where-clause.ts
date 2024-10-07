@@ -61,19 +61,19 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where):
      * match
      */
     if (typeof filter === 'object' && has(filter, MATCH.match)) {
-      if (filter.match === null) return
+      if (filter.match === null) continue
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), filter.match)
       if (filter.notMode) queryBuilder.orWhere(columnName, 'is', null)
     } else if (typeof filter === 'object' && has(filter, MATCH.contains)) {
-      if (filter.contains === null) return
+      if (filter.contains === null) continue
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), `%${filter.contains}%`)
       if (filter.notMode) queryBuilder.orWhere(columnName, 'is', null)
     } else if (typeof filter === 'object' && has(filter, MATCH.startsWith)) {
-      if (filter.startsWith === null) return
+      if (filter.startsWith === null) continue
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), `${filter.startsWith}%`)
       if (filter.notMode) queryBuilder.orWhere(columnName, 'is', null)
     } else if (typeof filter === 'object' && has(filter, MATCH.endsWith)) {
-      if (filter.endsWith === null) return
+      if (filter.endsWith === null) continue
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, _getLike(filter), `%${filter.endsWith}`)
       if (filter.notMode) queryBuilder.orWhere(columnName, 'is', null)
 
@@ -81,19 +81,19 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where):
        * compare
        */
     } else if (typeof filter === 'object' && has(filter, COMPARISON.gt)) {
-      if (filter.gt === null) return
+      if (filter.gt === null) continue
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, '>', filter.gt)
     } else if (typeof filter === 'object' && has(filter, COMPARISON.equals)) {
-      if (filter.equals === null) return
+      if (filter.equals === null) continue
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, '=', filter.equals)
     } else if (typeof filter === 'object' && has(filter, COMPARISON.gte)) {
-      if (filter.gte === null) return
+      if (filter.gte === null) continue
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, '>=', filter.gte)
     } else if (typeof filter === 'object' && has(filter, COMPARISON.lt)) {
-      if (filter.lt === null) return
+      if (filter.lt === null) continue
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, '<', filter.lt)
     } else if (typeof filter === 'object' && has(filter, COMPARISON.lte)) {
-      if (filter.lte === null) return
+      if (filter.lte === null) continue
       queryBuilder[_getWhereOrWhereNot(filter)](columnName, '<=', filter.lte)
 
       /**
