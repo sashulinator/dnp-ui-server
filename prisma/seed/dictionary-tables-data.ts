@@ -1,9 +1,9 @@
-import { storeConfigs } from './store-configs'
-import { dictionaryTables } from './dictionary-tables'
-import { type StoreConfig } from '../../src/entities/store-configs/dto'
 import { type DictionaryTable } from '../../src/entities/dictionary-table/dto'
-import Database from '../../src/lib/database'
+import { type StoreConfig } from '../../src/entities/store-configs/dto'
 import { toDatabasConfig } from '../../src/entities/store-configs/lib/to-database-config'
+import Database from '../../src/lib/database'
+import { dictionaryTables } from './dictionary-tables'
+import { storeConfigs } from './store-configs'
 
 export default async function seedDictionaryTables() {
   const storeConfig = storeConfigs[0] as StoreConfig
@@ -11,26 +11,23 @@ export default async function seedDictionaryTables() {
 
   // Employees
 
-  const employeesOt = dictionaryTables[1] as DictionaryTable
+  const employeesdt = dictionaryTables[1] as DictionaryTable
 
-  await database.dropTableIfExists(employeesOt.tableName)
+  await database.dropTableIfExists(employeesdt.tableName)
 
-  await database.createTable(employeesOt.tableName, {
-    items: [
-      { columnName: '_id', type: 'increments' },
-      { columnName: '_status', type: 'string', defaultTo: '0' },
-      ...employeesOt.tableSchema.items as any],
+  await database.createTable(employeesdt.tableName, {
+    items: employeesdt.tableSchema.items as any,
   })
 
   const employeesRows = new Array(3).fill(undefined).map((_, i) => {
-    return employeesOt.tableSchema.items.reduce((acc, item) => {
+    return employeesdt.tableSchema.items.reduce((acc, item) => {
       acc[item.columnName] = `seeded-${item.columnName}-${i}`
       return acc
     }, {})
   })
 
   const employeesPromises = employeesRows.map((row) => {
-    return database.insertRow(employeesOt.tableName, row)
+    return database.insertRow(employeesdt.tableName, row)
   })
 
   await Promise.all(employeesPromises)
@@ -42,10 +39,7 @@ export default async function seedDictionaryTables() {
   await database.dropTableIfExists(carsOt.tableName)
 
   await database.createTable(carsOt.tableName, {
-    items: [
-      { columnName: '_id', type: 'increments' },
-      { columnName: '_status', type: 'string', defaultTo: '0' },
-      ...carsOt.tableSchema.items as any],
+    items: [...(carsOt.tableSchema.items as any)],
   })
 
   const carsRows = new Array(3).fill(undefined).map((_, i) => {

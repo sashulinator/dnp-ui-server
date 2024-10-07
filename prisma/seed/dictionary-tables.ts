@@ -21,7 +21,7 @@ export const dictionaryTables = [
           name: 'ID',
           type: 'string',
           index: true,
-          unique: true,
+          primary: true,
           maxLength: 50,
         },
         {
@@ -81,12 +81,13 @@ export const dictionaryTables = [
       defaultView: 'table',
       items: [
         {
-          id: 'id1',
-          columnName: 'employeesId',
+          id: 'id888',
+          columnName: 'id',
           name: 'ID',
           type: 'string',
-          unique: true,
           index: true,
+          unique: false,
+          primary: true,
           maxLength: 50,
         },
         {
@@ -95,6 +96,7 @@ export const dictionaryTables = [
           name: 'Имя',
           type: 'string',
           index: true,
+          unique: false,
           maxLength: 50,
         },
         {
@@ -102,7 +104,8 @@ export const dictionaryTables = [
           columnName: 'secondName',
           name: 'Фамилия',
           type: 'string',
-          index: true,
+          index: false,
+          unique: false,
           maxLength: 50,
         },
       ],

@@ -115,8 +115,8 @@ export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where):
       /**
        * string
        */
-      if (typeof filter === 'string') {
-        queryBuilder.where(columnName, 'ilike', `${filter}%`)
+      if (typeof filter === 'string' || typeof filter === 'number') {
+        queryBuilder.where(columnName, '=', filter)
         return
       }
 

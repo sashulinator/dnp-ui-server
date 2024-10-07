@@ -1,18 +1,21 @@
-import {
-  type ArgumentsHost,
-  Catch,
-  HttpException,
-  HttpStatus,
-  type ExceptionFilter as NestJSExceptionFilter,
-} from '@nestjs/common'
+import { type ArgumentsHost, Catch, HttpStatus, type ExceptionFilter as NestJSExceptionFilter } from '@nestjs/common'
 import { HttpAdapterHost } from '@nestjs/core'
+import { Prisma } from '@prisma/client'
+
+import { HttpException } from '~/shared/error'
 
 import { has, isInstanceOf } from '../utils/core'
 import { assertError, isCausable } from '../utils/error'
-import { Prisma } from '@prisma/client'
 
-export type ErrorBody = {
+export type BodyError = {
+  /**
+   * Сообщение для отображения в ui
+   */
   message: string
+  /**
+   * Объяснение или Инструкция по устранению ошибки для отображения в ui
+   */
+  description: string
   status: number
   timestamp: string
   path: string
@@ -37,13 +40,17 @@ export default class ExceptionFilter implements NestJSExceptionFilter {
     const ctx = host.switchToHttp()
 
     const httpStatus = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
+    const translated = exception instanceof HttpException ? exception.getTranslated() : 'Неизвестная ошибка'
+    const description = exception instanceof HttpException ? exception.getDescription() : ''
 
-    const responseBody: ErrorBody = {
-      status: httpStatus,
-      message: exception.message,
-      stack: exception.message.split('\n'),
-      timestamp: new Date().toISOString(),
+    const responseBody: BodyError = {
+      message: translated || 'Неизвестная ошибка',
+      description: description,
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
+      status: httpStatus,
+      timestamp: new Date().toISOString(),
+      stack: exception.message.split('\n'),
+      cause: exception,
     }
 
     if (isCausable(exception)) {

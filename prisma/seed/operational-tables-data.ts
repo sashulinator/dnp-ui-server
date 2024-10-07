@@ -1,10 +1,10 @@
-import { storeConfigs } from './store-configs'
-import { operationalTables } from './operational-tables'
-import { type StoreConfig } from '../../src/entities/store-configs/dto'
 import { type OperationalTable } from '../../src/entities/operational-table/dto'
-import Database from '../../src/lib/database'
-import { toDatabasConfig } from '../../src/entities/store-configs/lib/to-database-config'
 import { toDatabaseBuildColumnProps } from '../../src/entities/operational-table/lib/to-database-build-column-props'
+import { type StoreConfig } from '../../src/entities/store-configs/dto'
+import { toDatabasConfig } from '../../src/entities/store-configs/lib/to-database-config'
+import Database from '../../src/lib/database'
+import { operationalTables } from './operational-tables'
+import { storeConfigs } from './store-configs'
 
 export default async function seedOperationalTables() {
   const storeConfig = storeConfigs[0] as StoreConfig

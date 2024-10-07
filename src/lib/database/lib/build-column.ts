@@ -5,6 +5,7 @@ import { type Any } from '~/utils/core'
 export interface BuildColumnProps {
   columnName: string
   type: 'string' | 'number' | 'boolean' | 'increments' | 'date' | 'float'
+  primary?: boolean
   defaultTo?: Any | undefined
   unique?: boolean
   index?: boolean
@@ -27,6 +28,10 @@ export function buildColumn(createTableBuilder: Knex.CreateTableBuilder, props: 
 
   if (props.index) {
     columnBuilder.index()
+  }
+
+  if (props.primary) {
+    columnBuilder.primary()
   }
 
   if (props.relation) {

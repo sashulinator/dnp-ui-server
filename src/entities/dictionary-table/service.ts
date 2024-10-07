@@ -156,7 +156,14 @@ export default class DictionaryTableService extends CrudDelegator<
   async getStoreConfig(): Promise<StoreConfig> {
     const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: SYSNAME } })
 
-    if (!storeConfig) throw new HttpException(`Create StoreConfig with ${SYSNAME}`, HttpStatus.NOT_FOUND)
+    if (!storeConfig)
+      throw new HttpException(
+        {
+          message: `Create StoreConfig with ${SYSNAME}`,
+          translated: `Создайте Хранилище с названием "${SYSNAME}"`,
+        },
+        HttpStatus.NOT_FOUND,
+      )
 
     return storeConfig as unknown as StoreConfig
   }

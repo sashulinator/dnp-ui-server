@@ -1,8 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { type Prisma, type OperationalTable as PrismaOperationalTable } from '@prisma/client'
 
 import Database from '~/lib/database'
 import { CrudDelegator } from '~/shared/crud'
+import { HttpException, HttpStatus } from '~/shared/error'
 import { SYSNAME } from '~/shared/working-tables/constant/name'
 
 import ExplorerService from '../../shared/explorer/service'
@@ -164,7 +165,16 @@ export default class OperationalTableService extends CrudDelegator<
   async getStoreConfig(): Promise<StoreConfig> {
     const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: SYSNAME } })
 
-    if (!storeConfig) throw new HttpException(`StoreConfig with kn="${SYSNAME}" not found.`, HttpStatus.NOT_FOUND)
+    if (!storeConfig) {
+      throw new HttpException(
+        {
+          message: `Create StoreConfig with ${SYSNAME}`,
+          translated: `Не удалось найти Хранилище "${SYSNAME}"`,
+          description: `Создайте Хранилище с названием "${SYSNAME}"`,
+        },
+        HttpStatus.NOT_FOUND,
+      )
+    }
 
     return storeConfig as unknown as StoreConfig
   }

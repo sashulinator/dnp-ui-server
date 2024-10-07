@@ -3,6 +3,7 @@ import { type Knex, knex } from 'knex'
 import { type Client } from './clients/interface'
 import { PostgresClient } from './clients/postgres'
 import { alterTable } from './lib/alter-table'
+import { buildWhereClause } from './lib/build-where-clause'
 import countRows, { type CountRowsParams } from './lib/count-rows'
 import { type CreateTableSchema, createTable } from './lib/create-table'
 import { type FindManyRowsParams, findManyRows } from './lib/find-many-rows'
@@ -31,6 +32,10 @@ export default class Database {
         host: config.host,
         port: Number(config.port),
         database: config.dbName,
+      },
+      pool: {
+        destroyTimeoutMillis: 10_000,
+        idleTimeoutMillis: 5_000,
       },
     })
     this._clientDelegate = new PostgresClient().setKnex(this._knex)
@@ -147,8 +152,10 @@ export default class Database {
     return this.knex(tableName).insert(row)
   }
 
-  deleteRow(tableName: string, where: Where | undefined) {
-    return this.knex(tableName).delete().where(where)
+  async deleteRow(tableName: string, where: Where | undefined) {
+    const queryBuilder = this.knex(tableName).delete()
+    buildWhereClause(queryBuilder, where)
+    return await queryBuilder
   }
 
   async updateRow(tableName: string, row: Row, where: Where | undefined) {
