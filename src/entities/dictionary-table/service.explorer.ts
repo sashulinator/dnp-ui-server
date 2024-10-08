@@ -58,7 +58,7 @@ export default class DictionaryTableService {
     const findManyParams: Required<FindManyParams> = {
       take: params.take || 100,
       skip: params.skip || 0,
-      sort: pk ? { [pk]: 'asc' } : params.sort,
+      sort: params.sort || { [pk]: 'asc' },
       where: { AND: [{ OR: searchOR }, params.where] },
       type: 'postgres',
       paths: [storeConfig.data.dbName, dictionaryTable.tableName],
