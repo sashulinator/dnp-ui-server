@@ -8,4 +8,4 @@ export * from './constants/name'
  * models
  */
 
-export * from './models/database-table'
+export * from './models/database'

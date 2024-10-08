@@ -1,6 +1,6 @@
 import * as v from 'valibot'
 
-import { columnModel as dtColumnModel, relationModel as dtRelationModel } from '../../database-table'
+import { columnModel as dtColumnModel, relationModel as dtRelationModel } from '../../database'
 
 /**
  * DatabaseTable
