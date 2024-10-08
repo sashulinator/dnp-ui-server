@@ -1,21 +1,8 @@
 import { type Knex } from 'knex'
 
-import { type Any } from '~/utils/core'
+import { type Column } from '../models/database'
 
-export interface BuildColumnProps {
-  columnName: string
-  type: 'string' | 'number' | 'boolean' | 'increments' | 'date' | 'float'
-  primary?: boolean
-  defaultTo?: Any | undefined
-  unique?: boolean
-  index?: boolean
-  relation?: {
-    tableName: string
-    columnName: string
-  }
-}
-
-export function buildColumn(createTableBuilder: Knex.CreateTableBuilder, props: BuildColumnProps) {
+export function buildColumn(createTableBuilder: Knex.CreateTableBuilder, props: Column) {
   const columnBuilder = createTableBuilder[props.type](props.columnName) as Knex.ColumnBuilder
 
   if (props.defaultTo) {

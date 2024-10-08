@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { type Prisma, type OperationalTable as PrismaOperationalTable } from '@prisma/client'
 
+import { _idColumn, _statusColumn } from '~/common/entities/operational-table'
 import { CrudDelegator } from '~/shared/crud'
 import Database from '~/shared/database'
 import { HttpException, HttpStatus } from '~/shared/error'
@@ -12,7 +13,6 @@ import type { StoreConfig } from '../store-configs/dto'
 import { toDatabasConfig } from '../store-configs/lib/to-database-config'
 import { assertTableSchema } from './assertions'
 import { type TableSchemaItem } from './dto'
-import { toDatabaseBuildColumnProps } from './lib/to-database-build-column-props'
 
 export type OperationalTable = PrismaOperationalTable
 export type CreateOperationalTable = Prisma.OperationalTableUncheckedCreateInput
@@ -74,11 +74,7 @@ export default class OperationalTableService extends CrudDelegator<
     const ret = await this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
         await databaseTrx.createTable(params.data.tableName, {
-          items: [
-            { columnName: '_id', type: 'increments' },
-            { columnName: '_status', type: 'string', defaultTo: '0' },
-            ...tableSchema.items.map(toDatabaseBuildColumnProps),
-          ],
+          items: [_idColumn, _statusColumn, ...tableSchema.items],
         })
 
         return prismaTrx.operationalTable.create(this._prepareSelectIncludeParams(params))
@@ -137,7 +133,7 @@ export default class OperationalTableService extends CrudDelegator<
           columnsToDrop.map((item) => item.columnName),
         )
         await databaseTrx.alterTable(currentOperationalTable.tableName, {
-          items: columnsToAdd.map(toDatabaseBuildColumnProps),
+          items: columnsToAdd,
         })
         await databaseTrx.renameColumns(
           currentOperationalTable.tableName,

@@ -5,5 +5,4 @@ export const _idColumn: Column = {
   name: '_ID',
   columnName: '_id',
   type: 'increments',
-  defaultTo: '0',
 }

@@ -1,5 +1,6 @@
+import { _idColumn, _statusColumn } from '~/common/entities/operational-table'
+
 import { type OperationalTable } from '../../src/entities/operational-table/dto'
-import { toDatabaseBuildColumnProps } from '../../src/entities/operational-table/lib/to-database-build-column-props'
 import { type StoreConfig } from '../../src/entities/store-configs/dto'
 import { toDatabasConfig } from '../../src/entities/store-configs/lib/to-database-config'
 import Database from '../../src/shared/database'
@@ -17,11 +18,7 @@ export default async function seedOperationalTables() {
   await database.dropTableIfExists(employeesOt.tableName)
 
   await database.createTable(employeesOt.tableName, {
-    items: [
-      { columnName: '_id', type: 'increments' },
-      { columnName: '_status', type: 'string', defaultTo: '0' },
-      ...employeesOt.tableSchema.items.map(toDatabaseBuildColumnProps),
-    ],
+    items: [_idColumn, _statusColumn, ...employeesOt.tableSchema.items],
   })
 
   const employeesRows = new Array(3).fill(undefined).map((_, i) => {
@@ -44,11 +41,7 @@ export default async function seedOperationalTables() {
   await database.dropTableIfExists(carsOt.tableName)
 
   await database.createTable(carsOt.tableName, {
-    items: [
-      { columnName: '_id', type: 'increments' },
-      { columnName: '_status', type: 'string', defaultTo: '0' },
-      ...carsOt.tableSchema.items.map(toDatabaseBuildColumnProps),
-    ],
+    items: [_idColumn, _statusColumn, ...carsOt.tableSchema.items],
   })
 
   const carsRows = new Array(3).fill(undefined).map((_, i) => {
