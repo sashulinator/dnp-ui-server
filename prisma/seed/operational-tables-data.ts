@@ -1,4 +1,5 @@
-import { _idColumn, _statusColumn } from '~/common/entities/operational-table'
+import { _idColumn } from '~/entities/operational-table/models/_id-column'
+import { _statusColumn } from '~/entities/operational-table/models/_status'
 
 import { type OperationalTable } from '../../src/entities/operational-table/dto'
 import { type StoreConfig } from '../../src/entities/store-configs/dto'
@@ -17,9 +18,7 @@ export default async function seedOperationalTables() {
 
   await database.dropTableIfExists(employeesOt.tableName)
 
-  await database.createTable(employeesOt.tableName, {
-    items: [_idColumn, _statusColumn, ...employeesOt.tableSchema.items],
-  })
+  await database.createTable(employeesOt.tableName, [_idColumn, _statusColumn, ...employeesOt.tableSchema.items])
 
   const employeesRows = new Array(3).fill(undefined).map((_, i) => {
     return employeesOt.tableSchema.items.reduce((acc, item) => {
@@ -40,9 +39,7 @@ export default async function seedOperationalTables() {
 
   await database.dropTableIfExists(carsOt.tableName)
 
-  await database.createTable(carsOt.tableName, {
-    items: [_idColumn, _statusColumn, ...carsOt.tableSchema.items],
-  })
+  await database.createTable(carsOt.tableName, [_idColumn, _statusColumn, ...carsOt.tableSchema.items])
 
   const carsRows = new Array(3).fill(undefined).map((_, i) => {
     return carsOt.tableSchema.items.reduce((acc, item) => {

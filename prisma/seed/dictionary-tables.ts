@@ -100,7 +100,7 @@ export const dictionaryTables = [
   }),
   _create({
     kn: 'rfSubjects',
-    name: 'Субьекты РФ',
+    name: 'Субъекты РФ',
     tableName: 'rf_subjects',
     nav: true,
     tableSchema: {

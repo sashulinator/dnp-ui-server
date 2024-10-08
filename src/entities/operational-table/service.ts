@@ -73,9 +73,7 @@ export default class OperationalTableService extends CrudDelegator<
 
     const ret = await this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
-        await databaseTrx.createTable(params.data.tableName, {
-          items: [_idColumn, _statusColumn, ...tableSchema.items],
-        })
+        await databaseTrx.createTable(params.data.tableName, [_idColumn, _statusColumn, ...tableSchema.items])
 
         return prismaTrx.operationalTable.create(this._prepareSelectIncludeParams(params))
       })
@@ -132,9 +130,7 @@ export default class OperationalTableService extends CrudDelegator<
           currentOperationalTable.tableName,
           columnsToDrop.map((item) => item.columnName),
         )
-        await databaseTrx.alterTable(currentOperationalTable.tableName, {
-          items: columnsToAdd,
-        })
+        await databaseTrx.alterTable(currentOperationalTable.tableName, columnsToAdd)
         await databaseTrx.renameColumns(
           currentOperationalTable.tableName,
           columnsToRename.map(([currentItem, updateItem]) => ({

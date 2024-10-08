@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { type Prisma, type DictionaryTable as PrismaDictionaryTable } from '@prisma/client'
 
+import { _idColumn } from '~/common/entities/operational-table'
 import { CrudDelegator } from '~/shared/crud'
 import Database from '~/shared/database'
 import { SYSNAME } from '~/shared/working-tables/constant/name'
@@ -67,10 +68,7 @@ export default class DictionaryTableService extends CrudDelegator<
 
     const ret = await this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
-        await databaseTrx.createTable(params.data.tableName, {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          items: [{ columnName: '_id', type: 'increments' }, ...(tableSchema.items as any[])],
-        })
+        await databaseTrx.createTable(params.data.tableName, [_idColumn, ...tableSchema.items])
         return prismaTrx.dictionaryTable.create(this._prepareSelectIncludeParams(params))
       })
     })
@@ -126,10 +124,7 @@ export default class DictionaryTableService extends CrudDelegator<
           currentDictionaryTable.tableName,
           columnsToDrop.map((item) => item.columnName),
         )
-        await databaseTrx.alterTable(currentDictionaryTable.tableName, {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          items: columnsToAdd as any,
-        })
+        await databaseTrx.alterTable(currentDictionaryTable.tableName, columnsToAdd)
         await databaseTrx.renameColumns(
           currentDictionaryTable.tableName,
           columnsToRename.map(([currentItem, updateItem]) => ({

@@ -5,8 +5,9 @@ import { PostgresClient } from './clients/postgres'
 import { alterTable } from './lib/alter-table'
 import { buildWhereClause } from './lib/build-where-clause'
 import countRows, { type CountRowsParams } from './lib/count-rows'
-import { type CreateTableSchema, createTable } from './lib/create-table'
+import { createTable } from './lib/create-table'
 import { type FindManyRowsParams, findManyRows } from './lib/find-many-rows'
+import type { Column } from './models/database'
 import { type Row } from './models/database'
 import type { Where } from './models/where'
 
@@ -104,12 +105,12 @@ export default class Database {
    * Table
    */
 
-  createTable(tableName: string, schema: CreateTableSchema) {
-    return createTable(this.knex, tableName, schema)
+  createTable(tableName: string, columns: Column[]) {
+    return createTable(this.knex, tableName, columns)
   }
 
-  alterTable(tableName: string, schema: CreateTableSchema) {
-    return alterTable(this.knex, tableName, schema)
+  alterTable(tableName: string, columns: Column[]) {
+    return alterTable(this.knex, tableName, columns)
   }
 
   renameTable(tableName: string, newTableName: string) {

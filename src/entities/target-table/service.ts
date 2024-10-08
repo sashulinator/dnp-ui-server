@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { type Prisma, type TargetTable as PrismaTargetTable } from '@prisma/client'
 
+import { _idColumn } from '~/common/entities/operational-table'
 import { Delegator } from '~/shared/crud/lib/delegator'
 import Database from '~/shared/database'
 import { SYSNAME } from '~/shared/working-tables/constant/name'
@@ -63,10 +64,7 @@ export default class TargetTableService extends Delegator<TargetTable, CreateTar
 
     const ret = await this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
-        await databaseTrx.createTable(params.data.tableName, {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          items: [{ columnName: '_id', type: 'increments' }, ...(tableSchema.items as any[])],
-        })
+        await databaseTrx.createTable(params.data.tableName, [_idColumn, ...tableSchema.items])
         return prismaTrx.targetTable.create(this._prepareSelectIncludeParams(params))
       })
     })
@@ -122,10 +120,7 @@ export default class TargetTableService extends Delegator<TargetTable, CreateTar
           currentTargetTable.tableName,
           columnsToDrop.map((item) => item.columnName),
         )
-        await databaseTrx.alterTable(currentTargetTable.tableName, {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          items: columnsToAdd as any,
-        })
+        await databaseTrx.alterTable(currentTargetTable.tableName, columnsToAdd)
         await databaseTrx.renameColumns(
           currentTargetTable.tableName,
           columnsToRename.map(([currentItem, updateItem]) => ({
