@@ -85,3 +85,5 @@ export const relationModel = v.object({
 })
 
 export type Relation = v.InferOutput<typeof columnModel>
+
+export type Row = Record<string | number, unknown>
