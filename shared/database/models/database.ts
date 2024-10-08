@@ -10,39 +10,39 @@ export const columnTypeModel = v.variant('type', [
   }),
   v.object({
     type: v.literal('string'),
-    maxLength: v.number(),
+    maxLength: v.optional(v.number()),
   }),
   v.object({
     type: v.literal('integer'),
     isNegativeAllowed: v.boolean(),
-    maxLength: v.number(),
+    maxLength: v.optional(v.number()),
   }),
   v.object({
     type: v.literal('number'),
     decimalPlaces: v.number(),
     isNegativeAllowed: v.boolean(),
-    maxLength: v.number(),
+    maxLength: v.optional(v.number()),
   }),
   v.object({
     type: v.literal('float'),
     decimalPlaces: v.number(),
     isNegativeAllowed: v.boolean(),
-    maxLength: v.number(),
+    maxLength: v.optional(v.number()),
   }),
   v.object({
     type: v.literal('byte'),
     isNegativeAllowed: v.boolean(),
-    maxLength: v.number(),
+    maxLength: v.optional(v.number()),
   }),
   v.object({
     type: v.literal('short'),
     isNegativeAllowed: v.boolean(),
-    maxLength: v.number(),
+    maxLength: v.optional(v.number()),
   }),
   v.object({
     type: v.literal('long'),
     isNegativeAllowed: v.boolean(),
-    maxLength: v.number(),
+    maxLength: v.optional(v.number()),
   }),
   v.object({
     type: v.literal('double'),
@@ -80,8 +80,8 @@ export type Column = v.InferOutput<typeof columnModel>
  */
 
 export const relationModel = v.object({
+  tableName: v.string(),
   columnName: v.string(),
-  kn: v.string(),
 })
 
 export type Relation = v.InferOutput<typeof columnModel>
