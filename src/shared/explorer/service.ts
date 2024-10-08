@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import Database, { type StringFilter, type Where } from '~/lib/database'
+import Database, { type StringFilter, type Where } from '~/shared/database'
 import { has, isString } from '~/utils/core'
 
 import type { Explorer, StoreConfig } from './dto'

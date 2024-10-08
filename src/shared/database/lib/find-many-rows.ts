@@ -1,7 +1,7 @@
 import { type Knex } from 'knex'
 
-import type { Sort } from '../types/sort'
-import type { Where } from '../types/where'
+import type { Sort } from '../models/sort'
+import type { Where } from '../models/where'
 import { buildWhereClause } from './build-where-clause'
 
 export type FindManyRowsParams = {

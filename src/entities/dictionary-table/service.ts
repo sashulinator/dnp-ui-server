@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { type Prisma, type DictionaryTable as PrismaDictionaryTable } from '@prisma/client'
 
-import Database from '~/lib/database'
 import { CrudDelegator } from '~/shared/crud'
+import Database from '~/shared/database'
 import { SYSNAME } from '~/shared/working-tables/constant/name'
 
 import ExplorerService from '../../shared/explorer/service'

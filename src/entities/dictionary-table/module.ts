@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 
-import Database from '~/lib/database'
+import Database from '~/shared/database'
 import ExplorerModule from '~/shared/explorer/module'
 import PrismaModule from '~/shared/prisma/module'
 

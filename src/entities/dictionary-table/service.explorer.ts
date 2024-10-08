@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import Database from '~/lib/database'
+import Database from '~/shared/database'
 import ExplorerService, {
   type CreateParams,
   type DeleteParams,

@@ -4,7 +4,7 @@ import { COMPARISON, IN, IS, MATCH } from '~/lib/where'
 import { has } from '~/utils/core'
 import { BaseError } from '~/utils/error'
 
-import { type BooleanFilter, type IntFilter, type StringFilter, type Where } from '../types/where'
+import { type BooleanFilter, type IntFilter, type StringFilter, type Where } from '../models/where'
 
 // Функция для построения условий WHERE
 export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where): Knex.QueryBuilder {

@@ -7,8 +7,8 @@ import { buildWhereClause } from './lib/build-where-clause'
 import countRows, { type CountRowsParams } from './lib/count-rows'
 import { type CreateTableSchema, createTable } from './lib/create-table'
 import { type FindManyRowsParams, findManyRows } from './lib/find-many-rows'
-import { type Row } from './types/row'
-import type { Where } from './types/where'
+import { type Row } from './models/database'
+import type { Where } from './models/where'
 
 export type Config = {
   client: string

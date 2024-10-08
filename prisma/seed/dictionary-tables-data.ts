@@ -1,7 +1,7 @@
 import { type DictionaryTable } from '../../src/entities/dictionary-table/dto'
 import { type StoreConfig } from '../../src/entities/store-configs/dto'
 import { toDatabasConfig } from '../../src/entities/store-configs/lib/to-database-config'
-import Database from '../../src/lib/database'
+import Database from '../../src/shared/database'
 import rfSubjects from './dictionary-table/rf-subjects'
 import countryList from './dictionary-table/seed-list.country'
 import userList from './dictionary-table/seed-list.users'

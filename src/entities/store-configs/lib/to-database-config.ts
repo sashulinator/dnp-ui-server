@@ -1,4 +1,5 @@
-import { type Config } from '~/lib/database'
+import { type Config } from '~/shared/database'
+
 import { type StoreConfig } from '../dto'
 
 export function toDatabasConfig(storeConfig: StoreConfig): Config {

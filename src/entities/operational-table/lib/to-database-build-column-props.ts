@@ -1,4 +1,4 @@
-import { type BuildColumnProps } from '~/lib/database'
+import { type BuildColumnProps } from '~/shared/database'
 
 import { type TableSchemaItem } from '../dto'
 

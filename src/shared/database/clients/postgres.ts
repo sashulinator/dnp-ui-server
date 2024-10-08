@@ -1,4 +1,5 @@
 import { type Knex } from 'knex'
+
 import type { Client } from './interface'
 
 export class PostgresClient implements Client {

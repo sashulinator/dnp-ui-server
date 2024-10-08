@@ -1,4 +1,5 @@
 import { type Knex } from 'knex'
+
 import { type BuildColumnProps, buildColumn } from './build-column'
 
 export interface CreateTableSchema {
