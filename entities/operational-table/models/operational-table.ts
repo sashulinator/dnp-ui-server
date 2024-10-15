@@ -2,7 +2,7 @@ import * as v from 'valibot'
 
 import { crudableModel } from '../../../shared/crud/models/crudable'
 import { getKeys } from '../../../shared/dictionary'
-import { columnModel, databaseTableModel } from '../../../shared/working-table'
+import { databaseTableModel, columnModel as workingTableColumnModel } from '../../../shared/working-table'
 import { userSchema } from '../../user'
 
 /**
@@ -14,7 +14,9 @@ export const baseOperationalTableSchema = v.object({
   name: v.string(),
   nav: v.boolean(),
   tableName: v.string(),
-  tableSchema: v.lazy(() => tableSchemaSchema),
+  items: v.array(v.lazy(() => columnSchema)),
+  description: v.optional(v.string()),
+  defaultView: v.union([v.literal('tree'), v.literal('table')]),
   // meta
   ...crudableModel.entries,
 })
@@ -73,9 +75,9 @@ export type TableSchema = v.InferOutput<typeof tableSchemaSchema>
  * TableSchemaItem
  */
 
-export const tableSchemaItemSchema = columnModel
+export const columnSchema = workingTableColumnModel
 
-export type TableSchemaItem = v.InferOutput<typeof tableSchemaItemSchema>
+export type Column = v.InferOutput<typeof columnSchema>
 
 /**
  * Row
