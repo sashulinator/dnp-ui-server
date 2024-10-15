@@ -14,7 +14,7 @@ import MinioService from '~/shared/minio/service'
 import { random } from '~/utils/core'
 
 import ProcessService from '../processes/service'
-import { assertTableSchema } from './assertions'
+import { assertColumn } from './assertions'
 import { createImportOperationalTableNormalizationConfig } from './lib/create-import-operationtal-table-norm-config'
 import Service from './service'
 
@@ -40,10 +40,10 @@ export default class OperationalTableService {
     const operationalTable = await this.operationalTableService.getUnique({ where: { kn: params.kn } })
     const storeConfig = await this.operationalTableService.getStoreConfig()
 
-    assertTableSchema(operationalTable.tableSchema)
+    assertColumn(operationalTable.items)
 
     const searchOR = params.searchQuery
-      ? operationalTable.tableSchema.items.reduce<Record<string, StringFilter>[]>((acc, item) => {
+      ? operationalTable.items.reduce<Record<string, StringFilter>[]>((acc, item) => {
           if (item.index) acc.push({ [item.columnName]: params.searchQuery })
           return acc
         }, [])

@@ -9,7 +9,7 @@ import ExplorerService, {
   type Where,
 } from '~/shared/explorer/service'
 
-import { assertTableSchema } from './assertions'
+import { assertColumns } from './assertions'
 import Service from './service'
 
 export type ExplorerFindManyParams = FindManyParams & {
@@ -31,10 +31,10 @@ export default class TargetTableService {
     const targetTable = await this.targetTableService.getUnique({ where: { kn: params.kn } })
     const storeConfig = await this.targetTableService.getStoreConfig()
 
-    assertTableSchema(targetTable.tableSchema)
+    assertColumns(targetTable.items)
 
     const searchOR = params.searchQuery
-      ? targetTable.tableSchema.items.reduce<Record<string, StringFilter>[]>((acc, item) => {
+      ? targetTable.items.reduce<Record<string, StringFilter>[]>((acc, item) => {
           if (item.index) acc.push({ [item.columnName]: params.searchQuery })
           return acc
         }, [])

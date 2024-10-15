@@ -18,7 +18,7 @@ export default async function seedDictionaryTables() {
 
   await database.dropTableIfExists(countriesOt.tableName)
 
-  await database.createTable(countriesOt.tableName, countriesOt.tableSchema.items)
+  await database.createTable(countriesOt.tableName, countriesOt.items)
 
   const countriesPromises = countryList.map((row) => {
     return database.insertRow(countriesOt.tableName, row)
@@ -32,7 +32,7 @@ export default async function seedDictionaryTables() {
 
   await database.dropTableIfExists(employeesdt.tableName)
 
-  await database.createTable(employeesdt.tableName, employeesdt.tableSchema.items)
+  await database.createTable(employeesdt.tableName, employeesdt.items)
 
   const employeesPromises = userList.map((row) => {
     return database.insertRow(employeesdt.tableName, row)
@@ -46,7 +46,7 @@ export default async function seedDictionaryTables() {
 
   await database.dropTableIfExists(rfSubjectOt.tableName)
 
-  await database.createTable(rfSubjectOt.tableName, rfSubjectOt.tableSchema.items)
+  await database.createTable(rfSubjectOt.tableName, rfSubjectOt.items)
 
   const rfSubjectPromises = rfSubjects.map((row) => {
     return database.insertRow(rfSubjectOt.tableName, row)

@@ -10,8 +10,8 @@ import ExplorerService from '../../shared/explorer/service'
 import PrismaService from '../../shared/prisma/service'
 import type { StoreConfig } from '../store-configs/dto'
 import { toDatabasConfig } from '../store-configs/lib/to-database-config'
-import { assertTableSchema } from './assertions'
-import { type TableSchemaItem } from './dto'
+import { assertColumns } from './assertions'
+import { type Column } from './dto'
 
 export type TargetTable = PrismaTargetTable
 export type CreateTargetTable = Prisma.TargetTableUncheckedCreateInput
@@ -57,13 +57,15 @@ export default class TargetTableService extends Delegator<TargetTable, CreateTar
   async create(params: { data: CreateTargetTable; select?: Select; include?: Include }): Promise<TargetTable> {
     const storeConfig = await this.getStoreConfig()
 
-    assertTableSchema(params.data.tableSchema)
-    const tableSchema = params.data.tableSchema
+    const tableSchema = params.data
+    assertColumns(tableSchema.items)
 
     this.database.setConfig(toDatabasConfig(storeConfig))
 
     const ret = await this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
+        assertColumns(tableSchema.items)
+
         await databaseTrx.createTable(params.data.tableName, [_idColumn, ...tableSchema.items])
         return prismaTrx.targetTable.create(this._prepareSelectIncludeParams(params))
       })
@@ -85,13 +87,13 @@ export default class TargetTableService extends Delegator<TargetTable, CreateTar
 
     this.database.setConfig(toDatabasConfig(storeConfig))
 
-    const currentTableSchema = currentTargetTable.tableSchema
-    assertTableSchema(currentTableSchema, "Невалидные данные в Целевой таблице в поле 'tableSchema' в БД")
+    const currentTableSchema = currentTargetTable
+    assertColumns(currentTableSchema.items, "Невалидные данные в Целевой таблице в поле 'tableSchema' в БД")
 
-    const updateTableSchema = params.data.tableSchema
-    assertTableSchema(updateTableSchema, "Невалидные данные в Целевой таблице в поле 'tableSchema'") // невозможная ошибка
+    const updateTableSchema = params.data
+    assertColumns(updateTableSchema.items, "Невалидные данные в Целевой таблице в поле 'tableSchema'") // невозможная ошибка
 
-    const columnsToRename: [TableSchemaItem, TableSchemaItem][] = []
+    const columnsToRename: [Column, Column][] = []
 
     for (let ci = 0; ci < updateTableSchema.items.length; ci++) {
       const updateItem = updateTableSchema.items[ci]
@@ -103,13 +105,15 @@ export default class TargetTableService extends Delegator<TargetTable, CreateTar
     }
 
     // Если в новой схеме не находим колонки из текущей, то удалим их
-    const columnsToDrop: TableSchemaItem[] = currentTableSchema.items.filter((currentItem) => {
+    const columnsToDrop: Column[] = currentTableSchema.items.filter((currentItem) => {
+      assertColumns(updateTableSchema.items, "Невалидные данные в Целевой таблице в поле 'tableSchema'") // невозможная ошибка
       const found = updateTableSchema.items.find((itemToUpdate) => itemToUpdate.id === currentItem.id)
       return !found
     })
 
     // Если в текущей схеме не находим колонки из новой, то добавим их
-    const columnsToAdd: TableSchemaItem[] = updateTableSchema.items.filter((itemToUpdate) => {
+    const columnsToAdd: Column[] = updateTableSchema.items.filter((itemToUpdate) => {
+      assertColumns(currentTableSchema.items, "Невалидные данные в Целевой таблице в поле 'tableSchema'") // невозможная ошибка
       const found = currentTableSchema.items.find((currentItem) => currentItem.id === itemToUpdate.id)
       return !found
     })
