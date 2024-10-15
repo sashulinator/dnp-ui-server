@@ -8,7 +8,7 @@ export { NAME, SLICE_NAME } from './constants/name'
  * lib
  */
 
-export { assertTableSchema, isTableSchema } from './lib/assertions'
+export { assertColumns, isColumns } from './lib/assertions'
 
 /**
  * models
