@@ -2,7 +2,7 @@ import { Body, Delete, Get, Controller as NestJSController, Param, Post, Put, Se
 
 import * as v from 'valibot'
 
-import { ValibotPipe } from '~/shared/valibot.pipe'
+import { ValibotPipe } from '~/app/valibot.pipe'
 
 import { type CreateTargetTable, type UpdateTargetTable, createTargetTableSchema, updateTargetTableSchema } from './dto'
 import Service, {

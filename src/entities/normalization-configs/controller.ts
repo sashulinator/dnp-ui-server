@@ -3,7 +3,7 @@ import { type NormalizationConfig } from '@prisma/client'
 
 import * as v from 'valibot'
 
-import { ValibotPipe } from '~/shared/valibot.pipe'
+import { ValibotPipe } from '~/app/valibot.pipe'
 
 import {
   type CreateNormalizationConfig,
@@ -86,7 +86,7 @@ export default class Controller {
     params: {
       where?: WhereInput
       select?: Select
-    } = {}
+    } = {},
   ): Promise<NormalizationConfig> {
     return this.service.findFirst(params)
   }
@@ -113,7 +113,7 @@ export default class Controller {
       where?: WhereInput
       orderBy?: OrderByWithRelationInput
       select?: Select
-    } = {}
+    } = {},
   ): Promise<{ items: NormalizationConfig[]; total: number }> {
     const [items, total] = await this.service.findAndCountMany(params)
 

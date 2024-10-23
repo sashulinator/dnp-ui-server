@@ -3,7 +3,7 @@ import { type StoreConfig } from '@prisma/client'
 
 import * as v from 'valibot'
 
-import { ValibotPipe } from '~/shared/valibot.pipe'
+import { ValibotPipe } from '~/app/valibot.pipe'
 
 import { type CreateStoreConfig, type UpdateStoreConfig, createStoreConfigSchema, updateStoreConfigSchema } from './dto'
 import Service, { type OrderByWithRelationInput, type Select, type WhereInput, type WhereUniqueInput } from './service'
@@ -81,7 +81,7 @@ export default class StoreConfigController {
     params: {
       where?: WhereInput
       select?: Select
-    } = {}
+    } = {},
   ): Promise<StoreConfig> {
     return this.service.findFirst(params)
   }
@@ -108,7 +108,7 @@ export default class StoreConfigController {
       where?: WhereInput
       orderBy?: OrderByWithRelationInput
       select?: Select
-    } = {}
+    } = {},
   ): Promise<{ items: StoreConfig[]; total: number }> {
     const [items, total] = await this.service.findAndCountMany(params)
 
