@@ -7,6 +7,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "db:seed": "ts-node -r tsconfig-paths/register prisma/seed",
     "db:reset": "prisma migrate reset -f && prisma migrate dev --name=init && rm -rf prisma/migrations && ts-node -r tsconfig-paths/register prisma/seed",
     "modules:show-diff-stat": "bun ./scripts/git-modules/show-diff-stat",
     "modules:add-remotes": "bun ./scripts/git-modules/add-remotes",
