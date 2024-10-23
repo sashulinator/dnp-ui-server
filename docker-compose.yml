@@ -28,6 +28,8 @@ services:
     image:  dnp-server-ui:0.13
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER:-dnp_user}:${POSTGRES_PASSWORD:-dnp_db_password}@${POSTGRES_HOST:-postgres}/${POSTGRES_DB:-dnp_db}?schema=public"
+      OPERATIONAL_DATABASE_URL: "postgresql://${POSTGRES_USER:-dnp_user}:${POSTGRES_PASSWORD:-dnp_db_password}@${POSTGRES_HOST:-postgres}/${POSTGRES_DB:-operational}?schema=public"
+      TARGET_DATABASE_URL: "postgresql://${POSTGRES_USER:-dnp_user}:${POSTGRES_PASSWORD:-dnp_db_password}@${POSTGRES_HOST:-postgres}/${POSTGRES_DB:-target}?schema=public"
     ports:
       - "${UI_SERVER_PORT:-3000}:3000"
     depends_on:

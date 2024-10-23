@@ -7,9 +7,11 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 COPY ./package.json /app/package.json
-COPY ./prisma/ /app/prisma/
-COPY ./node_modules/ /app/node_modules/
+COPY ./tsconfig.json /app/tsconfig.json
 COPY ./dist/ /app/dist/
+COPY ./node_modules/ /app/node_modules/
+COPY ./database/ /app/database/
+COPY ./prisma/ /app/prisma/
 
 CMD ["node", "dist/src/main.js"]
 
