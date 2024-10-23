@@ -16,7 +16,7 @@ export const baseDictionaryTableModel = v.object({
   nav: v.boolean(),
   tableName: v.string(),
   columns: v.array(v.lazy(() => columnSchema)),
-  description: v.optional(v.string()),
+  description: v.string(),
   defaultView: v.union([v.literal('tree'), v.literal('table')]),
   // meta
   ...crudableModel.entries,
