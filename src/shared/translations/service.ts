@@ -3,7 +3,7 @@ import { Prisma, type Translation } from '@prisma/client'
 
 import { isInstanceOf } from 'utils/core'
 
-import PrismaService from '../../shared/prisma/service'
+import PrismaService from '../prisma/service'
 
 const TAKE = 100
 
@@ -105,7 +105,7 @@ export default class Service {
       cursor?: WhereUniqueInput
       where?: WhereInput
       orderBy?: OrderByWithRelationInput
-    } = {}
+    } = {},
   ): Promise<Translation[]> {
     const { skip, take = TAKE, cursor, where, orderBy } = params
 
@@ -135,7 +135,7 @@ export default class Service {
       cursor?: WhereUniqueInput
       where?: WhereInput
       orderBy?: OrderByWithRelationInput
-    } = {}
+    } = {},
   ): Promise<[Translation[], number]> {
     const { skip, take = TAKE, cursor, where, orderBy } = params
 
@@ -172,7 +172,7 @@ export default class Service {
     if (item)
       throw new HttpException(
         'A translation with the given key, locale and namespace already exists',
-        HttpStatus.CONFLICT
+        HttpStatus.CONFLICT,
       )
 
     return this.prisma.translation.create({

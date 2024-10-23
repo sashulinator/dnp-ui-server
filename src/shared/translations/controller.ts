@@ -1,5 +1,6 @@
 import { Body, Delete, Get, Controller as NestJSController, Param, Post, Put, Search } from '@nestjs/common'
 import { type Translation } from '@prisma/client'
+
 import Service, {
   type CreateInput,
   type OrderByWithRelationInput,
@@ -34,7 +35,7 @@ export class Controller {
   update(@Param('id') id: string, @Body() updateInput: UpdateInput): Promise<Translation> {
     return this.service.update(
       { id: Number(id) }, // The unique identifier of the translation to update
-      updateInput // The new data for the translation
+      updateInput, // The new data for the translation
     )
   }
 
@@ -74,7 +75,7 @@ export class Controller {
       cursor?: WhereUniqueInput
       where?: WhereInput
       orderBy?: OrderByWithRelationInput
-    } = {}
+    } = {},
   ): Promise<{ items: Translation[]; total: number }> {
     const [items, total] = await this.service.findAndCountMany(params)
 

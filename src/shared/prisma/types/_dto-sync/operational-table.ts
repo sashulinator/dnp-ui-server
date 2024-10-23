@@ -1,7 +1,9 @@
 //            ↓
-import { type Process as PrismaType } from '@prisma/client'
+import { type OperationalTable as PrismaType } from '@prisma/client'
+
 //            ↓
-import { type BaseProcess as DtoType } from '~/entities/processes/dto'
+import { type BaseOperationalTable as DtoType } from '~/entities/operational-table/dto'
+
 import { type DateToString, check } from './_private'
 
 check<DtoType, PrismaType>({} as DtoType, {} as DateToString<PrismaType>)

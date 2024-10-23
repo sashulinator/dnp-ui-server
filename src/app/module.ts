@@ -10,7 +10,7 @@ import StoreConfigModule from '../entities/store-configs/module'
 import TargetTablesModule from '../entities/target-table/module'
 import ExplorerModule from '../shared/explorer/module'
 import PrismaModule from '../shared/prisma/module'
-import TranslationsModule from '../system/translations/module'
+import TranslationsModule from '../shared/translations/module'
 import AppController from './controller'
 import ExceptionFilter from './exception.filter'
 

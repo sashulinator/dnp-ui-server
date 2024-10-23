@@ -1,1 +1,1 @@
-export type { Sort } from '~/lib/sort'
+export type { Sort } from '~/shared/sort'
