@@ -14,7 +14,7 @@ export const baseOperationalTableSchema = v.object({
   name: v.string(),
   nav: v.boolean(),
   tableName: v.string(),
-  items: v.array(v.lazy(() => columnSchema)),
+  columns: v.array(v.lazy(() => columnSchema)),
   description: v.string(),
   defaultView: v.union([v.literal('tree'), v.literal('table')]),
   // meta
