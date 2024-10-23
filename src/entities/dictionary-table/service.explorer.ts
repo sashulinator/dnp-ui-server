@@ -33,7 +33,7 @@ export default class DictionaryTableService {
     const dictionaryTable = await this.dictionaryTableService.getUnique({ where: { kn: params.kn } })
     const storeConfig = await this.dictionaryTableService.getStoreConfig()
 
-    const columns = dictionaryTable.items
+    const columns = dictionaryTable.columns
     assertColumns(columns)
 
     const searchOR = params.searchQuery

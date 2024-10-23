@@ -18,10 +18,10 @@ export default async function seedOperationalTables() {
 
   await database.dropTableIfExists(employeesOt.tableName)
 
-  await database.createTable(employeesOt.tableName, [_idColumn, _statusColumn, ...employeesOt.items])
+  await database.createTable(employeesOt.tableName, [_idColumn, _statusColumn, ...employeesOt.columns])
 
   const employeesRows = new Array(3).fill(undefined).map((_, i) => {
-    return employeesOt.items.reduce((acc, item) => {
+    return employeesOt.columns.reduce((acc, item) => {
       acc[item.columnName] = `seeded-${item.columnName}-${i}`
       return acc
     }, {})
@@ -39,10 +39,10 @@ export default async function seedOperationalTables() {
 
   await database.dropTableIfExists(carsOt.tableName)
 
-  await database.createTable(carsOt.tableName, [_idColumn, _statusColumn, ...carsOt.items])
+  await database.createTable(carsOt.tableName, [_idColumn, _statusColumn, ...carsOt.columns])
 
   const carsRows = new Array(3).fill(undefined).map((_, i) => {
-    return carsOt.items.reduce((acc, item) => {
+    return carsOt.columns.reduce((acc, item) => {
       acc[item.columnName] = `seeded-${item.columnName}-${i}`
       return acc
     }, {})

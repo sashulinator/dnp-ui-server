@@ -16,7 +16,7 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
     tableName: defaultValues.name ?? createId(),
     description: '',
     defaultView: 'table',
-    items: [
+    columns: [
       {
         id: 'id1',
         columnName: 'column1',

@@ -31,10 +31,10 @@ export default class TargetTableService {
     const targetTable = await this.targetTableService.getUnique({ where: { kn: params.kn } })
     const storeConfig = await this.targetTableService.getStoreConfig()
 
-    assertColumns(targetTable.items)
+    assertColumns(targetTable.columns)
 
     const searchOR = params.searchQuery
-      ? targetTable.items.reduce<Record<string, StringFilter>[]>((acc, item) => {
+      ? targetTable.columns.reduce<Record<string, StringFilter>[]>((acc, item) => {
           if (item.index) acc.push({ [item.columnName]: params.searchQuery })
           return acc
         }, [])

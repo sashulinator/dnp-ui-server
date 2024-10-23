@@ -66,15 +66,15 @@ export default class OperationalTableService extends CrudDelegator<
   }): Promise<OperationalTable> {
     const storeConfig = await this.getStoreConfig()
 
-    assertColumn(params.data.items)
+    assertColumn(params.data.columns)
     const tableSchema = params.data
 
     this.database.setConfig(toDatabasConfig(storeConfig))
 
     const ret = await this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
-        assertColumn(tableSchema.items)
-        await databaseTrx.createTable(params.data.tableName, [_idColumn, _statusColumn, ...tableSchema.items])
+        assertColumn(tableSchema.columns)
+        await databaseTrx.createTable(params.data.tableName, [_idColumn, _statusColumn, ...tableSchema.columns])
 
         return prismaTrx.operationalTable.create(this._prepareSelectIncludeParams(params))
       })
@@ -97,33 +97,33 @@ export default class OperationalTableService extends CrudDelegator<
     this.database.setConfig(toDatabasConfig(storeConfig))
 
     const currentTableSchema = currentOperationalTable
-    assertColumn(currentTableSchema.items, "Невалидные данные в Промежуточной таблице в поле 'tableSchema' в БД")
+    assertColumn(currentTableSchema.columns, "Невалидные данные в Промежуточной таблице в поле 'tableSchema' в БД")
 
     const updateTableSchema = params.data
-    assertColumn(updateTableSchema.items, "Невалидные данные в Промежуточной таблице в поле 'tableSchema'") // невозможная ошибка
+    assertColumn(updateTableSchema.columns, "Невалидные данные в Промежуточной таблице в поле 'tableSchema'") // невозможная ошибка
 
     const columnsToRename: [Column, Column][] = []
 
-    for (let ci = 0; ci < updateTableSchema.items.length; ci++) {
-      const updateItem = updateTableSchema.items[ci]
-      for (let ui = 0; ui < currentTableSchema.items.length; ui++) {
-        const currentItem = currentTableSchema.items[ui]
+    for (let ci = 0; ci < updateTableSchema.columns.length; ci++) {
+      const updateItem = updateTableSchema.columns[ci]
+      for (let ui = 0; ui < currentTableSchema.columns.length; ui++) {
+        const currentItem = currentTableSchema.columns[ui]
         if (updateItem.id !== currentItem.id) continue
         if (updateItem.columnName !== currentItem.columnName) columnsToRename.push([currentItem, updateItem])
       }
     }
 
     // Если в новой схеме не находим колонки из текущей, то удалим их
-    const columnsToDrop: Column[] = currentTableSchema.items.filter((currentItem) => {
-      assertColumn(updateTableSchema.items, "Невалидные данные в Промежуточной таблице в поле 'tableSchema'") // невозможная ошибка
-      const found = updateTableSchema.items.find((itemToUpdate) => itemToUpdate.id === currentItem.id)
+    const columnsToDrop: Column[] = currentTableSchema.columns.filter((currentItem) => {
+      assertColumn(updateTableSchema.columns, "Невалидные данные в Промежуточной таблице в поле 'tableSchema'") // невозможная ошибка
+      const found = updateTableSchema.columns.find((itemToUpdate) => itemToUpdate.id === currentItem.id)
       return !found
     })
 
     // Если в текущей схеме не находим колонки из новой, то добавим их
-    const columnsToAdd: Column[] = updateTableSchema.items.filter((itemToUpdate) => {
-      assertColumn(currentTableSchema.items, "Невалидные данные в Промежуточной таблице в поле 'tableSchema'") // невозможная ошибка
-      const found = currentTableSchema.items.find((currentItem) => currentItem.id === itemToUpdate.id)
+    const columnsToAdd: Column[] = updateTableSchema.columns.filter((itemToUpdate) => {
+      assertColumn(currentTableSchema.columns, "Невалидные данные в Промежуточной таблице в поле 'tableSchema'") // невозможная ошибка
+      const found = currentTableSchema.columns.find((currentItem) => currentItem.id === itemToUpdate.id)
       return !found
     })
 

@@ -40,10 +40,10 @@ export default class OperationalTableService {
     const operationalTable = await this.operationalTableService.getUnique({ where: { kn: params.kn } })
     const storeConfig = await this.operationalTableService.getStoreConfig()
 
-    assertColumn(operationalTable.items)
+    assertColumn(operationalTable.columns)
 
     const searchOR = params.searchQuery
-      ? operationalTable.items.reduce<Record<string, StringFilter>[]>((acc, item) => {
+      ? operationalTable.columns.reduce<Record<string, StringFilter>[]>((acc, item) => {
           if (item.index) acc.push({ [item.columnName]: params.searchQuery })
           return acc
         }, [])

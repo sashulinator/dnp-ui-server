@@ -13,7 +13,7 @@ export const dictionaryTables = [
     tableName: 'countries',
     nav: true,
     defaultView: 'table',
-    items: [
+    columns: [
       {
         id: 'id1',
         columnName: 'code',
@@ -46,7 +46,7 @@ export const dictionaryTables = [
     tableName: 'workers',
     nav: true,
     defaultView: 'table',
-    items: [
+    columns: [
       {
         id: 'id1',
         columnName: 'id',
@@ -100,7 +100,7 @@ export const dictionaryTables = [
     tableName: 'rf_subjects',
     nav: true,
     defaultView: 'table',
-    items: [
+    columns: [
       {
         id: 'id1',
         columnName: 'capital',
@@ -136,7 +136,7 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
     tableName: defaultValues.name ?? createId(),
     defaultView: 'table',
     description: '',
-    items: [
+    columns: [
       {
         id: 'id1',
         columnName: 'column1',

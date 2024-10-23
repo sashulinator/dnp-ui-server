@@ -98,7 +98,7 @@ model OperationalTable {
   tableName   String        @db.VarChar(24)
   description String
   defaultView TableViewType
-  items       Json
+  columns     Json
   nav         Boolean
   // meta
   createdAt   DateTime      @default(now())
@@ -117,7 +117,7 @@ model DictionaryTable {
   tableName   String        @db.VarChar(24)
   description String
   defaultView TableViewType
-  items       Json
+  columns     Json
   nav         Boolean
   // meta
   createdAt   DateTime      @default(now())
@@ -136,7 +136,7 @@ model TargetTable {
   tableName   String        @db.VarChar(24)
   description String
   defaultView TableViewType
-  items       Json
+  columns     Json
   nav         Boolean
   // meta
   createdAt   DateTime      @default(now())

@@ -58,15 +58,15 @@ export default class TargetTableService extends Delegator<TargetTable, CreateTar
     const storeConfig = await this.getStoreConfig()
 
     const tableSchema = params.data
-    assertColumns(tableSchema.items)
+    assertColumns(tableSchema.columns)
 
     this.database.setConfig(toDatabasConfig(storeConfig))
 
     const ret = await this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
-        assertColumns(tableSchema.items)
+        assertColumns(tableSchema.columns)
 
-        await databaseTrx.createTable(params.data.tableName, [_idColumn, ...tableSchema.items])
+        await databaseTrx.createTable(params.data.tableName, [_idColumn, ...tableSchema.columns])
         return prismaTrx.targetTable.create(this._prepareSelectIncludeParams(params))
       })
     })
@@ -88,33 +88,33 @@ export default class TargetTableService extends Delegator<TargetTable, CreateTar
     this.database.setConfig(toDatabasConfig(storeConfig))
 
     const currentTableSchema = currentTargetTable
-    assertColumns(currentTableSchema.items, "Невалидные данные в Целевой таблице в поле 'tableSchema' в БД")
+    assertColumns(currentTableSchema.columns, "Невалидные данные в Целевой таблице в поле 'tableSchema' в БД")
 
     const updateTableSchema = params.data
-    assertColumns(updateTableSchema.items, "Невалидные данные в Целевой таблице в поле 'tableSchema'") // невозможная ошибка
+    assertColumns(updateTableSchema.columns, "Невалидные данные в Целевой таблице в поле 'tableSchema'") // невозможная ошибка
 
     const columnsToRename: [Column, Column][] = []
 
-    for (let ci = 0; ci < updateTableSchema.items.length; ci++) {
-      const updateItem = updateTableSchema.items[ci]
-      for (let ui = 0; ui < currentTableSchema.items.length; ui++) {
-        const currentItem = currentTableSchema.items[ui]
+    for (let ci = 0; ci < updateTableSchema.columns.length; ci++) {
+      const updateItem = updateTableSchema.columns[ci]
+      for (let ui = 0; ui < currentTableSchema.columns.length; ui++) {
+        const currentItem = currentTableSchema.columns[ui]
         if (updateItem.id !== currentItem.id) continue
         if (updateItem.columnName !== currentItem.columnName) columnsToRename.push([currentItem, updateItem])
       }
     }
 
     // Если в новой схеме не находим колонки из текущей, то удалим их
-    const columnsToDrop: Column[] = currentTableSchema.items.filter((currentItem) => {
-      assertColumns(updateTableSchema.items, "Невалидные данные в Целевой таблице в поле 'tableSchema'") // невозможная ошибка
-      const found = updateTableSchema.items.find((itemToUpdate) => itemToUpdate.id === currentItem.id)
+    const columnsToDrop: Column[] = currentTableSchema.columns.filter((currentItem) => {
+      assertColumns(updateTableSchema.columns, "Невалидные данные в Целевой таблице в поле 'tableSchema'") // невозможная ошибка
+      const found = updateTableSchema.columns.find((itemToUpdate) => itemToUpdate.id === currentItem.id)
       return !found
     })
 
     // Если в текущей схеме не находим колонки из новой, то добавим их
-    const columnsToAdd: Column[] = updateTableSchema.items.filter((itemToUpdate) => {
-      assertColumns(currentTableSchema.items, "Невалидные данные в Целевой таблице в поле 'tableSchema'") // невозможная ошибка
-      const found = currentTableSchema.items.find((currentItem) => currentItem.id === itemToUpdate.id)
+    const columnsToAdd: Column[] = updateTableSchema.columns.filter((itemToUpdate) => {
+      assertColumns(currentTableSchema.columns, "Невалидные данные в Целевой таблице в поле 'tableSchema'") // невозможная ошибка
+      const found = currentTableSchema.columns.find((currentItem) => currentItem.id === itemToUpdate.id)
       return !found
     })
 

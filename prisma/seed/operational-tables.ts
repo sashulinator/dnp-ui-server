@@ -13,7 +13,7 @@ export const operationalTables = [
     tableName: 'cars',
     nav: true,
     description: '',
-    items: [
+    columns: [
       {
         id: 'id1',
         columnName: 'carsId',
@@ -70,7 +70,7 @@ export const operationalTables = [
     nav: true,
     description: '',
     defaultView: 'table',
-    items: [
+    columns: [
       {
         id: 'id1',
         columnName: 'employeesId',
@@ -107,7 +107,7 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
     nav: false,
     description: '',
     tableName: defaultValues.name ?? createId(),
-    items: [
+    columns: [
       {
         id: 'id1',
         columnName: 'column1',
