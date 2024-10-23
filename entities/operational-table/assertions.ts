@@ -2,15 +2,15 @@ import * as v from 'valibot'
 
 import { BaseError } from '~/utils/error'
 
-import { type TableSchema, tableSchemaSchema } from './models/operational-table'
+import { type Column, columnSchema } from './models/operational-table'
 
-export function isTableSchema(input: unknown): input is TableSchema {
-  const { issues } = v.safeParse(tableSchemaSchema, input)
+export function isColumn(input: unknown): input is Column[] {
+  const { issues } = v.safeParse(v.array(columnSchema), input)
   return !!issues
 }
 
-export function assertTableSchema(input: unknown, message?: string): asserts input is TableSchema {
-  const { issues } = v.safeParse(tableSchemaSchema, input)
+export function assertColumn(input: unknown, message?: string): asserts input is Column[] {
+  const { issues } = v.safeParse(v.array(columnSchema), input)
   if (!issues) return
   throw new BaseError(message ?? "Is not a type 'TableSchema'.", { errors: issues })
 }
