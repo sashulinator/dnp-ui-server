@@ -11,6 +11,7 @@ COPY ./tsconfig.json /app/tsconfig.json
 COPY ./dist/ /app/dist/
 COPY ./node_modules/ /app/node_modules/
 COPY ./database/ /app/database/
+COPY ./src/ /app/src/
 COPY ./prisma/ /app/prisma/
 
 CMD ["node", "dist/src/main.js"]

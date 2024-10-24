@@ -1,55 +1,56 @@
-import { type DictionaryTable } from '../../src/entities/dictionary-table/dto'
-import { type StoreConfig } from '../../src/entities/store-configs/dto'
-import { toDatabasConfig } from '../../src/entities/store-configs/lib/to-database-config'
+import {
+  countriesDictionaryTable,
+  employeesDictionaryTable,
+  rfSubjectsDictionaryTable,
+} from '../../database/create/data/dictionary-table'
+import { targetStoreConfig } from '../../database/create/data/store-config'
 import Database from '../../src/shared/database'
 import rfSubjects from './dictionary-table/rf-subjects'
 import countryList from './dictionary-table/seed-list.country'
 import userList from './dictionary-table/seed-list.users'
-import { dictionaryTables } from './dictionary-tables'
-import { storeConfigs } from './store-configs'
 
 export default async function seedDictionaryTables() {
-  const storeConfig = storeConfigs[0] as StoreConfig
-  const database = new Database().setConfig(toDatabasConfig(storeConfig))
+  const database = new Database().setConfig({
+    client: 'pg',
+    host: targetStoreConfig.data.host,
+    port: targetStoreConfig.data.port,
+    username: targetStoreConfig.data.username,
+    password: targetStoreConfig.data.password,
+    dbName: targetStoreConfig.data.dbName,
+  })
 
   // countries
 
-  const countriesOt = dictionaryTables[0] as DictionaryTable
+  await database.dropTableIfExists(countriesDictionaryTable.tableName)
 
-  await database.dropTableIfExists(countriesOt.tableName)
-
-  await database.createTable(countriesOt.tableName, countriesOt.columns)
+  await database.createTable(countriesDictionaryTable.tableName, countriesDictionaryTable.columns)
 
   const countriesPromises = countryList.map((row) => {
-    return database.insertRow(countriesOt.tableName, row)
+    return database.insertRow(countriesDictionaryTable.tableName, row)
   })
 
   await Promise.all(countriesPromises)
 
   // employees
 
-  const employeesdt = dictionaryTables[1] as DictionaryTable
+  await database.dropTableIfExists(employeesDictionaryTable.tableName)
 
-  await database.dropTableIfExists(employeesdt.tableName)
-
-  await database.createTable(employeesdt.tableName, employeesdt.columns)
+  await database.createTable(employeesDictionaryTable.tableName, employeesDictionaryTable.columns)
 
   const employeesPromises = userList.map((row) => {
-    return database.insertRow(employeesdt.tableName, row)
+    return database.insertRow(employeesDictionaryTable.tableName, row)
   })
 
   await Promise.all(employeesPromises)
 
   // rfSubject
 
-  const rfSubjectOt = dictionaryTables[2] as DictionaryTable
+  await database.dropTableIfExists(rfSubjectsDictionaryTable.tableName)
 
-  await database.dropTableIfExists(rfSubjectOt.tableName)
-
-  await database.createTable(rfSubjectOt.tableName, rfSubjectOt.columns)
+  await database.createTable(rfSubjectsDictionaryTable.tableName, rfSubjectsDictionaryTable.columns)
 
   const rfSubjectPromises = rfSubjects.map((row) => {
-    return database.insertRow(rfSubjectOt.tableName, row)
+    return database.insertRow(rfSubjectsDictionaryTable.tableName, row)
   })
 
   await Promise.all(rfSubjectPromises)

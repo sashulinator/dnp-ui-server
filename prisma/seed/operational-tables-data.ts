@@ -1,16 +1,19 @@
-import { _idColumn } from '~/entities/operational-table/models/_id-column'
-import { _statusColumn } from '~/entities/operational-table/models/_status'
-
+import { operationalStoreConfig } from '../../database/create/data/store-config'
 import { type OperationalTable } from '../../src/entities/operational-table/dto'
-import { type StoreConfig } from '../../src/entities/store-configs/dto'
-import { toDatabasConfig } from '../../src/entities/store-configs/lib/to-database-config'
+import { _idColumn } from '../../src/entities/operational-table/models/_id-column'
+import { _statusColumn } from '../../src/entities/operational-table/models/_status'
 import Database from '../../src/shared/database'
 import { operationalTables } from './operational-tables'
-import { storeConfigs } from './store-configs'
 
 export default async function seedOperationalTables() {
-  const storeConfig = storeConfigs[0] as StoreConfig
-  const database = new Database().setConfig(toDatabasConfig(storeConfig))
+  const database = new Database().setConfig({
+    client: 'pg',
+    host: operationalStoreConfig.data.host,
+    port: operationalStoreConfig.data.port,
+    username: operationalStoreConfig.data.username,
+    password: operationalStoreConfig.data.password,
+    dbName: operationalStoreConfig.data.dbName,
+  })
 
   // Employees
 

@@ -4,7 +4,6 @@ import { type Prisma, type TargetTable as PrismaTargetTable } from '@prisma/clie
 import { _idColumn } from '~/common/entities/operational-table'
 import { Delegator } from '~/shared/crud/lib/delegator'
 import Database from '~/shared/database'
-import { SYSNAME } from '~/shared/working-tables/constant/name'
 
 import ExplorerService from '../../shared/explorer/service'
 import PrismaService from '../../shared/prisma/service'
@@ -149,9 +148,9 @@ export default class TargetTableService extends Delegator<TargetTable, CreateTar
    * @returns {Promise<StoreConfig>}
    */
   async getStoreConfig(): Promise<StoreConfig> {
-    const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: SYSNAME } })
+    const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: 'TARGET_TABLE' } })
 
-    if (!storeConfig) throw new HttpException(`Create StoreConfig with ${SYSNAME}`, HttpStatus.NOT_FOUND)
+    if (!storeConfig) throw new HttpException(`Create StoreConfig with TARGET_TABLE`, HttpStatus.NOT_FOUND)
 
     return storeConfig as unknown as StoreConfig
   }

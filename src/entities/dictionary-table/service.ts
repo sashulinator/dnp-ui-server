@@ -4,7 +4,6 @@ import { type Prisma, type DictionaryTable as PrismaDictionaryTable } from '@pri
 import { _idColumn } from '~/common/entities/operational-table'
 import { CrudDelegator } from '~/shared/crud'
 import Database from '~/shared/database'
-import { SYSNAME } from '~/shared/working-tables/constant/name'
 
 import ExplorerService from '../../shared/explorer/service'
 import PrismaService from '../../shared/prisma/service'
@@ -152,13 +151,13 @@ export default class DictionaryTableService extends CrudDelegator<
    * @returns {Promise<StoreConfig>}
    */
   async getStoreConfig(): Promise<StoreConfig> {
-    const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: SYSNAME } })
+    const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: 'TARGET_TABLE' } })
 
     if (!storeConfig)
       throw new HttpException(
         {
-          message: `Create StoreConfig with ${SYSNAME}`,
-          translated: `Создайте Хранилище с названием "${SYSNAME}"`,
+          message: `Create StoreConfig with TARGET_TABLE`,
+          translated: `Создайте Хранилище с названием "TARGET_TABLE"`,
         },
         HttpStatus.NOT_FOUND,
       )

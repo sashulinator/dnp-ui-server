@@ -5,7 +5,6 @@ import { _idColumn, _statusColumn } from '~/common/entities/operational-table'
 import { CrudDelegator } from '~/shared/crud'
 import Database from '~/shared/database'
 import { HttpException, HttpStatus } from '~/shared/error'
-import { SYSNAME } from '~/shared/working-tables/constant/name'
 
 import ExplorerService from '../../shared/explorer/service'
 import PrismaService from '../../shared/prisma/service'
@@ -158,14 +157,14 @@ export default class OperationalTableService extends CrudDelegator<
    * @returns {Promise<StoreConfig>}
    */
   async getStoreConfig(): Promise<StoreConfig> {
-    const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: SYSNAME } })
+    const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: 'OPERATIONAL_TABLE' } })
 
     if (!storeConfig) {
       throw new HttpException(
         {
-          message: `Create StoreConfig with ${SYSNAME}`,
-          translated: `Не удалось найти Хранилище "${SYSNAME}"`,
-          description: `Создайте Хранилище с названием "${SYSNAME}"`,
+          message: `Create StoreConfig with OPERATIONAL_TABLE`,
+          translated: `Не удалось найти Хранилище "OPERATIONAL_TABLE"`,
+          description: `Создайте Хранилище с названием "OPERATIONAL_TABLE"`,
         },
         HttpStatus.NOT_FOUND,
       )
