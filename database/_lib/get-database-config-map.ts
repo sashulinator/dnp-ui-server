@@ -1,25 +1,9 @@
+import { envVariableName, envVariables } from './get-env-variables'
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const parseDbUrl = require('parse-database-url')
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const dotenvVariables = require('dotenv').config().parsed
-
-const envVariableName = {
-  databaseUrl: 'DATABASE_URL',
-  operationalDatabaseUrl: 'OPERATIONAL_DATABASE_URL',
-  targetDatabaseUrl: 'TARGET_DATABASE_URL',
-} as const
-
-const envVariables = {
-  [envVariableName.databaseUrl]: process.env[envVariableName.databaseUrl],
-  [envVariableName.operationalDatabaseUrl]: process.env[envVariableName.operationalDatabaseUrl],
-  [envVariableName.targetDatabaseUrl]: process.env[envVariableName.targetDatabaseUrl],
-  ...dotenvVariables,
-}
-
-export type EnvVariableName = (typeof envVariableName)[keyof typeof envVariableName]
-
-type DatabaseConfig = {
+export type DatabaseConfig = {
   user: string
   password: string
   database: string
@@ -27,7 +11,13 @@ type DatabaseConfig = {
   port: number
 }
 
-export function getDatabaseConfig(): DatabaseConfig {
+export type DatabaseConfigMap = {
+  app: DatabaseConfig
+  operational: DatabaseConfig
+  target: DatabaseConfig
+}
+
+export function getAppDatabaseConfig(): DatabaseConfig {
   if (!envVariables[envVariableName.databaseUrl]) {
     throw new Error(`Environment variable '${envVariableName.databaseUrl}' does not exist.`)
   }
@@ -46,4 +36,12 @@ export function getTargetDatabaseConfig(): DatabaseConfig {
     throw new Error(`Environment variable '${envVariableName.targetDatabaseUrl}' does not exist.`)
   }
   return parseDbUrl(envVariables[envVariableName.targetDatabaseUrl]) as DatabaseConfig
+}
+
+export function getDatabaseConfigMap(): DatabaseConfigMap {
+  return {
+    app: getAppDatabaseConfig(),
+    operational: getOperationalDatabaseConfig(),
+    target: getTargetDatabaseConfig(),
+  }
 }

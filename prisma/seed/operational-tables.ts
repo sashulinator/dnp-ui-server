@@ -1,7 +1,7 @@
 import { createId } from '@paralleldrive/cuid2'
 import { type Prisma, type PrismaClient } from '@prisma/client'
 
-import vitalSeedList from './users/vital-seed-list'
+import { systemUser } from '../../database/create/data/users'
 
 const operationalTableName = 'operationalTable'
 type CreateInput = Prisma.OperationalTableUncheckedCreateInput
@@ -128,8 +128,8 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
       },
     ],
     defaultView: 'table',
-    createdById: vitalSeedList[0].id,
-    updatedById: vitalSeedList[0].id,
+    createdById: systemUser.id,
+    updatedById: systemUser.id,
     ...defaultValues,
   }
   return instance

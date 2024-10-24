@@ -1,7 +1,7 @@
 import { createId } from '@paralleldrive/cuid2'
 import { type Prisma, type PrismaClient } from '@prisma/client'
 
-import vitalSeedList from './users/vital-seed-list'
+import { systemUser } from '../../database/create/data/users'
 
 const dictionaryTableName = 'dictionaryTable'
 type CreateInput = Prisma.DictionaryTableUncheckedCreateInput
@@ -159,8 +159,8 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
         maxLength: 1,
       },
     ],
-    createdById: vitalSeedList[0].id,
-    updatedById: vitalSeedList[0].id,
+    createdById: systemUser.id,
+    updatedById: systemUser.id,
     ...defaultValues,
   }
   return instance
