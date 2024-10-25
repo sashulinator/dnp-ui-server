@@ -1,6 +1,6 @@
 import * as v from 'valibot'
 
-import { crudableModel } from '~/common/shared/crud/models/crudable'
+import { crudableModel } from '~dnp/common/shared/crud/models/crudable'
 
 import { getKeys } from '../../shared/dictionary'
 import { databaseTableModel, columnModel as workingTableColumnModel } from '../../shared/working-table'

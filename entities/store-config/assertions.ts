@@ -1,6 +1,8 @@
 import { safeParse } from 'valibot'
-import { jdbsDataSchema, type JdbcData } from './models'
-import { BaseError } from '~/utils/error'
+
+import { BaseError } from '~dnp/utils/error'
+
+import { type JdbcData, jdbsDataSchema } from './models'
 
 export function isJDBCData(input: unknown): input is JdbcData {
   const { issues } = safeParse(jdbsDataSchema, input)
