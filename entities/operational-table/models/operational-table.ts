@@ -1,8 +1,8 @@
 import * as v from 'valibot'
 
-import { crudableModel } from '../../../shared/crud/models/crudable'
-import { getKeys } from '../../../shared/dictionary'
-import { databaseTableModel, columnModel as workingTableColumnModel } from '../../../shared/working-table'
+import { crudableModel } from '../../../slices/crud/models/crudable'
+import { getKeys } from '../../../slices/dictionary'
+import { databaseTableModel, columnModel as workingTableColumnModel } from '../../../slices/working-table'
 import { userSchema } from '../../user'
 
 /**
