@@ -1,7 +1,7 @@
 import * as v from 'valibot'
 
-import { crudableModel } from '../../shared/crud/models/crudable'
-import { getKeys } from '../../shared/dictionary'
+import { crudableModel } from '../../slices/crud/models/crudable'
+import { getKeys } from '../../slices/dictionary'
 import { userSchema } from '../user'
 
 /**

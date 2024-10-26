@@ -1,8 +1,8 @@
 import * as v from 'valibot'
 
-import { creatableModel } from '~dnp/common/shared/crud/models/crudable'
+import { creatableModel } from '~dnp/common/slices/crud/models/crudable'
 
-import { getKeys } from '../../shared/dictionary'
+import { getKeys } from '../../slices/dictionary'
 import { userSchema } from '../user'
 
 export const processType = {
