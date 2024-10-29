@@ -56,4 +56,12 @@ export default async function seedOperationalTables() {
   })
 
   await Promise.all(carsPromises)
+
+  // Демо
+
+  const datasetOt = operationalTables[2] as OperationalTable
+
+  await database.dropTableIfExists(datasetOt.tableName)
+
+  await database.createTable(datasetOt.tableName, [_idColumn, _statusColumn, ...datasetOt.columns])
 }
