@@ -1,16 +1,18 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import type { Heap } from '@prisma/client'
+import type { Heap as HeapPrisma } from '@prisma/client'
 import { Prisma } from '@prisma/client'
 
 import { isInstanceOf } from 'utils/core'
 
 import PrismaService from '../../shared/prisma/service'
 
+export type Heap = HeapPrisma
+
 @Injectable()
 export default class Service {
   constructor(private prisma: PrismaService) {}
 
-  async getHeapByName(name: string): Promise<Heap> {
+  async get(name: string): Promise<Heap> {
     try {
       return await this.prisma.heap.findUniqueOrThrow({
         where: { name },
@@ -21,7 +23,7 @@ export default class Service {
     }
   }
 
-  async updateHeapByName(name: string, updateData: Prisma.HeapUpdateInput): Promise<Heap> {
+  async update(name: string, updateData: Prisma.HeapUpdateInput): Promise<Heap> {
     try {
       return await this.prisma.heap.update({
         where: { name },
