@@ -3,6 +3,7 @@ import { APP_FILTER } from '@nestjs/core'
 
 import DictionaryTableModule from '../entities/dictionary-table/nest.module'
 import FilesModule from '../entities/files/module'
+import HeapModule from '../entities/heap/module'
 import NormalizationConfigModule from '../entities/normalization-configs/module'
 import OperationalTablesModule from '../entities/operational-table/module'
 import ProcessModule from '../entities/processes/module'
@@ -27,6 +28,7 @@ import ExceptionFilter from './exception.filter'
     TargetTablesModule,
     ExplorerModule,
     FilesModule,
+    HeapModule,
   ],
   providers: [
     {

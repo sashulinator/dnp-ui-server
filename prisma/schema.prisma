@@ -166,6 +166,12 @@ model NormalizationConfig {
   @@id([id])
 }
 
+model Heap {
+  name        String @unique
+  description String
+  data        Json
+}
+
 // **************
 // *** SYSTEM ***
 // **************
