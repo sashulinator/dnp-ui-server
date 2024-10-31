@@ -11,9 +11,17 @@ export const baseHeapSchema = v.object({
 })
 
 /**
- * UpdateStoreConfig
+ * CreateHeapSchema
  */
 
-export const updateBaseHeapSchema = baseHeapSchema
+export const createHeapSchema = baseHeapSchema
 
-export type UpdateBaseHeapSchema = v.InferOutput<typeof updateBaseHeapSchema>
+export type CreateHeapSchema = v.InferOutput<typeof createHeapSchema>
+
+/**
+ * UpdateHeapSchema
+ */
+
+export const updateHeapSchema = baseHeapSchema
+
+export type UpdateHeapSchema = v.InferOutput<typeof updateHeapSchema>
