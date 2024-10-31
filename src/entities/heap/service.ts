@@ -1,37 +1,31 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import type { Heap as HeapPrisma } from '@prisma/client'
-import { Prisma } from '@prisma/client'
+import { Injectable } from '@nestjs/common'
+import type { Heap as HeapPrisma, Prisma } from '@prisma/client'
 
-import { isInstanceOf } from 'utils/core'
+import { CrudDelegator } from '~/shared/crud'
 
 import PrismaService from '../../shared/prisma/service'
 
 export type Heap = HeapPrisma
+export type CreateHeap = Prisma.HeapUncheckedCreateInput
+export type UpdateHeap = Prisma.HeapUncheckedUpdateInput
 
 @Injectable()
-export default class Service {
-  constructor(private prisma: PrismaService) {}
-
-  async get(name: string): Promise<Heap> {
-    try {
-      return await this.prisma.heap.findUniqueOrThrow({
-        where: { name },
-      })
-    } catch (error) {
-      if (!isInstanceOf(error, Prisma.PrismaClientKnownRequestError) || error.code !== 'P2025') throw error
-      throw new HttpException('Heap not found', HttpStatus.NOT_FOUND)
-    }
-  }
-
-  async update(name: string, updateData: Prisma.HeapUpdateInput): Promise<Heap> {
-    try {
-      return await this.prisma.heap.update({
-        where: { name },
-        data: updateData,
-      })
-    } catch (error) {
-      if (!isInstanceOf(error, Prisma.PrismaClientKnownRequestError) || error.code !== 'P2025') throw error
-      throw new HttpException('Heap not found', HttpStatus.NOT_FOUND)
-    }
+export default class Service extends CrudDelegator<Heap, CreateHeap, UpdateHeap> {
+  constructor(protected prisma: PrismaService) {
+    super(
+      {},
+      {
+        count: CrudDelegator.notAllowed,
+        create: CrudDelegator.notAllowed,
+        delete: CrudDelegator.notAllowed,
+        update: prisma.heap.update.bind(prisma),
+        getFirst: CrudDelegator.notAllowed,
+        getUnique: prisma.heap.findUniqueOrThrow.bind(prisma),
+        findFirst: CrudDelegator.notAllowed,
+        findMany: CrudDelegator.notAllowed,
+        findUnique: CrudDelegator.notAllowed,
+        transaction: CrudDelegator.notAllowed,
+      },
+    )
   }
 }
