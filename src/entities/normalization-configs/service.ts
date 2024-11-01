@@ -75,7 +75,7 @@ export default class Service {
     params: {
       where?: WhereInput
       select?: Select
-    } = {}
+    } = {},
   ): Promise<PrismaNormalizationConfig | null> {
     return this.prisma.normalizationConfig.findFirst(params)
   }
@@ -115,7 +115,7 @@ export default class Service {
       where?: WhereInput
       orderBy?: OrderByWithRelationInput
       select?: Select
-    } = {}
+    } = {},
   ): Promise<PrismaNormalizationConfig[]> {
     const { skip, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
 
@@ -148,7 +148,7 @@ export default class Service {
       where?: WhereInput
       orderBy?: OrderByWithRelationInput
       select?: Select
-    } = {}
+    } = {},
   ): Promise<[PrismaNormalizationConfig[], number]> {
     const { skip, select, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
 
@@ -202,7 +202,7 @@ export default class Service {
    */
   async update(
     where: WhereInput,
-    updateNormalizationConfig: UpdateNormalizationConfig
+    updateNormalizationConfig: UpdateNormalizationConfig,
   ): Promise<PrismaNormalizationConfig> {
     const prismaItem = await this.getFirst(where)
 

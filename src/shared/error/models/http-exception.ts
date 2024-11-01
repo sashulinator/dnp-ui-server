@@ -17,6 +17,7 @@ export class HttpException extends NestHttpException {
     super(response, status)
     this.translated = response.translated
     this.description = response.description
+    Object.setPrototypeOf(this, NestHttpException.prototype)
   }
 
   getTranslated() {

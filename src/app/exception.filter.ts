@@ -1,4 +1,5 @@
 import { type ArgumentsHost, Catch, HttpStatus, type ExceptionFilter as NestJSExceptionFilter } from '@nestjs/common'
+import { HttpException as NestHttpException } from '@nestjs/common'
 import { HttpAdapterHost } from '@nestjs/core'
 import { Prisma } from '@prisma/client'
 
@@ -39,7 +40,7 @@ export default class ExceptionFilter implements NestJSExceptionFilter {
 
     const ctx = host.switchToHttp()
 
-    const httpStatus = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
+    const httpStatus = exception instanceof NestHttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
     const translated = exception instanceof HttpException ? exception.getTranslated() : 'Неизвестная ошибка'
     const description = exception instanceof HttpException ? exception.getDescription() : ''
 
