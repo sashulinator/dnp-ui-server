@@ -1,6 +1,6 @@
 import * as v from 'valibot'
 
-import { crudableModel } from '~dnp/common/slices/crud/models/crudable'
+import { crudableModel } from '~/common/slices/crud/models/crudable'
 
 import { getKeys } from '../../slices/dictionary'
 import { databaseTableModel, columnModel as workingTableColumnModel } from '../../slices/working-table'

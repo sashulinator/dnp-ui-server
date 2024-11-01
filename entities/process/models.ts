@@ -1,6 +1,6 @@
 import * as v from 'valibot'
 
-import { creatableModel } from '~dnp/common/slices/crud/models/crudable'
+import { creatableModel } from '~/common/slices/crud/models/crudable'
 
 import { getKeys } from '../../slices/dictionary'
 import { userSchema } from '../user'
