@@ -9,8 +9,8 @@ import ExplorerService from '../../shared/explorer/service'
 import PrismaService from '../../shared/prisma/service'
 import type { StoreConfig } from '../store-configs/dto'
 import { toDatabasConfig } from '../store-configs/lib/to-database-config'
-import { assertColumns } from './assertions'
-import { type Column } from './dto'
+import { assertColumns } from './lib.assertions'
+import { type Column } from './models.dictionary-table'
 
 export type DictionaryTable = PrismaDictionaryTable
 export type CreateDictionaryTable = Prisma.DictionaryTableUncheckedCreateInput

@@ -10,8 +10,8 @@ import ExplorerService, {
   type Where,
 } from '~/shared/explorer/service'
 
-import { assertColumns } from './assertions'
-import Service from './service'
+import { assertColumns } from './lib.assertions'
+import Service from './nest.service'
 
 export type ExplorerFindManyParams = FindManyParams & {
   kn: string

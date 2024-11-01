@@ -4,10 +4,10 @@ import Database from '~/shared/database'
 import ExplorerModule from '~/shared/explorer/module'
 import PrismaModule from '~/shared/prisma/module'
 
-import Controller from './controller'
-import ExplorerController from './controller.explorer'
-import Service from './service'
-import ExplorerService from './service.explorer'
+import Controller from './nest.controller'
+import ExplorerController from './nest.controller.explorer'
+import Service from './nest.service'
+import ExplorerService from './nest.service.explorer'
 
 @Module({
   controllers: [ExplorerController, Controller],

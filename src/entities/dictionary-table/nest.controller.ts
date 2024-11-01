@@ -7,16 +7,16 @@ import { ValibotPipe } from '~/app/valibot.pipe'
 import {
   type CreateDictionaryTable,
   type UpdateDictionaryTable,
-  createDictionaryTableModel,
-  updateDictionaryTableModel,
-} from './dto'
+  createDictionaryTableSchema,
+  updateDictionaryTableSchema,
+} from './models.dictionary-table'
 import Service, {
   type DictionaryTable,
   type OrderByWithRelationInput,
   type Select,
   type WhereInput,
   type WhereUniqueInput,
-} from './service'
+} from './nest.service'
 
 @NestJSController('api/v1/dictionary-tables')
 export default class DictionaryTableController {
@@ -44,7 +44,7 @@ export default class DictionaryTableController {
    * @returns A promise that resolves when the operationalTable is updated
    */
   @Put()
-  @UsePipes(new ValibotPipe(v.object({ input: updateDictionaryTableModel })))
+  @UsePipes(new ValibotPipe(v.object({ input: updateDictionaryTableSchema })))
   update(@Body() body: { input: UpdateDictionaryTable }): Promise<DictionaryTable> {
     return this.service.update({ data: { ...body.input, updatedById: 'system' }, where: { kn: body.input.kn } })
   }
@@ -58,7 +58,7 @@ export default class DictionaryTableController {
    * @returns {Promise<DictionaryTable>} A promise that resolves to the created operationalTable
    */
   @Post()
-  @UsePipes(new ValibotPipe(v.object({ input: createDictionaryTableModel })))
+  @UsePipes(new ValibotPipe(v.object({ input: createDictionaryTableSchema })))
   create(@Body() body: { input: CreateDictionaryTable }): Promise<DictionaryTable> {
     return this.service.create({
       data: { ...body.input, createdById: 'system', updatedById: 'system' },

@@ -2,16 +2,25 @@
  * constants
  */
 
-export { NAME, SLICE_NAME } from './constants/name'
+export { SLICE } from './constants.name'
 
 /**
  * lib
  */
 
-export { assertColumns, isColumns } from './lib/assertions'
+export { assertColumns, isColumns } from './lib.assertions'
 
 /**
  * models
  */
 
-export * from './models/dictionary-table'
+export type {
+  BaseDictionaryTable,
+  DictionaryTableRelations,
+  DictionaryTable,
+  CreateDictionaryTable,
+  UpdateDictionaryTable,
+  TableSchema,
+  Column,
+  Row,
+} from './models.dictionary-table'

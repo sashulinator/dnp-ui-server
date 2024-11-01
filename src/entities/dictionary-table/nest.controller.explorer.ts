@@ -5,7 +5,7 @@ import Service, {
   type ExplorerDeleteParams,
   type ExplorerFindManyParams,
   type ExplorerUpdateParams,
-} from './service.explorer'
+} from './nest.service.explorer'
 
 @NestJSController('api/v1/dictionary-tables/explorer')
 export default class DictionaryTableController {

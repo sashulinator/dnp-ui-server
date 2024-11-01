@@ -2,7 +2,7 @@
 import { type DictionaryTable as PrismaType } from '@prisma/client'
 
 //            ↓
-import { type BaseDictionaryTable as DtoType } from '~/entities/dictionary-table/dto'
+import { type BaseDictionaryTable as DtoType } from '~/entities/dictionary-table/models.dictionary-table'
 
 import { type DateToString, check } from './_private'
 

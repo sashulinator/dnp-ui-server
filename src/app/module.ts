@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { APP_FILTER } from '@nestjs/core'
 
-import DictionaryTableModule from '../entities/dictionary-table/module'
+import DictionaryTableModule from '../entities/dictionary-table/nest.module'
 import FilesModule from '../entities/files/module'
 import NormalizationConfigModule from '../entities/normalization-configs/module'
 import OperationalTablesModule from '../entities/operational-table/module'

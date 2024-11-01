@@ -1,4 +1,4 @@
-import { type BaseDictionaryTable } from '../../../src/entities/dictionary-table/dto'
+import { type BaseDictionaryTable } from '../../../src/entities/dictionary-table/models.dictionary-table'
 import { systemUser } from './users'
 
 export const countriesDictionaryTable: BaseDictionaryTable = {
