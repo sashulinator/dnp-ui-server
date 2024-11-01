@@ -94,7 +94,7 @@ model StoreConfig {
 
 model OperationalTable {
   kn          String        @db.VarChar(24)
-  name        String        @db.VarChar(24)
+  display     String        @db.VarChar(24)
   tableName   String        @db.VarChar(24)
   description String
   defaultView TableViewType
@@ -113,7 +113,7 @@ model OperationalTable {
 
 model DictionaryTable {
   kn          String        @db.VarChar(24)
-  name        String        @db.VarChar(24)
+  display     String        @db.VarChar(24)
   tableName   String        @db.VarChar(24)
   description String
   defaultView TableViewType
@@ -132,7 +132,7 @@ model DictionaryTable {
 
 model TargetTable {
   kn          String        @db.VarChar(24)
-  name        String        @db.VarChar(24)
+  display     String        @db.VarChar(24)
   tableName   String        @db.VarChar(24)
   description String
   defaultView TableViewType

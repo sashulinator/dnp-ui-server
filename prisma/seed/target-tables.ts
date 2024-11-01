@@ -6,14 +6,14 @@ import { systemUser } from '../../database/create/data/users'
 const targetTableName = 'targetTable'
 type CreateInput = Prisma.TargetTableUncheckedCreateInput
 
-export const targetTables = [_create({ kn: 'first', name: 'first' })] as const
+export const targetTables = [_create({ kn: 'first', display: 'first' })] as const
 
 function _create(defaultValues: Partial<CreateInput>): CreateInput {
   const instance: CreateInput = {
     kn: defaultValues.kn ?? createId(),
-    name: defaultValues.name ?? createId(),
+    display: defaultValues.display ?? createId(),
     nav: false,
-    tableName: defaultValues.name ?? createId(),
+    tableName: defaultValues.display ?? createId(),
     description: '',
     defaultView: 'table',
     columns: [
@@ -47,7 +47,7 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
 }
 
 function _createOnIteration(_: unknown, i: number): CreateInput {
-  return _create({ name: `seeded-name-${i}`, tableName: `seeded-tablename-${i}`, kn: `seeded-kn-${i}` })
+  return _create({ display: `seeded-name-${i}`, tableName: `seeded-tablename-${i}`, kn: `seeded-kn-${i}` })
 }
 
 export default async function seedtargetTables(prisma: PrismaClient) {

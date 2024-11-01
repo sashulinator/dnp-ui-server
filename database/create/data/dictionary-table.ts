@@ -3,7 +3,7 @@ import { systemUser } from './users'
 
 export const countriesDictionaryTable: BaseDictionaryTable = {
   kn: 'countries',
-  name: 'Страны',
+  display: 'Страны',
   tableName: 'countries',
   nav: true,
   defaultView: 'table',
@@ -42,7 +42,7 @@ export const countriesDictionaryTable: BaseDictionaryTable = {
 
 export const employeesDictionaryTable: BaseDictionaryTable = {
   kn: 'employees',
-  name: 'Работники',
+  display: 'Работники',
   tableName: 'employees',
   nav: true,
   defaultView: 'table',
@@ -102,7 +102,7 @@ export const employeesDictionaryTable: BaseDictionaryTable = {
 
 export const rfSubjectsDictionaryTable: BaseDictionaryTable = {
   kn: 'rfSubjects',
-  name: 'Субъекты РФ',
+  display: 'Субъекты РФ',
   tableName: 'rf_subjects',
   nav: true,
   defaultView: 'table',

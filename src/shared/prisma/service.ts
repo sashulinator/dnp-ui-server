@@ -11,6 +11,8 @@ const parseDbUrl = require('parse-database-url')
 export default class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   async onModuleInit() {
     try {
+      console.log('process.env.DATABASE_URL', process.env.DATABASE_URL)
+
       const config = parseDbUrl(process.env.DATABASE_URL)
 
       console.log('')

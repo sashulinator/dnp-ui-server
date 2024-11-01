@@ -12,7 +12,7 @@ import { userSchema } from '../user'
 
 export const baseTargetTableSchema = v.object({
   kn: v.string(),
-  name: v.string(),
+  display: v.string(),
   nav: v.boolean(),
   tableName: v.string(),
   columns: v.array(v.lazy(() => columnSchema)),
