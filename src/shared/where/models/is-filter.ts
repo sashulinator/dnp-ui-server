@@ -1,1 +1,1 @@
-export * from '~/common/shared/where/models/is-filter'
+export * from '~/common/slices/where/models/is-filter'

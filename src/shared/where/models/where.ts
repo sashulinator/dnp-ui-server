@@ -1,1 +1,1 @@
-export * from '~/common/shared/where/models/where'
+export * from '~/common/slices/where/models/where'

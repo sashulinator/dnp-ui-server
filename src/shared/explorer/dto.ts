@@ -1,1 +1,1 @@
-export * from '~/common/shared/explorer/models/explorer'
+export * from '~/common/slices/explorer/models/explorer'

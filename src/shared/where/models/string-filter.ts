@@ -1,1 +1,1 @@
-export * from '~/common/shared/where/models/string-filter'
+export * from '~/common/slices/where/models/string-filter'

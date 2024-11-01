@@ -1,1 +1,1 @@
-export * from '~/common/shared/database/models/database'
+export * from '~/common/slices/database/models/database'

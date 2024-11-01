@@ -1,1 +1,1 @@
-export * from '~/common/shared/where/lib/to-filter'
+export * from '~/common/slices/where/lib/to-filter'

@@ -1,1 +1,1 @@
-export * from '~/common/shared/where/models/filter-config'
+export * from '~/common/slices/where/models/filter-config'

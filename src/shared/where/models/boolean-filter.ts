@@ -1,1 +1,1 @@
-export * from '~/common/shared/where/models/boolean-filter'
+export * from '~/common/slices/where/models/boolean-filter'
