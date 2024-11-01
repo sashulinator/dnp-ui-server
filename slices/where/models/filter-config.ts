@@ -1,4 +1,4 @@
-import { type Undefinable } from '~dnp/utils/core'
+import { type Undefinable } from '~/utils/core'
 
 import type { ComparisonKey } from './comparison'
 import type { In } from './in'

@@ -1,6 +1,6 @@
 import { safeParse } from 'valibot'
 
-import { BaseError } from '~dnp/utils/error'
+import { BaseError } from '~/utils/error'
 
 import { type JdbcData, jdbsDataSchema } from './models'
 

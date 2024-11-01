@@ -1,6 +1,6 @@
 import * as v from 'valibot'
 
-import { BaseError } from '~dnp/utils/error'
+import { BaseError } from '~/utils/error'
 
 import { type Column, columnSchema } from '../models/dictionary-table'
 
