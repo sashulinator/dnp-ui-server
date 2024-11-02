@@ -1,4 +1,5 @@
 import { Body, Delete, Get, Controller as NestJSController, Param, Post, Put, Search, UsePipes } from '@nestjs/common'
+import type { Process } from '@prisma/client'
 import { type NormalizationConfig } from '@prisma/client'
 
 import * as v from 'valibot'
@@ -16,6 +17,19 @@ import Service, { type OrderByWithRelationInput, type Select, type WhereInput, t
 @NestJSController('api/v1/normalization-configs')
 export default class Controller {
   constructor(private readonly service: Service) {}
+
+  /**
+   * ------------ DELETE ------------
+   *
+   * Delete a normalizationConfig by its ID
+   *
+   * @param {string} id The ID of the normalizationConfig to delete
+   * @returns {Promise<NormalizationConfig>} A promise that resolves when the normalizationConfig is deleted
+   */
+  @Get(':id/run')
+  run(@Param('id') id: string): Promise<Process> {
+    return this.service.run({ id })
+  }
 
   /**
    * ------------ DELETE ------------

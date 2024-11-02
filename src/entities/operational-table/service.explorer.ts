@@ -181,7 +181,7 @@ export default class OperationalTableService {
       }),
     })
 
-    return this.processService.createWithRuntimeConfig({
+    return this.processService.create({
       data: {
         id: createId(),
         type: 'IMPORT',

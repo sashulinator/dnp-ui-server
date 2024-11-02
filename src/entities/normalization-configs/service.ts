@@ -1,10 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { createId } from '@paralleldrive/cuid2'
-import { Prisma, type NormalizationConfig as PrismaNormalizationConfig } from '@prisma/client'
+import { Prisma, type NormalizationConfig as PrismaNormalizationConfig, type Process } from '@prisma/client'
 
 import { isInstanceOf } from 'utils/core'
 
+import MinioService from '~/shared/minio/service'
+
 import PrismaService from '../../shared/prisma/service'
+import ProcessService from '../processes/service'
 import { type BaseNormalizationConfig, type CreateNormalizationConfig, type UpdateNormalizationConfig } from './dto'
 
 export type WhereUniqueInput = Prisma.NormalizationConfigWhereUniqueInput
@@ -17,7 +20,11 @@ const ORDER_BY: OrderByWithRelationInput = { updatedAt: 'desc' }
 
 @Injectable()
 export default class Service {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    protected minioService: MinioService,
+    protected processService: ProcessService,
+  ) {}
 
   /**
    * ------------ GET FIRST------------
@@ -185,8 +192,8 @@ export default class Service {
         ...createInput,
         v: 1,
         id: createId(),
-        createdById: 'tz4a98xxat96iws9zmbrgj3a',
-        updatedById: 'tz4a98xxat96iws9zmbrgj3a',
+        createdById: 'system',
+        updatedById: 'system',
       },
     })
   }
@@ -254,6 +261,46 @@ export default class Service {
   async remove(where: WhereUniqueInput): Promise<PrismaNormalizationConfig> {
     return this.prisma.normalizationConfig.delete({
       where,
+    })
+  }
+
+  async run(params: { id: string }): Promise<Process> {
+    const normalizationConfig = await this.prisma.normalizationConfig.findUnique({ where: { id: params.id } })
+    if (!normalizationConfig) {
+      throw new HttpException(`NormalizationConfig with id=${params.id} not found`, HttpStatus.NOT_FOUND)
+    }
+
+    // Prepare the filename and buffer for uploading to Minio
+    const fileName = `type=normalization&name=${normalizationConfig.name}&id=${normalizationConfig.id}.json`
+    const buffer = JSON.stringify(normalizationConfig.data)
+
+    // Upload the normalizationConfig to Minio
+    await this.minioService.putObject('dnp-common', fileName, buffer)
+
+    // Set the headers for the HTTP request
+    const headers = new Headers()
+    headers.set('Authorization', 'Basic ' + Buffer.from('airflow:airflow').toString('base64'))
+    headers.set('Content-Type', 'application/json;charset=UTF-8')
+
+    // Trigger the Airflow DAG run
+    await fetch('http://10.4.40.30:8080/api/v1/dags/dnp_rest_api_trigger/dagRuns', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        conf: {
+          dnp_s3_config_path: `dnp-common/${fileName}`,
+        },
+      }),
+    })
+
+    return this.processService.create({
+      data: {
+        initiatorId: normalizationConfig.id,
+        id: createId(),
+        type: 'normalization',
+        tableId: '',
+        eventTrackingId: 0,
+      },
     })
   }
 }

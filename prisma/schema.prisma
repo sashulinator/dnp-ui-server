@@ -60,13 +60,6 @@ model Process {
   @@id([id])
 }
 
-enum ProcessType {
-  NORMALIZATION
-  REPORT
-  IMPORT
-  EXPORT
-}
-
 model ProcessEvent {
   id             String   @db.VarChar(24)
   event          String   @db.VarChar(24)
