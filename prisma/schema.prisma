@@ -42,7 +42,7 @@ model User {
 
 model Process {
   id                         String         @db.VarChar(24)
-  type                       String         @db.VarChar(12)
+  type                       String         @db.VarChar(24)
   // id сущности которая вызвала процесс
   initiatorId                String?        @db.VarChar(24)
   data                       Json?
