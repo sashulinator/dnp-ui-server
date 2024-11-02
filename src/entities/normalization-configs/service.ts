@@ -177,6 +177,7 @@ export default class Service {
   }
 
   async run(params: { id: string }): Promise<{ process: Process }> {
+    const TYPE = 'normalization'
     const normalizationConfig = await this.prisma.normalizationConfig.findUniqueOrThrow({ where: { id: params.id } })
 
     const data = normalizationConfig.data
@@ -184,8 +185,11 @@ export default class Service {
     assertObject(data)
 
     await this.engineService.normalize({
-      id: normalizationConfig.id,
-      name: normalizationConfig.name,
+      fileName: [
+        ['type', TYPE],
+        ['name', normalizationConfig.name],
+        ['id', normalizationConfig.id],
+      ],
       data,
     })
 
@@ -194,8 +198,6 @@ export default class Service {
         initiatorId: normalizationConfig.id,
         id: createId(),
         type: 'normalization',
-        tableId: '',
-        eventTrackingId: 0,
       },
     })
 

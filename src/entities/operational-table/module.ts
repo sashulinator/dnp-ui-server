@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common'
 
 import Database from '~/shared/database'
 import ExplorerModule from '~/shared/explorer/module'
-import MinioModule from '~/shared/minio/module'
 import PrismaModule from '~/shared/prisma/module'
+import { EngineModule } from '~/slices/engine'
 
 import ProcessModule from '../processes/module'
 import Controller from './controller'
@@ -14,7 +14,7 @@ import ExplorerService from './service.explorer'
 @Module({
   controllers: [ExplorerController, Controller],
   providers: [Service, ExplorerService, Database],
-  imports: [PrismaModule, ExplorerModule, ProcessModule, MinioModule],
+  imports: [PrismaModule, ExplorerModule, ProcessModule, EngineModule],
   exports: [Service, ExplorerService],
 })
 export default class OperationalTableModule {}

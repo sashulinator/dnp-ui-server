@@ -9,7 +9,7 @@ import ExplorerService, {
   type UpdateParams,
   type Where,
 } from '~/shared/explorer/service'
-import MinioService from '~/shared/minio/service'
+import { EngineService } from '~/slices/engine'
 import { random } from '~/utils/core'
 
 import ProcessService from '../processes/service'
@@ -24,7 +24,7 @@ export type ExplorerFindManyParams = FindManyParams & {
 export type ExplorerCreateParams = { kn: string; input: Record<string, unknown> }
 export type ExplorerDeleteParams = { kn: string; where: Where }
 export type ExplorerUpdateParams = { kn: string; input: { _id: string } & Record<string, string> }
-export type ExplorerImportParams = { fileId: string; operationalTableId: string; tableName: string }
+export type ExplorerFileToTableParams = { fileName: string; operationalTableId: string; tableName: string }
 
 @Injectable()
 export default class OperationalTableService {
@@ -32,7 +32,7 @@ export default class OperationalTableService {
     private explorerService: ExplorerService,
     private operationalTableService: Service,
     protected processService: ProcessService,
-    protected minio: MinioService,
+    protected engineService: EngineService,
   ) {}
 
   async explorerFindManyAndCountRows(params: ExplorerFindManyParams) {
@@ -144,50 +144,39 @@ export default class OperationalTableService {
     }
   }
 
-  async explorerImport(params: ExplorerImportParams) {
-    const trackingId = random(0, 10000000)
-    const fileNameSplitted = params.fileId.split('.')
+  async explorerFileToTable(params: ExplorerFileToTableParams) {
+    const TYPE = 'import'
+    const trackingId = random(0, 999999999)
 
-    const fileExt = fileNameSplitted[fileNameSplitted.length - 1]
+    const fileNameSplitted = params.fileName.split('.')
 
-    // Prepare the filename and buffer for uploading to Minio
-    const configFileName = `${'operational-table-import-' + createId()}.json`
-    const buffer = JSON.stringify(
-      createImportOperationalTableNormalizationConfig({
-        sourceFileName: params.fileId,
-        fileExtension: fileExt,
-        destinationTable: params.tableName,
-        trackingId,
-      }),
-      null,
-      4,
-    )
+    const fileExt = fileNameSplitted.at(-1)
 
-    // Upload the normalizationConfig to Minio
-    await this.minio.putObject('import-runtime-configs', configFileName, buffer)
+    const normalizationConfig = createImportOperationalTableNormalizationConfig({
+      sourceFileName: params.fileName,
+      fileExtension: fileExt,
+      destinationTable: params.tableName,
+      trackingId,
+    })
 
-    // Set the headers for the HTTP request
-    const headers = new Headers()
-    headers.set('Authorization', 'Basic ' + Buffer.from('airflow:airflow').toString('base64'))
-    headers.set('Content-Type', 'application/json;charset=UTF-8')
-
-    await fetch('http://10.4.40.30:8080/api/v1/dags/dnp_rest_api_trigger/dagRuns', {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        conf: {
-          dnp_s3_config_path: `import-runtime-configs/${configFileName}`,
-        },
-      }),
+    this.engineService.normalize({
+      fileName: [
+        ['type', TYPE],
+        ['name', params.fileName],
+      ],
+      data: normalizationConfig,
     })
 
     return this.processService.create({
       data: {
         id: createId(),
-        type: 'IMPORT',
-        runtimeConfigData: buffer,
-        tableId: params.operationalTableId,
-        eventTrackingId: trackingId,
+        type: TYPE,
+        initiatorId: params.operationalTableId,
+        data: {
+          trackingId,
+          normalizationConfig,
+          tableId: params.operationalTableId,
+        },
       },
     })
   }

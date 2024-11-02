@@ -3,8 +3,8 @@ import { Body, Delete, Controller as NestJSController, Post, Put, Search } from 
 import Service, {
   type ExplorerCreateParams,
   type ExplorerDeleteParams,
+  ExplorerFileToTableParams,
   type ExplorerFindManyParams,
-  ExplorerImportParams,
   type ExplorerUpdateParams,
 } from './service.explorer'
 
@@ -16,8 +16,8 @@ export default class OperationalTableController {
    * ------------ IMPORT ------------
    */
   @Post('import')
-  async explorerImport(@Body() body: ExplorerImportParams) {
-    return this.service.explorerImport(body)
+  async explorerImport(@Body() body: ExplorerFileToTableParams) {
+    return this.service.explorerFileToTable(body)
   }
 
   /**

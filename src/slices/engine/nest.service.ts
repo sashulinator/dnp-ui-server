@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common'
 
 import MinioService from '~/shared/minio/service'
-import { generateId } from '~/utils/core'
+import { generateId, isString } from '~/utils/core'
 
 import { type ResponseData, runDag } from './api/run-dag'
 
 export type NormalizeResult = ResponseData
 export type NormalizeParams = {
-  name: string
-  id: string
+  fileName: string | [string, string][]
   data: Record<string, unknown>
 }
 
@@ -17,10 +16,14 @@ const S3_BUCKET = 'dnp-common'
 @Injectable()
 export default class Service {
   constructor(protected minioService: MinioService) {}
-  async normalize(normalizationConfig: NormalizeParams): Promise<NormalizeResult> {
-    const buffer = JSON.stringify(normalizationConfig.data)
+  async normalize(params: NormalizeParams): Promise<NormalizeResult> {
+    const buffer = JSON.stringify(params.data)
 
-    const fileName = `type=normalization&name=${normalizationConfig.name}&id=${normalizationConfig.id}&fileId=${generateId(5)}.json`
+    const paramFileName = isString(params.fileName)
+      ? params.fileName
+      : params.fileName.map(([key, value]) => `${key}=${value}`).join('&')
+
+    const fileName = `${paramFileName}&fileId=${generateId(5)}.json`
 
     await this.minioService.putObject(S3_BUCKET, fileName, buffer)
 
