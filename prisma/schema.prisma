@@ -42,10 +42,12 @@ model User {
 
 model Process {
   id                         String         @db.VarChar(24)
-  type                       ProcessType
+  type                       String         @db.VarChar(12)
+  // id сущности которая вызвала процесс
+  initiatorId                String?        @db.VarChar(24)
+  data                       Json?
   runtimeConfigData          Json?
   tableId                    String         @db.VarChar(24)
-  normalizationConfigId      String?        @db.VarChar(24)
   normalizationConfigVersion Int?
   eventTrackingId            Int            @unique
   // relations

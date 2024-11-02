@@ -53,15 +53,12 @@ export default class Service extends CrudDelegator<Process, CreateProcess, Updat
   async create(params: { data: CreateProcess; select?: Select; include?: Include }): Promise<Process> {
     // Retrieve the normalizationConfig from the database
     const normalizationConfig = await this.prisma.normalizationConfig.findUnique({
-      where: { id: params.data.normalizationConfigId },
+      where: { id: params.data.initiatorId },
     })
 
     // Throw an error if the normalizationConfig is not found
     if (!normalizationConfig) {
-      throw new HttpException(
-        `NormalizationConfig with id=${params.data.normalizationConfigId} not found`,
-        HttpStatus.NOT_FOUND,
-      )
+      throw new HttpException(`NormalizationConfig with id=${params.data.initiatorId} not found`, HttpStatus.NOT_FOUND)
     }
 
     // Prepare the filename and buffer for uploading to Minio

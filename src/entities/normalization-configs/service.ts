@@ -206,7 +206,7 @@ export default class Service {
   ): Promise<PrismaNormalizationConfig> {
     const prismaItem = await this.getFirst(where)
 
-    const processes = await this.prisma.process.findFirst({ where: { normalizationConfigId: prismaItem.id } })
+    const processes = await this.prisma.process.findFirst({ where: { initiatorId: prismaItem.id } })
 
     // Если нет процессов, то просто обновляем данные
     if (!processes) {

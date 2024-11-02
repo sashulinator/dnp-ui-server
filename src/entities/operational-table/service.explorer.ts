@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { createId } from '@paralleldrive/cuid2'
-import { ProcessType } from '@prisma/client'
 
 import ExplorerService, {
   type CreateParams,
@@ -185,7 +184,7 @@ export default class OperationalTableService {
     return this.processService.createWithRuntimeConfig({
       data: {
         id: createId(),
-        type: ProcessType.IMPORT,
+        type: 'IMPORT',
         runtimeConfigData: buffer,
         tableId: params.operationalTableId,
         eventTrackingId: trackingId,
