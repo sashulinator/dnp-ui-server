@@ -14,7 +14,7 @@ export const baseTargetTableSchema = v.object({
   kn: v.string(),
   display: v.string(),
   nav: v.boolean(),
-  tableName: v.string(),
+  name: v.string(),
   columns: v.array(v.lazy(() => columnSchema)),
   description: v.string(),
   defaultView: v.union([v.literal('tree'), v.literal('table')]),
