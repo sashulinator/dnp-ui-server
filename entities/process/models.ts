@@ -5,29 +5,16 @@ import { creatableModel } from '~/common/slices/crud/models/crudable'
 import { getKeys } from '../../slices/dictionary'
 import { userSchema } from '../user'
 
-export const processType = {
-  IMPORT: 'IMPORT',
-  EXPORT: 'EXPORT',
-  REPORT: 'REPORT',
-  NORMALIZATION: 'NORMALIZATION',
-} as const
-
-type ProcessTypeKey = keyof typeof processType
-
-export type ProcessType = (typeof processType)[ProcessTypeKey]
-
 /**
  * BaseProcess
  */
 
 export const baseProcessSchema = v.object({
   id: v.pipe(v.string(), v.nonEmpty()),
-  type: v.enum_(processType),
-  normalizationConfigId: v.pipe(v.string(), v.nonEmpty()),
-  normalizationConfigVersion: v.number(),
-  eventTrackingId: v.number(),
-  tableId: v.pipe(v.string(), v.nonEmpty()),
-  runtimeConfigData: v.object({}),
+  // Id сущности инициатора процесса
+  initiatorId: v.pipe(v.string(), v.nonEmpty()),
+  type: v.pipe(v.string(), v.nonEmpty()),
+  data: v.object({}),
   ...creatableModel.entries,
 })
 
