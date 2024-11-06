@@ -46,7 +46,7 @@ export default class TargetTableService {
       sort: params.sort,
       where: { AND: [{ OR: searchOR }, params.where] },
       type: 'postgres',
-      paths: [storeConfig.data.dbName, targetTable.tableName],
+      paths: [storeConfig.data.dbName, targetTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -70,7 +70,7 @@ export default class TargetTableService {
     const deleteParams: Required<DeleteParams> = {
       where: params.where,
       type: 'postgres',
-      paths: [storeConfig.data.dbName, targetTable.tableName],
+      paths: [storeConfig.data.dbName, targetTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -94,7 +94,7 @@ export default class TargetTableService {
     const createParams: Required<CreateParams> = {
       input: params.input,
       type: 'postgres',
-      paths: [storeConfig.data.dbName, targetTable.tableName],
+      paths: [storeConfig.data.dbName, targetTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -119,7 +119,7 @@ export default class TargetTableService {
       input: params.input,
       where: { _id: params.input._id },
       type: 'postgres',
-      paths: [storeConfig.data.dbName, targetTable.tableName],
+      paths: [storeConfig.data.dbName, targetTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,

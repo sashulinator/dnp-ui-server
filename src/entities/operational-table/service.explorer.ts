@@ -54,7 +54,7 @@ export default class OperationalTableService {
       sort: params.sort,
       where: { AND: [{ OR: searchOR }, params.where] },
       type: 'postgres',
-      paths: [storeConfig.data.dbName, operationalTable.tableName],
+      paths: [storeConfig.data.dbName, operationalTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -78,7 +78,7 @@ export default class OperationalTableService {
     const deleteParams: Required<DeleteParams> = {
       where: params.where,
       type: 'postgres',
-      paths: [storeConfig.data.dbName, operationalTable.tableName],
+      paths: [storeConfig.data.dbName, operationalTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -102,7 +102,7 @@ export default class OperationalTableService {
     const createParams: Required<CreateParams> = {
       input: params.input,
       type: 'postgres',
-      paths: [storeConfig.data.dbName, operationalTable.tableName],
+      paths: [storeConfig.data.dbName, operationalTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -127,7 +127,7 @@ export default class OperationalTableService {
       input: params.input,
       where: { _id: params.input._id },
       type: 'postgres',
-      paths: [storeConfig.data.dbName, operationalTable.tableName],
+      paths: [storeConfig.data.dbName, operationalTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,

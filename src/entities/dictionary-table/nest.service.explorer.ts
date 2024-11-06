@@ -52,7 +52,7 @@ export default class DictionaryTableService {
       dbName: storeConfig.data.dbName,
     })
 
-    const pk = await this.database.getPrimaryKey(dictionaryTable.tableName)
+    const pk = await this.database.getPrimaryKey(dictionaryTable.name)
 
     this.database.disconnect()
 
@@ -62,7 +62,7 @@ export default class DictionaryTableService {
       sort: params.sort || { [pk]: 'asc' },
       where: { AND: [{ OR: searchOR }, params.where] },
       type: 'postgres',
-      paths: [storeConfig.data.dbName, dictionaryTable.tableName],
+      paths: [storeConfig.data.dbName, dictionaryTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -86,7 +86,7 @@ export default class DictionaryTableService {
     const deleteParams: Required<DeleteParams> = {
       where: params.where,
       type: 'postgres',
-      paths: [storeConfig.data.dbName, dictionaryTable.tableName],
+      paths: [storeConfig.data.dbName, dictionaryTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -110,7 +110,7 @@ export default class DictionaryTableService {
     const createParams: Required<CreateParams> = {
       input: params.input,
       type: 'postgres',
-      paths: [storeConfig.data.dbName, dictionaryTable.tableName],
+      paths: [storeConfig.data.dbName, dictionaryTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -135,7 +135,7 @@ export default class DictionaryTableService {
       input: params.input,
       where: params.where,
       type: 'postgres',
-      paths: [storeConfig.data.dbName, dictionaryTable.tableName],
+      paths: [storeConfig.data.dbName, dictionaryTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,

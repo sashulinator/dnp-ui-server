@@ -68,7 +68,7 @@ export default class DictionaryTableService extends CrudDelegator<
     const ret = await this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
         assertColumns(tableSchema.columns)
-        await databaseTrx.createTable(params.data.tableName, [_idColumn, ...tableSchema.columns])
+        await databaseTrx.createTable(params.data.name, [_idColumn, ...tableSchema.columns])
         return prismaTrx.dictionaryTable.create(this._prepareSelectIncludeParams(params))
       })
     })
@@ -123,12 +123,12 @@ export default class DictionaryTableService extends CrudDelegator<
     const ret = await this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
         await databaseTrx.dropColumns(
-          currentDictionaryTable.tableName,
+          currentDictionaryTable.name,
           columnsToDrop.map((item) => item.columnName),
         )
-        await databaseTrx.alterTable(currentDictionaryTable.tableName, columnsToAdd)
+        await databaseTrx.alterTable(currentDictionaryTable.name, columnsToAdd)
         await databaseTrx.renameColumns(
-          currentDictionaryTable.tableName,
+          currentDictionaryTable.name,
           columnsToRename.map(([currentItem, updateItem]) => ({
             from: currentItem.columnName,
             to: updateItem.columnName,

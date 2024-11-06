@@ -65,7 +65,7 @@ export default class TargetTableService extends Delegator<TargetTable, CreateTar
       return this.database.transaction(async (databaseTrx) => {
         assertColumns(tableSchema.columns)
 
-        await databaseTrx.createTable(params.data.tableName, [_idColumn, ...tableSchema.columns])
+        await databaseTrx.createTable(params.data.name, [_idColumn, ...tableSchema.columns])
         return prismaTrx.targetTable.create(this._prepareSelectIncludeParams(params))
       })
     })
@@ -120,12 +120,12 @@ export default class TargetTableService extends Delegator<TargetTable, CreateTar
     const ret = await this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
         await databaseTrx.dropColumns(
-          currentTargetTable.tableName,
+          currentTargetTable.name,
           columnsToDrop.map((item) => item.columnName),
         )
-        await databaseTrx.alterTable(currentTargetTable.tableName, columnsToAdd)
+        await databaseTrx.alterTable(currentTargetTable.name, columnsToAdd)
         await databaseTrx.renameColumns(
-          currentTargetTable.tableName,
+          currentTargetTable.name,
           columnsToRename.map(([currentItem, updateItem]) => ({
             from: currentItem.columnName,
             to: updateItem.columnName,

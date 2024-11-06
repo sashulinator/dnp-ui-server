@@ -21,36 +21,36 @@ export default async function seedDictionaryTables() {
 
   // countries
 
-  await database.dropTableIfExists(countriesDictionaryTable.tableName)
+  await database.dropTableIfExists(countriesDictionaryTable.name)
 
-  await database.createTable(countriesDictionaryTable.tableName, countriesDictionaryTable.columns)
+  await database.createTable(countriesDictionaryTable.name, countriesDictionaryTable.columns)
 
   const countriesPromises = countryList.map((row) => {
-    return database.insertRow(countriesDictionaryTable.tableName, row)
+    return database.insertRow(countriesDictionaryTable.name, row)
   })
 
   await Promise.all(countriesPromises)
 
   // employees
 
-  await database.dropTableIfExists(employeesDictionaryTable.tableName)
+  await database.dropTableIfExists(employeesDictionaryTable.name)
 
-  await database.createTable(employeesDictionaryTable.tableName, employeesDictionaryTable.columns)
+  await database.createTable(employeesDictionaryTable.name, employeesDictionaryTable.columns)
 
   const employeesPromises = userList.map((row) => {
-    return database.insertRow(employeesDictionaryTable.tableName, row)
+    return database.insertRow(employeesDictionaryTable.name, row)
   })
 
   await Promise.all(employeesPromises)
 
   // rfSubject
 
-  await database.dropTableIfExists(rfSubjectsDictionaryTable.tableName)
+  await database.dropTableIfExists(rfSubjectsDictionaryTable.name)
 
-  await database.createTable(rfSubjectsDictionaryTable.tableName, rfSubjectsDictionaryTable.columns)
+  await database.createTable(rfSubjectsDictionaryTable.name, rfSubjectsDictionaryTable.columns)
 
   const rfSubjectPromises = rfSubjects.map((row) => {
-    return database.insertRow(rfSubjectsDictionaryTable.tableName, row)
+    return database.insertRow(rfSubjectsDictionaryTable.name, row)
   })
 
   await Promise.all(rfSubjectPromises)

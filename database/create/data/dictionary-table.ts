@@ -4,7 +4,7 @@ import { systemUser } from './users'
 export const countriesDictionaryTable: BaseDictionaryTable = {
   kn: 'countries',
   display: 'Страны',
-  tableName: 'countries',
+  name: 'countries',
   nav: true,
   defaultView: 'table',
   description: 'Этот словарь был создан автоматически для примера',
@@ -43,7 +43,7 @@ export const countriesDictionaryTable: BaseDictionaryTable = {
 export const employeesDictionaryTable: BaseDictionaryTable = {
   kn: 'employees',
   display: 'Работники',
-  tableName: 'employees',
+  name: 'employees',
   nav: true,
   defaultView: 'table',
   description: 'Этот словарь был создан автоматически для примера',
@@ -103,7 +103,7 @@ export const employeesDictionaryTable: BaseDictionaryTable = {
 export const rfSubjectsDictionaryTable: BaseDictionaryTable = {
   kn: 'rfSubjects',
   display: 'Субъекты РФ',
-  tableName: 'rf_subjects',
+  name: 'rf_subjects',
   nav: true,
   defaultView: 'table',
   description: 'Этот словарь был создан автоматически для примера',

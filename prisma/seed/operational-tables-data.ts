@@ -19,9 +19,9 @@ export default async function seedOperationalTables() {
 
   const employeesOt = operationalTables[1] as OperationalTable
 
-  await database.dropTableIfExists(employeesOt.tableName)
+  await database.dropTableIfExists(employeesOt.name)
 
-  await database.createTable(employeesOt.tableName, [_idColumn, _statusColumn, ...employeesOt.columns])
+  await database.createTable(employeesOt.name, [_idColumn, _statusColumn, ...employeesOt.columns])
 
   const employeesRows = new Array(3).fill(undefined).map((_, i) => {
     return employeesOt.columns.reduce((acc, item) => {
@@ -31,7 +31,7 @@ export default async function seedOperationalTables() {
   })
 
   const employeesPromises = employeesRows.map((row) => {
-    return database.insertRow(employeesOt.tableName, row)
+    return database.insertRow(employeesOt.name, row)
   })
 
   await Promise.all(employeesPromises)
@@ -40,9 +40,9 @@ export default async function seedOperationalTables() {
 
   const carsOt = operationalTables[0] as OperationalTable
 
-  await database.dropTableIfExists(carsOt.tableName)
+  await database.dropTableIfExists(carsOt.name)
 
-  await database.createTable(carsOt.tableName, [_idColumn, _statusColumn, ...carsOt.columns])
+  await database.createTable(carsOt.name, [_idColumn, _statusColumn, ...carsOt.columns])
 
   const carsRows = new Array(3).fill(undefined).map((_, i) => {
     return carsOt.columns.reduce((acc, item) => {
@@ -52,7 +52,7 @@ export default async function seedOperationalTables() {
   })
 
   const carsPromises = carsRows.map((row) => {
-    return database.insertRow(carsOt.tableName, row)
+    return database.insertRow(carsOt.name, row)
   })
 
   await Promise.all(carsPromises)
@@ -61,7 +61,7 @@ export default async function seedOperationalTables() {
 
   const datasetOt = operationalTables[2] as OperationalTable
 
-  await database.dropTableIfExists(datasetOt.tableName)
+  await database.dropTableIfExists(datasetOt.name)
 
-  await database.createTable(datasetOt.tableName, [_idColumn, _statusColumn, ...datasetOt.columns])
+  await database.createTable(datasetOt.name, [_idColumn, _statusColumn, ...datasetOt.columns])
 }

@@ -13,7 +13,7 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
     kn: defaultValues.kn ?? createId(),
     display: defaultValues.display ?? createId(),
     nav: false,
-    tableName: defaultValues.display ?? createId(),
+    name: defaultValues.display ?? createId(),
     description: '',
     defaultView: 'table',
     columns: [
@@ -47,7 +47,7 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
 }
 
 function _createOnIteration(_: unknown, i: number): CreateInput {
-  return _create({ display: `seeded-name-${i}`, tableName: `seeded-tablename-${i}`, kn: `seeded-kn-${i}` })
+  return _create({ display: `seeded-name-${i}`, name: `seeded-tablename-${i}`, kn: `seeded-kn-${i}` })
 }
 
 export default async function seedtargetTables(prisma: PrismaClient) {

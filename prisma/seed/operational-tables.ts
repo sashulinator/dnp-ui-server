@@ -10,7 +10,7 @@ export const operationalTables = [
   _create({
     kn: 'cars',
     display: 'Автомобили',
-    tableName: 'cars',
+    name: 'cars',
     nav: true,
     description: '',
     columns: [
@@ -66,7 +66,7 @@ export const operationalTables = [
   _create({
     kn: 'employees',
     display: 'Работники',
-    tableName: 'employees',
+    name: 'employees',
     nav: true,
     description: '',
     defaultView: 'table',
@@ -101,7 +101,7 @@ export const operationalTables = [
   _create({
     kn: 'dataset',
     display: 'Эталонный датасет',
-    tableName: 'dataset',
+    name: 'dataset',
     nav: true,
     description: '',
     defaultView: 'table',
@@ -173,7 +173,7 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
     display: defaultValues.display ?? createId(),
     nav: false,
     description: '',
-    tableName: defaultValues.display ?? createId(),
+    name: defaultValues.display ?? createId(),
     columns: [
       {
         id: 'id1',
@@ -203,7 +203,7 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
 }
 
 function _createOnIteration(_: unknown, i: number): CreateInput {
-  return _create({ display: `seeded-name-${i}`, tableName: `seeded-tablename-${i}`, kn: `seeded-kn-${i}` })
+  return _create({ display: `seeded-name-${i}`, name: `seeded-tablename-${i}`, kn: `seeded-kn-${i}` })
 }
 
 export default async function seedOperationalTables(prisma: PrismaClient) {
