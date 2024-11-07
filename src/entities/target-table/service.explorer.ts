@@ -7,7 +7,7 @@ import ExplorerService, {
   type StringFilter,
   type UpdateParams,
   type Where,
-} from '~/shared/explorer/service'
+} from '~/slices/explorer/service'
 
 import { assertColumns } from './assertions'
 import Service from './service'

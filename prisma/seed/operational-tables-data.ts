@@ -2,7 +2,7 @@ import { operationalStoreConfig } from '../../database/create/data/store-config'
 import { type OperationalTable } from '../../src/entities/operational-table/dto'
 import { _idColumn } from '../../src/entities/operational-table/models/_id-column'
 import { _statusColumn } from '../../src/entities/operational-table/models/_status'
-import Database from '../../src/shared/database'
+import Database from '../../src/slices/database'
 import { operationalTables } from './operational-tables'
 
 export default async function seedOperationalTables() {

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { createId } from '@paralleldrive/cuid2'
 
+import { EngineService } from '~/slices/engine'
 import ExplorerService, {
   type CreateParams,
   type DeleteParams,
@@ -8,8 +9,7 @@ import ExplorerService, {
   type StringFilter,
   type UpdateParams,
   type Where,
-} from '~/shared/explorer/service'
-import { EngineService } from '~/slices/engine'
+} from '~/slices/explorer/service'
 import { random } from '~/utils/core'
 
 import ProcessService from '../processes/service'

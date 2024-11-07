@@ -3,7 +3,7 @@ import { Prisma, type StoreConfig as PrismaStoreConfig } from '@prisma/client'
 
 import { isInstanceOf } from 'utils/core'
 
-import PrismaService from '../../shared/prisma/service'
+import PrismaService from '../../slices/prisma/service'
 import { type CreateStoreConfig, type UpdateStoreConfig } from './dto'
 
 export type WhereUniqueInput = Prisma.StoreConfigWhereUniqueInput
@@ -74,7 +74,7 @@ export default class StoreConfigService {
     params: {
       where?: WhereInput
       select?: Select
-    } = {}
+    } = {},
   ): Promise<PrismaStoreConfig | null> {
     return this.prisma.storeConfig.findFirst(params)
   }
@@ -114,7 +114,7 @@ export default class StoreConfigService {
       where?: WhereInput
       orderBy?: OrderByWithRelationInput
       select?: Select
-    } = {}
+    } = {},
   ): Promise<PrismaStoreConfig[]> {
     const { skip, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
 
@@ -147,7 +147,7 @@ export default class StoreConfigService {
       where?: WhereInput
       orderBy?: OrderByWithRelationInput
       select?: Select
-    } = {}
+    } = {},
   ): Promise<[PrismaStoreConfig[], number]> {
     const { skip, select, take = TAKE, cursor, where, orderBy = ORDER_BY } = params
 

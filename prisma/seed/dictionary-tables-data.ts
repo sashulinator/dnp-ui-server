@@ -4,7 +4,7 @@ import {
   rfSubjectsDictionaryTable,
 } from '../../database/create/data/dictionary-table'
 import { targetStoreConfig } from '../../database/create/data/store-config'
-import Database from '../../src/shared/database'
+import Database from '../../src/slices/database'
 import rfSubjects from './dictionary-table/rf-subjects'
 import countryList from './dictionary-table/seed-list.country'
 import userList from './dictionary-table/seed-list.users'

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { type Prisma, type Process as PrismaProcess } from '@prisma/client'
 
-import { CrudDelegator } from '~/shared/crud'
+import { CrudDelegator } from '~/slices/crud'
 
-import PrismaService from '../../shared/prisma/service'
+import PrismaService from '../../slices/prisma/service'
 
 export type Process = PrismaProcess
 export type CreateProcess = Prisma.ProcessUncheckedCreateInput

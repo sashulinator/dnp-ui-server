@@ -1,4 +1,4 @@
-import { type Config } from '~/shared/database'
+import { type Config } from '~/slices/database'
 
 import { type StoreConfig } from '../dto'
 

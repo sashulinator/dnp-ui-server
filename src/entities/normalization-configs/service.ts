@@ -4,8 +4,8 @@ import { Prisma, type NormalizationConfig as PrismaNormalizationConfig, type Pro
 
 import { isInstanceOf } from 'utils/core'
 
-import PrismaService from '~/shared/prisma/service'
 import { EngineService } from '~/slices/engine'
+import PrismaService from '~/slices/prisma/service'
 import { assertObject } from '~/utils/assertions/object'
 
 import ProcessService from '../processes/service'

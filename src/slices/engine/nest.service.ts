@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import MinioService from '~/shared/minio/service'
+import MinioService from '~/slices/minio/service'
 import { generateId, isString } from '~/utils/core'
 
 import { type ResponseData, runDag } from './api/run-dag'

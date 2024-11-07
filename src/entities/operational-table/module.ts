@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
 
-import Database from '~/shared/database'
-import ExplorerModule from '~/shared/explorer/module'
-import PrismaModule from '~/shared/prisma/module'
+import Database from '~/slices/database'
 import { EngineModule } from '~/slices/engine'
+import ExplorerModule from '~/slices/explorer/module'
+import PrismaModule from '~/slices/prisma/module'
 
 import ProcessModule from '../processes/module'
 import Controller from './controller'

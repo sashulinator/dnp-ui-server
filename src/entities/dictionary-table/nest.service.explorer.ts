@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import Database from '~/shared/database'
+import Database from '~/slices/database'
 import ExplorerService, {
   type CreateParams,
   type DeleteParams,
@@ -8,7 +8,7 @@ import ExplorerService, {
   type StringFilter,
   type UpdateParams,
   type Where,
-} from '~/shared/explorer/service'
+} from '~/slices/explorer/service'
 
 import { assertColumns } from './lib.assertions'
 import Service from './nest.service'

@@ -1,6 +1,6 @@
 import { type Knex } from 'knex'
 
-import { COMPARISON, IN, IS, MATCH } from '~/shared/where'
+import { COMPARISON, IN, IS, MATCH } from '~/slices/where'
 import { has } from '~/utils/core'
 import { BaseError } from '~/utils/error'
 

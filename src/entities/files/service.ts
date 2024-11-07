@@ -1,6 +1,6 @@
 import { Injectable, StreamableFile } from '@nestjs/common'
 
-import MinioService from '~/shared/minio/service'
+import MinioService from '~/slices/minio/service'
 
 @Injectable()
 export default class Service {

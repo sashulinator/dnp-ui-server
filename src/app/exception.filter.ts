@@ -3,7 +3,7 @@ import { HttpException as NestHttpException } from '@nestjs/common'
 import { HttpAdapterHost } from '@nestjs/core'
 import { Prisma } from '@prisma/client'
 
-import { HttpException } from '~/shared/error'
+import { HttpException } from '~/slices/error'
 
 import { has, isInstanceOf } from '../utils/core'
 import { assertError, isCausable } from '../utils/error'

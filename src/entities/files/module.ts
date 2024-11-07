@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 
-import MinioModule from '~/shared/minio/module'
+import MinioModule from '~/slices/minio/module'
 
 import Controller from './controller'
 import Service from './service'
