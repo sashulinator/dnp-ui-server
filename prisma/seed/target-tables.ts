@@ -19,22 +19,22 @@ function _create(defaultValues: Partial<CreateInput>): CreateInput {
     columns: [
       {
         id: 'id1',
-        columnName: 'column1',
-        name: 'Колонка1',
+        name: 'column1',
+        display: 'Колонка1',
         type: 'string',
         maxLength: 50,
       },
       {
         id: 'id2',
-        columnName: 'column2',
-        name: 'Колонка2',
+        name: 'column2',
+        display: 'Колонка2',
         type: 'string',
         maxLength: 50,
       },
       {
         id: 'id3',
-        columnName: 'column3',
-        name: 'Колонка3',
+        name: 'column3',
+        display: 'Колонка3',
         type: 'string',
         maxLength: 50,
       },

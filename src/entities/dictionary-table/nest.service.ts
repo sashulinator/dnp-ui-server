@@ -102,7 +102,7 @@ export default class DictionaryTableService extends CrudDelegator<
       for (let ui = 0; ui < currentTableSchema.columns.length; ui++) {
         const currentItem = currentTableSchema.columns[ui]
         if (updateItem.id !== currentItem.id) continue
-        if (updateItem.columnName !== currentItem.columnName) columnsToRename.push([currentItem, updateItem])
+        if (updateItem.name !== currentItem.name) columnsToRename.push([currentItem, updateItem])
       }
     }
 
@@ -124,14 +124,14 @@ export default class DictionaryTableService extends CrudDelegator<
       return this.database.transaction(async (databaseTrx) => {
         await databaseTrx.dropColumns(
           currentDictionaryTable.name,
-          columnsToDrop.map((item) => item.columnName),
+          columnsToDrop.map((item) => item.name),
         )
         await databaseTrx.alterTable(currentDictionaryTable.name, columnsToAdd)
         await databaseTrx.renameColumns(
           currentDictionaryTable.name,
           columnsToRename.map(([currentItem, updateItem]) => ({
-            from: currentItem.columnName,
-            to: updateItem.columnName,
+            from: currentItem.name,
+            to: updateItem.name,
           })),
         )
 

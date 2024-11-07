@@ -3,7 +3,7 @@ import { type Knex } from 'knex'
 import { type Column } from '../models/database'
 
 export function buildColumn(createTableBuilder: Knex.CreateTableBuilder, props: Column) {
-  const columnBuilder = createTableBuilder[props.type](props.columnName) as Knex.ColumnBuilder
+  const columnBuilder = createTableBuilder[props.type](props.name) as Knex.ColumnBuilder
 
   if (props.defaultTo) {
     columnBuilder.defaultTo(props.defaultTo)
@@ -22,6 +22,6 @@ export function buildColumn(createTableBuilder: Knex.CreateTableBuilder, props: 
   }
 
   if (props.relation) {
-    createTableBuilder.foreign(props.columnName).references(props.relation.columnName).inTable(props.relation.tableName)
+    createTableBuilder.foreign(props.name).references(props.relation.columnName).inTable(props.relation.tableName)
   }
 }

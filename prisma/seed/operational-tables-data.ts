@@ -25,7 +25,7 @@ export default async function seedOperationalTables() {
 
   const employeesRows = new Array(3).fill(undefined).map((_, i) => {
     return employeesOt.columns.reduce((acc, item) => {
-      acc[item.columnName] = `seeded-${item.columnName}-${i}`
+      acc[item.name] = `seeded-${item.name}-${i}`
       return acc
     }, {})
   })
@@ -46,7 +46,7 @@ export default async function seedOperationalTables() {
 
   const carsRows = new Array(3).fill(undefined).map((_, i) => {
     return carsOt.columns.reduce((acc, item) => {
-      acc[item.columnName] = `seeded-${item.columnName}-${i}`
+      acc[item.name] = `seeded-${item.name}-${i}`
       return acc
     }, {})
   })

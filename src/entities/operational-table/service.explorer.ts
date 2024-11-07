@@ -43,7 +43,7 @@ export default class OperationalTableService {
 
     const searchOR = params.searchQuery
       ? operationalTable.columns.reduce<Record<string, StringFilter>[]>((acc, item) => {
-          if (item.index || item.primary) acc.push({ [item.columnName]: params.searchQuery })
+          if (item.index || item.primary) acc.push({ [item.name]: params.searchQuery })
           return acc
         }, [])
       : []

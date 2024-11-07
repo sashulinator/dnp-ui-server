@@ -15,7 +15,7 @@ export const countriesDictionaryTable: BaseDictionaryTable = {
   columns: [
     {
       id: 'id1',
-      columnName: 'code',
+      name: 'code',
       display: 'Код',
       type: 'string',
       primary: true,
@@ -23,7 +23,7 @@ export const countriesDictionaryTable: BaseDictionaryTable = {
     },
     {
       id: 'id2',
-      columnName: 'name',
+      name: 'name',
       display: 'Название',
       type: 'string',
       unique: false,
@@ -31,7 +31,7 @@ export const countriesDictionaryTable: BaseDictionaryTable = {
     },
     {
       id: 'id3',
-      columnName: 'dial_code',
+      name: 'dial_code',
       display: 'Телефоный код',
       type: 'string',
       unique: false,
@@ -54,7 +54,7 @@ export const employeesDictionaryTable: BaseDictionaryTable = {
   columns: [
     {
       id: 'id1',
-      columnName: 'id',
+      name: 'id',
       display: 'ID',
       type: 'integer',
       index: true,
@@ -64,7 +64,7 @@ export const employeesDictionaryTable: BaseDictionaryTable = {
     },
     {
       id: 'id2',
-      columnName: 'firstname',
+      name: 'firstname',
       display: 'Имя',
       type: 'string',
       index: true,
@@ -73,7 +73,7 @@ export const employeesDictionaryTable: BaseDictionaryTable = {
     },
     {
       id: 'id3',
-      columnName: 'secondname',
+      name: 'secondname',
       display: 'Фамилия',
       type: 'string',
       index: false,
@@ -82,7 +82,7 @@ export const employeesDictionaryTable: BaseDictionaryTable = {
     },
     {
       id: 'id4',
-      columnName: 'sex',
+      name: 'sex',
       display: 'Пол',
       type: 'string',
       unique: false,
@@ -90,7 +90,7 @@ export const employeesDictionaryTable: BaseDictionaryTable = {
     },
     {
       id: 'id5',
-      columnName: 'age',
+      name: 'age',
       display: 'Возраст',
       type: 'integer',
       unique: false,
@@ -114,14 +114,14 @@ export const rfSubjectsDictionaryTable: BaseDictionaryTable = {
   columns: [
     {
       id: 'id1',
-      columnName: 'capital',
+      name: 'capital',
       display: 'Столица',
       type: 'string',
       maxLength: 50,
     },
     {
       id: 'id2',
-      columnName: 'name',
+      name: 'name',
       display: 'Название',
       type: 'string',
       unique: false,
@@ -129,7 +129,7 @@ export const rfSubjectsDictionaryTable: BaseDictionaryTable = {
     },
     {
       id: 'id3',
-      columnName: 'region_code',
+      name: 'region_code',
       display: 'Код региона',
       type: 'string',
       primary: true,
