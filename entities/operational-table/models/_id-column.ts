@@ -1,4 +1,4 @@
-import { type Column } from '../../../slices/working-table'
+import { type Column } from '../../../slices/table'
 
 export const _idColumn: Column = {
   id: '_id',

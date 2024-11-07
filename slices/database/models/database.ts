@@ -1,10 +1,21 @@
 import * as v from 'valibot'
 
 /**
+ * Table
+ */
+
+export const tableSchema = v.object({
+  name: v.string(),
+  columns: v.array(v.lazy(() => columnSchema)),
+})
+
+export type Table = v.InferOutput<typeof tableSchema>
+
+/**
  * Column
  */
 
-export const columnTypeModel = v.variant('type', [
+const _columnTypeSchema = v.variant('type', [
   v.object({
     type: v.literal('increments'),
   }),
@@ -58,32 +69,34 @@ export const columnTypeModel = v.variant('type', [
   }),
 ])
 
-export const columnModel = v.intersect([
-  columnTypeModel,
+export const columnSchema = v.intersect([
+  _columnTypeSchema,
   v.object({
-    id: v.string(),
     name: v.string(),
-    display: v.string(),
     defaultTo: v.optional(v.string()),
     index: v.optional(v.boolean()),
     primary: v.optional(v.boolean()),
     nullable: v.optional(v.boolean()),
     unique: v.optional(v.boolean()),
-    relation: v.optional(v.lazy(() => relationModel)),
+    relation: v.optional(v.lazy(() => relationSchema)),
   }),
 ])
 
-export type Column = v.InferOutput<typeof columnModel>
+export type Column = v.InferOutput<typeof columnSchema>
 
 /**
  * Relation
  */
 
-export const relationModel = v.object({
+export const relationSchema = v.object({
   tableName: v.string(),
   columnName: v.string(),
 })
 
-export type Relation = v.InferOutput<typeof columnModel>
+export type Relation = v.InferOutput<typeof relationSchema>
+
+/**
+ * Row
+ */
 
 export type Row = Record<string | number, unknown>

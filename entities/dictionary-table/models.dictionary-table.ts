@@ -2,7 +2,11 @@ import * as v from 'valibot'
 
 import { crudableModel } from '../../slices/crud/models/crudable'
 import { getKeys } from '../../slices/dictionary'
-import { databaseTableModel, columnModel as workingTableColumnModel } from '../../slices/working-table'
+import {
+  columnSchema as tableColumnSchema,
+  relationSchema as tableRelationSchema,
+  tableSchema as tableTableSchema,
+} from '../../slices/table'
 import { userSchema } from '../user'
 
 /**
@@ -10,13 +14,7 @@ import { userSchema } from '../user'
  */
 
 export const baseDictionaryTableSchema = v.object({
-  kn: v.string(),
-  display: v.string(),
-  nav: v.boolean(),
-  name: v.string(),
-  columns: v.array(v.lazy(() => columnSchema)),
-  description: v.string(),
-  defaultView: v.union([v.literal('tree'), v.literal('table')]),
+  ...tableTableSchema.entries,
   // meta
   ...crudableModel.entries,
 })
@@ -59,23 +57,18 @@ export const updateDictionaryTableSchema = v.omit(baseDictionaryTableSchema, get
 export type UpdateDictionaryTable = v.InferOutput<typeof updateDictionaryTableSchema>
 
 /**
- * TableSchema
+ * relation
  */
 
-export const tableSchema = v.intersect([
-  databaseTableModel,
-  v.object({
-    defaultView: v.union([v.literal('tree'), v.literal('table')]),
-  }),
-])
+const relationSchema = tableRelationSchema
 
-export type TableSchema = v.InferOutput<typeof tableSchema>
+export type Relation = v.InferOutput<typeof relationSchema>
 
 /**
- * TableSchemaItem
+ * Column
  */
 
-export const columnSchema = v.intersect([workingTableColumnModel])
+export const columnSchema = tableColumnSchema
 
 export type Column = v.InferOutput<typeof columnSchema>
 
@@ -83,6 +76,6 @@ export type Column = v.InferOutput<typeof columnSchema>
  * Row
  */
 
-export const rowSchema = v.objectWithRest({}, v.string())
+export const rowSchema = v.object({})
 
 export type Row = v.InferOutput<typeof rowSchema>
