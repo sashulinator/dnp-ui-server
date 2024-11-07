@@ -62,7 +62,7 @@ export const columnModel = v.intersect([
   columnTypeModel,
   v.object({
     id: v.string(),
-    name: v.string(),
+    display: v.string(),
     columnName: v.string(),
     defaultTo: v.optional(v.string()),
     index: v.optional(v.boolean()),

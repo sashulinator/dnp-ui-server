@@ -16,7 +16,7 @@ export const countriesDictionaryTable: BaseDictionaryTable = {
     {
       id: 'id1',
       columnName: 'code',
-      name: 'Код',
+      display: 'Код',
       type: 'string',
       primary: true,
       maxLength: 2,
@@ -24,7 +24,7 @@ export const countriesDictionaryTable: BaseDictionaryTable = {
     {
       id: 'id2',
       columnName: 'name',
-      name: 'Название',
+      display: 'Название',
       type: 'string',
       unique: false,
       maxLength: 50,
@@ -32,7 +32,7 @@ export const countriesDictionaryTable: BaseDictionaryTable = {
     {
       id: 'id3',
       columnName: 'dial_code',
-      name: 'Телефоный код',
+      display: 'Телефоный код',
       type: 'string',
       unique: false,
       maxLength: 5,
@@ -55,7 +55,7 @@ export const employeesDictionaryTable: BaseDictionaryTable = {
     {
       id: 'id1',
       columnName: 'id',
-      name: 'ID',
+      display: 'ID',
       type: 'integer',
       index: true,
       primary: true,
@@ -65,7 +65,7 @@ export const employeesDictionaryTable: BaseDictionaryTable = {
     {
       id: 'id2',
       columnName: 'firstname',
-      name: 'Имя',
+      display: 'Имя',
       type: 'string',
       index: true,
       unique: false,
@@ -74,7 +74,7 @@ export const employeesDictionaryTable: BaseDictionaryTable = {
     {
       id: 'id3',
       columnName: 'secondname',
-      name: 'Фамилия',
+      display: 'Фамилия',
       type: 'string',
       index: false,
       unique: false,
@@ -83,7 +83,7 @@ export const employeesDictionaryTable: BaseDictionaryTable = {
     {
       id: 'id4',
       columnName: 'sex',
-      name: 'Пол',
+      display: 'Пол',
       type: 'string',
       unique: false,
       maxLength: 10,
@@ -91,7 +91,7 @@ export const employeesDictionaryTable: BaseDictionaryTable = {
     {
       id: 'id5',
       columnName: 'age',
-      name: 'Возраст',
+      display: 'Возраст',
       type: 'integer',
       unique: false,
       maxLength: 3,
@@ -115,14 +115,14 @@ export const rfSubjectsDictionaryTable: BaseDictionaryTable = {
     {
       id: 'id1',
       columnName: 'capital',
-      name: 'Столица',
+      display: 'Столица',
       type: 'string',
       maxLength: 50,
     },
     {
       id: 'id2',
       columnName: 'name',
-      name: 'Название',
+      display: 'Название',
       type: 'string',
       unique: false,
       maxLength: 50,
@@ -130,7 +130,7 @@ export const rfSubjectsDictionaryTable: BaseDictionaryTable = {
     {
       id: 'id3',
       columnName: 'region_code',
-      name: 'Код региона',
+      display: 'Код региона',
       type: 'string',
       primary: true,
       maxLength: 3,
