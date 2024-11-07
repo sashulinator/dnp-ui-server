@@ -4,7 +4,6 @@ export {
   DictionaryTable,
   CreateDictionaryTable,
   UpdateDictionaryTable,
-  TableSchema,
   Column,
   Row,
 } from '~/common/entities/dictionary-table'

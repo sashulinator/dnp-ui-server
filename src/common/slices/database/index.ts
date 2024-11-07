@@ -2,10 +2,10 @@
  * constants
  */
 
-export * from './constants/name'
+export { SLICE } from './constants/name'
 
 /**
  * models
  */
 
-export * from './models/database'
+export { tableSchema, columnSchema, relationSchema, type Row, type Column, type Table, type Relation } from './models'

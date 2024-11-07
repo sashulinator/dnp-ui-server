@@ -20,7 +20,6 @@ export type {
   DictionaryTable,
   CreateDictionaryTable,
   UpdateDictionaryTable,
-  TableSchema,
   Column,
   Row,
 } from './models.dictionary-table'
