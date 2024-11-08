@@ -1,9 +1,8 @@
-export { default, type Config } from './database'
+export { default, type Config as DatabaseConfig } from './class.database'
 
 /**
  * models
  */
 
-export type { Where, StringFilter } from './models/where'
-export type { Sort } from './models/sort'
-export type { Column, Row, Relation } from './models/database'
+// TODO: сделать перечисление
+export * from './models'

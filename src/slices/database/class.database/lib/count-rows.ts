@@ -1,6 +1,6 @@
 import { type Knex } from 'knex'
 
-import { type Where } from '../models/where'
+import { type Where } from '../../models'
 import { buildWhereClause } from './build-where-clause'
 
 export type CountRowsParams = { where?: Where }

@@ -1,6 +1,6 @@
 import { type Knex } from 'knex'
 
-import { type Column } from '../models/database'
+import { type Column } from '../../models'
 import { buildColumn } from './build-column'
 
 export function alterTable(knex: Knex, tableName: string, columns: Column[]) {

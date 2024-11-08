@@ -1,10 +1,18 @@
 import { type Knex } from 'knex'
 
-import { COMPARISON, IN, IS, MATCH } from '~/slices/where'
 import { has } from '~/utils/core'
 import { BaseError } from '~/utils/error'
 
-import { type BooleanFilter, type IntFilter, type StringFilter, type Where } from '../models/where'
+import {
+  type BooleanFilter,
+  COMPARISON,
+  IN,
+  IS,
+  type IntFilter,
+  MATCH,
+  type StringFilter,
+  type Where,
+} from '../../models'
 
 // Функция для построения условий WHERE
 export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where): Knex.QueryBuilder {

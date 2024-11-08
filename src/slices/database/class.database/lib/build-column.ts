@@ -1,6 +1,6 @@
 import { type Knex } from 'knex'
 
-import { type Column } from '../models/database'
+import { type Column } from '../../models'
 
 export function buildColumn(createTableBuilder: Knex.CreateTableBuilder, props: Column) {
   const columnBuilder = createTableBuilder[props.type](props.name) as Knex.ColumnBuilder

@@ -1,15 +1,13 @@
 import { type Knex, knex } from 'knex'
 
-import { type Client } from './clients/interface'
+import type { Column, Row, Where } from '../models'
+import { type Client } from './clients/models'
 import { PostgresClient } from './clients/postgres'
 import { alterTable } from './lib/alter-table'
 import { buildWhereClause } from './lib/build-where-clause'
 import countRows, { type CountRowsParams } from './lib/count-rows'
 import { createTable } from './lib/create-table'
 import { type FindManyRowsParams, findManyRows } from './lib/find-many-rows'
-import type { Column } from './models/database'
-import { type Row } from './models/database'
-import type { Where } from './models/where'
 
 export type Config = {
   client: string

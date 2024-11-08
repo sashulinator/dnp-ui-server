@@ -1,6 +1,6 @@
 import { type Knex } from 'knex'
 
-import type { Client } from './interface'
+import type { Client } from './models'
 
 export class PostgresClient implements Client {
   private _knex: Knex
