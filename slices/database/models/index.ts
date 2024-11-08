@@ -1,3 +1,3 @@
 export * from './database'
-export * from './sort'
-export * from './where'
+export * from '../../sort/models'
+export * from '../../where/models'

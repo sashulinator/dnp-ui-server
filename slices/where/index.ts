@@ -9,13 +9,23 @@ export { toFilter } from './lib/to-filter'
  * models
  */
 
-export { type Where, type ReplaceValueByFilter } from './models/where'
-export { type BooleanFilter } from './models/boolean-filter'
-export { type StringFilter } from './models/string-filter'
-export { type IntFilter } from './models/int-filter'
-export { type In, IN } from './models/in'
-export { type MatchKey, MATCH } from './models/match'
-export { type MatchMode, type MatchModeKey, MATCH_MODE } from './models/match-mode'
-export { type ComparisonKey, COMPARISON } from './models/comparison'
-export type { FilterConfig } from './models/filter-config'
-export { type IsFilter, type IsKey, IS } from './models/is-filter'
+export {
+  type BooleanFilter,
+  type ComparisonKey,
+  type FilterConfig,
+  type IntFilter,
+  type IsFilter,
+  type IsKey,
+  type In,
+  type MatchMode,
+  type MatchModeKey,
+  type MatchKey,
+  type ReplaceValueByFilter,
+  type StringFilter,
+  type Where,
+  COMPARISON,
+  IS,
+  IN,
+  MATCH_MODE,
+  MATCH,
+} from './models'
