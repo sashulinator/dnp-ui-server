@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { APP_FILTER } from '@nestjs/core'
 
+import BussinessTablesModule from '../entities/bussiness-table/nest.module'
 import DictionaryTableModule from '../entities/dictionary-table/nest.module'
 import FilesModule from '../entities/files/module'
 import HeapModule from '../entities/heap/module'
@@ -21,6 +22,7 @@ import ExceptionFilter from './exception.filter'
     PrismaModule,
     NormalizationConfigModule,
     OperationalTablesModule,
+    BussinessTablesModule,
     DictionaryTableModule,
     ProcessModule,
     StoreConfigModule,
