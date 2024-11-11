@@ -4,6 +4,22 @@ import { systemUser } from './users'
 
 const databaseConfigMap = getDatabaseConfigMap()
 
+export const rawStoreConfig: BaseStoreConfig = {
+  kn: 'RAW_TABLE',
+  type: 'postgres',
+  createdById: systemUser.id,
+  updatedById: systemUser.id,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  data: {
+    username: databaseConfigMap.raw.user,
+    password: databaseConfigMap.raw.password,
+    host: databaseConfigMap.raw.host,
+    port: String(databaseConfigMap.raw.port),
+    dbName: databaseConfigMap.raw.database,
+  },
+}
+
 export const operationalStoreConfig: BaseStoreConfig = {
   kn: 'OPERATIONAL_TABLE',
   type: 'postgres',

@@ -4,6 +4,20 @@ import { type DatabaseConfigMap } from '../../_lib/get-database-config-map'
 import { create } from './create'
 
 export async function run(appKnex: Knex, databaseConfigMap: DatabaseConfigMap) {
+  const rawKnex = knex({
+    client: 'pg',
+    connection: {
+      host: databaseConfigMap.raw.host,
+      port: databaseConfigMap.raw.port,
+      user: databaseConfigMap.raw.user,
+      password: databaseConfigMap.raw.password,
+      // Нужной базы данных не существует поэтому подключаемся к postgres
+      database: 'postgres',
+    },
+  })
+
+  await create(rawKnex, databaseConfigMap.raw.database)
+
   const targetKnex = knex({
     client: 'pg',
     connection: {

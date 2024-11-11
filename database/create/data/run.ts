@@ -2,6 +2,7 @@ import { type Knex } from 'knex'
 
 import { type DatabaseConfigMap } from '../../_lib/get-database-config-map'
 import { countriesDictionaryTable, employeesDictionaryTable, rfSubjectsDictionaryTable } from './dictionary-table'
+import { countriesBussinessTable, employeesBussinessTable, rfSubjectsBussinessTable } from './raw-table'
 import { operationalStoreConfig, targetStoreConfig } from './store-config'
 import { systemUser } from './users'
 
@@ -16,6 +17,14 @@ export async function run(appKnex: Knex, databaseConfigMap: DatabaseConfigMap) {
   await Promise.all(
     [countriesDictionaryTable, employeesDictionaryTable, rfSubjectsDictionaryTable].map((data) =>
       insert(appKnex, 'DictionaryTable', { ...data, columns: JSON.stringify(data.columns) }, ['kn']),
+    ),
+  )
+
+  // RawTable aka BussinessTable
+
+  await Promise.all(
+    [countriesBussinessTable, employeesBussinessTable, rfSubjectsBussinessTable].map((data) =>
+      insert(appKnex, 'BussinessTable', { ...data, columns: JSON.stringify(data.columns) }, ['kn']),
     ),
   )
 

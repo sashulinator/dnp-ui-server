@@ -15,6 +15,7 @@ export type DatabaseConfigMap = {
   app: DatabaseConfig
   operational: DatabaseConfig
   target: DatabaseConfig
+  raw: DatabaseConfig
 }
 
 export function getAppDatabaseConfig(): DatabaseConfig {
@@ -38,10 +39,18 @@ export function getTargetDatabaseConfig(): DatabaseConfig {
   return parseDbUrl(envVariables[envVariableName.targetDatabaseUrl]) as DatabaseConfig
 }
 
+export function getRawDatabaseConfig(): DatabaseConfig {
+  if (!envVariables[envVariableName.targetDatabaseUrl]) {
+    throw new Error(`Environment variable '${envVariableName.targetDatabaseUrl}' does not exist.`)
+  }
+  return parseDbUrl(envVariables[envVariableName.targetDatabaseUrl]) as DatabaseConfig
+}
+
 export function getDatabaseConfigMap(): DatabaseConfigMap {
   return {
     app: getAppDatabaseConfig(),
     operational: getOperationalDatabaseConfig(),
     target: getTargetDatabaseConfig(),
+    raw: getRawDatabaseConfig(),
   }
 }
