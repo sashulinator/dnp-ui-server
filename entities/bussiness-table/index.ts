@@ -15,11 +15,11 @@ export { assertColumns, isColumns } from './lib.assertions'
  */
 
 export type {
-  BaseDictionaryTable,
-  DictionaryTableRelations,
-  DictionaryTable,
-  CreateDictionaryTable,
-  UpdateDictionaryTable,
+  BaseBussinessTable,
+  BussinessTableRelations,
+  BussinessTable,
+  CreateBussinessTable,
+  UpdateBussinessTable,
   Column,
   Row,
 } from './models'
