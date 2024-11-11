@@ -25,14 +25,17 @@ model User {
   storeConfigCreators StoreConfig[] @relation("storeConfigCreators")
   storeConfigUpdaters StoreConfig[] @relation("storeConfigUpdaters")
 
+  bussinessTableCreators BussinessTable[] @relation("bussinessTableCreators")
+  bussinessTableUpdaters BussinessTable[] @relation("bussinessTableUpdaters")
+
+  dictionaryTableCreators DictionaryTable[] @relation("dictionaryTableCreators")
+  dictionaryTableUpdaters DictionaryTable[] @relation("dictionaryTableUpdaters")
+
   targetTableCreators TargetTable[] @relation("targetTableCreators")
   targetTableUpdaters TargetTable[] @relation("targetTableUpdaters")
 
   operationalTableCreators OperationalTable[] @relation("operationalTableCreators")
   operationalTableUpdaters OperationalTable[] @relation("operationalTableUpdaters")
-
-  dictionaryTableCreators DictionaryTable[] @relation("dictionaryTableCreators")
-  dictionaryTableUpdaters DictionaryTable[] @relation("dictionaryTableUpdaters")
 
   normalizationConfigCreators NormalizationConfig[] @relation("normalizationConfigCreators")
   normalizationConfigUpdaters NormalizationConfig[] @relation("normalizationConfigUpdaters")
@@ -69,21 +72,22 @@ model StoreConfig {
   @@id([kn])
 }
 
-model OperationalTable {
-  kn          String        @db.VarChar(24)
-  display     String        @db.VarChar(24)
-  name        String        @db.VarChar(24)
-  description String
-  defaultView TableViewType
-  columns     Json
-  nav         Boolean
+model BussinessTable {
+  kn            String        @db.VarChar(24)
+  display       String        @db.VarChar(24)
+  name          String        @db.VarChar(24)
+  storeConfigId String        @db.VarChar(24)
+  description   String
+  defaultView   TableViewType
+  columns       Json
+  nav           Boolean
   // meta
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  createdById String        @db.VarChar(24)
-  updatedById String        @db.VarChar(24)
-  createdBy   User          @relation("operationalTableCreators", fields: [createdById], references: [id])
-  updatedBy   User          @relation("operationalTableUpdaters", fields: [updatedById], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  createdById   String        @db.VarChar(24)
+  updatedById   String        @db.VarChar(24)
+  createdBy     User          @relation("bussinessTableCreators", fields: [createdById], references: [id])
+  updatedBy     User          @relation("bussinessTableUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
 }
@@ -122,6 +126,25 @@ model TargetTable {
   updatedById String        @db.VarChar(24)
   createdBy   User          @relation("targetTableCreators", fields: [createdById], references: [id])
   updatedBy   User          @relation("targetTableUpdaters", fields: [updatedById], references: [id])
+
+  @@id([kn])
+}
+
+model OperationalTable {
+  kn          String        @db.VarChar(24)
+  display     String        @db.VarChar(24)
+  name        String        @db.VarChar(24)
+  description String
+  defaultView TableViewType
+  columns     Json
+  nav         Boolean
+  // meta
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  createdById String        @db.VarChar(24)
+  updatedById String        @db.VarChar(24)
+  createdBy   User          @relation("operationalTableCreators", fields: [createdById], references: [id])
+  updatedBy   User          @relation("operationalTableUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
 }

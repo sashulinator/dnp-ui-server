@@ -1,4 +1,5 @@
 import type {
+  BussinessTable,
   DictionaryTable,
   Heap,
   NormalizationConfig,
@@ -18,9 +19,10 @@ export type EntityMap = {
   process: Process
   storeConfig: StoreConfig
   normalizationConfig: NormalizationConfig
+  bussinessTable: BussinessTable
+  dictionaryTable: DictionaryTable
   targetTable: TargetTable
   operationalTable: OperationalTable
-  dictionaryTable: DictionaryTable
   translation: Translation
   heap: Heap
 }
