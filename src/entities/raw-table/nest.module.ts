@@ -15,4 +15,4 @@ import ExplorerService from './nest.service.explorer'
   imports: [PrismaModule, ExplorerModule],
   exports: [Service, ExplorerService],
 })
-export default class BussinessTableModule {}
+export default class RawTableModule {}

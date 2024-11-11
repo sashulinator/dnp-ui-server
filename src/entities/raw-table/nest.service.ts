@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { type Prisma, type BussinessTable as PrismaBussinessTable } from '@prisma/client'
+import { type Prisma, type RawTable as PrismaRawTable } from '@prisma/client'
 
 import { _idColumn } from '~/common/entities/operational-table'
 import { CrudDelegator } from '~/slices/crud'
@@ -12,22 +12,18 @@ import { toDatabasConfig } from '../store-configs/lib/to-database-config'
 import { assertColumns } from './lib.assertions'
 import { type Column } from './models'
 
-export type BussinessTable = PrismaBussinessTable
-export type CreateBussinessTable = Prisma.BussinessTableUncheckedCreateInput
-export type UpdateBussinessTable = Prisma.BussinessTableUncheckedUpdateInput
+export type RawTable = PrismaRawTable
+export type CreateRawTable = Prisma.RawTableUncheckedCreateInput
+export type UpdateRawTable = Prisma.RawTableUncheckedUpdateInput
 
-export type WhereUniqueInput = Prisma.BussinessTableWhereUniqueInput
-export type WhereInput = Prisma.BussinessTableWhereInput
-export type OrderByWithRelationInput = Prisma.BussinessTableOrderByWithRelationInput
-export type Select = Prisma.BussinessTableSelect
-export type Include = Prisma.BussinessTableInclude
+export type WhereUniqueInput = Prisma.RawTableWhereUniqueInput
+export type WhereInput = Prisma.RawTableWhereInput
+export type OrderByWithRelationInput = Prisma.RawTableOrderByWithRelationInput
+export type Select = Prisma.RawTableSelect
+export type Include = Prisma.RawTableInclude
 
 @Injectable()
-export default class BussinessTableService extends CrudDelegator<
-  BussinessTable,
-  CreateBussinessTable,
-  UpdateBussinessTable
-> {
+export default class RawTableService extends CrudDelegator<RawTable, CreateRawTable, UpdateRawTable> {
   constructor(
     protected prisma: PrismaService,
     private explorerService: ExplorerService,
@@ -43,21 +39,21 @@ export default class BussinessTableService extends CrudDelegator<
         include,
       },
       {
-        count: prisma.bussinessTable.count.bind(prisma),
-        create: prisma.bussinessTable.create.bind(prisma),
-        update: prisma.bussinessTable.update.bind(prisma),
-        delete: prisma.bussinessTable.delete.bind(prisma),
-        getFirst: prisma.bussinessTable.findFirstOrThrow.bind(prisma),
-        getUnique: prisma.bussinessTable.findUniqueOrThrow.bind(prisma),
-        findFirst: prisma.bussinessTable.findFirst.bind(prisma),
-        findMany: prisma.bussinessTable.findMany.bind(prisma),
-        findUnique: prisma.bussinessTable.findUnique.bind(prisma),
+        count: prisma.rawTable.count.bind(prisma),
+        create: prisma.rawTable.create.bind(prisma),
+        update: prisma.rawTable.update.bind(prisma),
+        delete: prisma.rawTable.delete.bind(prisma),
+        getFirst: prisma.rawTable.findFirstOrThrow.bind(prisma),
+        getUnique: prisma.rawTable.findUniqueOrThrow.bind(prisma),
+        findFirst: prisma.rawTable.findFirst.bind(prisma),
+        findMany: prisma.rawTable.findMany.bind(prisma),
+        findUnique: prisma.rawTable.findUnique.bind(prisma),
         transaction: prisma.$transaction.bind(prisma),
       },
     )
   }
 
-  async create(params: { data: CreateBussinessTable; select?: Select; include?: Include }): Promise<BussinessTable> {
+  async create(params: { data: CreateRawTable; select?: Select; include?: Include }): Promise<RawTable> {
     const storeConfig = await this.getStoreConfig()
 
     const tableSchema = params.data
@@ -69,7 +65,7 @@ export default class BussinessTableService extends CrudDelegator<
       return this.database.transaction(async (databaseTrx) => {
         assertColumns(tableSchema.columns)
         await databaseTrx.createTable(params.data.name, [_idColumn, ...tableSchema.columns])
-        return prismaTrx.bussinessTable.create(this._prepareSelectIncludeParams(params))
+        return prismaTrx.rawTable.create(this._prepareSelectIncludeParams(params))
       })
     })
 
@@ -79,17 +75,17 @@ export default class BussinessTableService extends CrudDelegator<
   }
 
   async update(params: {
-    data: UpdateBussinessTable
+    data: UpdateRawTable
     select?: Select
     include?: Include
     where: WhereUniqueInput
-  }): Promise<BussinessTable> {
-    const currentBussinessTable = await this.getUnique({ where: params.where })
+  }): Promise<RawTable> {
+    const currentRawTable = await this.getUnique({ where: params.where })
     const storeConfig = await this.getStoreConfig()
 
     this.database.setConfig(toDatabasConfig(storeConfig))
 
-    const currentTableSchema = currentBussinessTable
+    const currentTableSchema = currentRawTable
     assertColumns(currentTableSchema.columns, "Невалидные данные в Промежуточной таблице в поле 'tableSchema' в БД")
 
     const updateTableSchema = params.data
@@ -123,19 +119,19 @@ export default class BussinessTableService extends CrudDelegator<
     const ret = await this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
         await databaseTrx.dropColumns(
-          currentBussinessTable.name,
+          currentRawTable.name,
           columnsToDrop.map((item) => item.name),
         )
-        await databaseTrx.alterTable(currentBussinessTable.name, columnsToAdd)
+        await databaseTrx.alterTable(currentRawTable.name, columnsToAdd)
         await databaseTrx.renameColumns(
-          currentBussinessTable.name,
+          currentRawTable.name,
           columnsToRename.map(([currentItem, updateItem]) => ({
             from: currentItem.name,
             to: updateItem.name,
           })),
         )
 
-        return prismaTrx.bussinessTable.update(this._prepareSelectIncludeParams(params))
+        return prismaTrx.rawTable.update(this._prepareSelectIncludeParams(params))
       })
     })
 

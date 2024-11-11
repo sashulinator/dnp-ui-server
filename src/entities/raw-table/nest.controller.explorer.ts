@@ -8,7 +8,7 @@ import Service, {
 } from './nest.service.explorer'
 
 @NestJSController('api/v1/dictionary-tables/explorer')
-export default class BussinessTableController {
+export default class RawTableController {
   constructor(private readonly service: Service) {}
 
   /**

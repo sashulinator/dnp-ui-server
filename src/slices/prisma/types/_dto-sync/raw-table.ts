@@ -1,8 +1,8 @@
 //            ↓
-import { type BussinessTable as PrismaType } from '@prisma/client'
+import { type RawTable as PrismaType } from '@prisma/client'
 
 //            ↓
-import { type BaseBussinessTable as DtoType } from '~/entities/bussiness-table/models'
+import { type BaseRawTable as DtoType } from '~/entities/raw-table/models'
 
 import { type DateToString, check } from './_private'
 

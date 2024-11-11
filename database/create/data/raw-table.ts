@@ -1,7 +1,7 @@
-import { type BaseBussinessTable } from '../../../src/entities/bussiness-table/models'
+import { type BaseRawTable } from '../../../src/entities/raw-table/models'
 import { systemUser } from './users'
 
-export const countriesBussinessTable: BaseBussinessTable = {
+export const countriesRawTable: BaseRawTable = {
   kn: 'countries',
   display: 'Страны',
   name: 'countries',
@@ -40,7 +40,7 @@ export const countriesBussinessTable: BaseBussinessTable = {
   ],
 }
 
-export const employeesBussinessTable: BaseBussinessTable = {
+export const employeesRawTable: BaseRawTable = {
   kn: 'employees',
   display: 'Работники',
   name: 'employees',
@@ -100,7 +100,7 @@ export const employeesBussinessTable: BaseBussinessTable = {
   ],
 }
 
-export const rfSubjectsBussinessTable: BaseBussinessTable = {
+export const rfSubjectsRawTable: BaseRawTable = {
   kn: 'rfSubjects',
   display: 'Субъекты РФ',
   name: 'rf_subjects',

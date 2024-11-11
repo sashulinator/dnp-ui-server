@@ -4,22 +4,17 @@ import * as v from 'valibot'
 
 import { ValibotPipe } from '~/app/valibot.pipe'
 
-import {
-  type CreateBussinessTable,
-  type UpdateBussinessTable,
-  createBussinessTableSchema,
-  updateBussinessTableSchema,
-} from './models'
+import { type CreateRawTable, type UpdateRawTable, createRawTableSchema, updateRawTableSchema } from './models'
 import Service, {
-  type BussinessTable,
   type OrderByWithRelationInput,
+  type RawTable,
   type Select,
   type WhereInput,
   type WhereUniqueInput,
 } from './nest.service'
 
 @NestJSController('api/v1/dictionary-tables')
-export default class BussinessTableController {
+export default class RawTableController {
   constructor(private readonly service: Service) {}
 
   /**
@@ -28,10 +23,10 @@ export default class BussinessTableController {
    * Delete an OperationalTable by its KeyName
    *
    * @param {string} kn The KeyName of the operationalTable to delete
-   * @returns {Promise<BussinessTable>} A promise that resolves when the operationalTable is deleted
+   * @returns {Promise<RawTable>} A promise that resolves when the operationalTable is deleted
    */
   @Delete(':kn')
-  remove(@Param('kn') kn: string): Promise<BussinessTable> {
+  remove(@Param('kn') kn: string): Promise<RawTable> {
     return this.service.delete({ where: { kn } })
   }
 
@@ -40,12 +35,12 @@ export default class BussinessTableController {
    *
    * Update an OperationalTable by its KeyName
    *
-   * @param {{ input: UpdateBussinessTable }} body The new data for the operationalTable
+   * @param {{ input: UpdateRawTable }} body The new data for the operationalTable
    * @returns A promise that resolves when the operationalTable is updated
    */
   @Put()
-  @UsePipes(new ValibotPipe(v.object({ input: updateBussinessTableSchema })))
-  update(@Body() body: { input: UpdateBussinessTable }): Promise<BussinessTable> {
+  @UsePipes(new ValibotPipe(v.object({ input: updateRawTableSchema })))
+  update(@Body() body: { input: UpdateRawTable }): Promise<RawTable> {
     return this.service.update({ data: { ...body.input, updatedById: 'system' }, where: { kn: body.input.kn } })
   }
 
@@ -54,12 +49,12 @@ export default class BussinessTableController {
    *
    * Create a new OperationalTable
    *
-   * @param {{ input: CreateBussinessTable }} body - The data for the new operationalTable
-   * @returns {Promise<BussinessTable>} A promise that resolves to the created operationalTable
+   * @param {{ input: CreateRawTable }} body - The data for the new operationalTable
+   * @returns {Promise<RawTable>} A promise that resolves to the created operationalTable
    */
   @Post()
-  @UsePipes(new ValibotPipe(v.object({ input: createBussinessTableSchema })))
-  create(@Body() body: { input: CreateBussinessTable }): Promise<BussinessTable> {
+  @UsePipes(new ValibotPipe(v.object({ input: createRawTableSchema })))
+  create(@Body() body: { input: CreateRawTable }): Promise<RawTable> {
     return this.service.create({
       data: { ...body.input, createdById: 'system', updatedById: 'system' },
     })
@@ -71,11 +66,11 @@ export default class BussinessTableController {
    * Get an OperationalTable by its KeyName
    *
    * @param {string} kn The KeyName of the operationalTable to find
-   * @returns {Promise<BussinessTable>} The found operationalTable
+   * @returns {Promise<RawTable>} The found operationalTable
    * @throws {HttpException} `HttpException` with status `NOT_FOUND` if no operationalTable is found
    */
   @Get(':kn')
-  getByKeyname(@Param('kn') kn: string): Promise<BussinessTable> {
+  getByKeyname(@Param('kn') kn: string): Promise<RawTable> {
     return this.service.getUnique({ where: { kn } })
   }
 
@@ -85,7 +80,7 @@ export default class BussinessTableController {
    * Find the first OperationalTable that matches the given query parameters
    *
    * @param {{ where?: WhereInput; select?: Select }} params - The query parameters
-   * @returns {Promise<BussinessTable>} A promise that resolves to the found operationalTable
+   * @returns {Promise<RawTable>} A promise that resolves to the found operationalTable
    */
   @Search('first')
   findFirst(
@@ -94,7 +89,7 @@ export default class BussinessTableController {
       where?: WhereInput
       select?: Select
     } = {},
-  ): Promise<BussinessTable> {
+  ): Promise<RawTable> {
     return this.service.findFirst(params)
   }
 
@@ -108,7 +103,7 @@ export default class BussinessTableController {
    * @param {WhereUniqueInput} params.cursor The cursor to start from
    * @param {WhereInput} params.where A WHERE clause for the query
    * @param {OrderByWithRelationInput} params.orderBy An ORDER BY clause for the query
-   * @returns {Promise<{ data: BussinessTable[]; total: number }>} A promise containing the operationalTables and the total count of the results
+   * @returns {Promise<{ data: RawTable[]; total: number }>} A promise containing the operationalTables and the total count of the results
    */
   @Search()
   async findAndCountMany(
@@ -121,7 +116,7 @@ export default class BussinessTableController {
       orderBy?: OrderByWithRelationInput
       select?: Select
     } = {},
-  ): Promise<{ items: BussinessTable[]; total: number }> {
+  ): Promise<{ items: RawTable[]; total: number }> {
     const [items, total] = await this.service.findAndCountMany(params)
 
     return { items, total }

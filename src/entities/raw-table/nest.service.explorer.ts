@@ -22,18 +22,18 @@ export type ExplorerDeleteParams = { kn: string; where: Where }
 export type ExplorerUpdateParams = { kn: string; input: Record<string | number, string>; where: Where }
 
 @Injectable()
-export default class BussinessTableService {
+export default class RawTableService {
   constructor(
     private explorerService: ExplorerService,
-    private bussinessTableService: Service,
+    private rawTableService: Service,
     private database: Database,
   ) {}
 
   async explorerFindManyAndCountRows(params: ExplorerFindManyParams) {
-    const bussinessTable = await this.bussinessTableService.getUnique({ where: { kn: params.kn } })
-    const storeConfig = await this.bussinessTableService.getStoreConfig()
+    const rawTable = await this.rawTableService.getUnique({ where: { kn: params.kn } })
+    const storeConfig = await this.rawTableService.getStoreConfig()
 
-    const columns = bussinessTable.columns
+    const columns = rawTable.columns
     assertColumns(columns)
 
     const searchOR = params.searchQuery
@@ -52,7 +52,7 @@ export default class BussinessTableService {
       dbName: storeConfig.data.dbName,
     })
 
-    const pk = await this.database.getPrimaryKey(bussinessTable.name)
+    const pk = await this.database.getPrimaryKey(rawTable.name)
 
     this.database.disconnect()
 
@@ -62,7 +62,7 @@ export default class BussinessTableService {
       sort: params.sort || { [pk]: 'asc' },
       where: { AND: [{ OR: searchOR }, params.where] },
       type: 'postgres',
-      paths: [storeConfig.data.dbName, bussinessTable.name],
+      paths: [storeConfig.data.dbName, rawTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -75,18 +75,18 @@ export default class BussinessTableService {
 
     return {
       explorer,
-      bussinessTable,
+      rawTable,
     }
   }
 
   async explorerDelete(params: ExplorerDeleteParams) {
-    const bussinessTable = await this.bussinessTableService.getUnique({ where: { kn: params.kn } })
-    const storeConfig = await this.bussinessTableService.getStoreConfig()
+    const rawTable = await this.rawTableService.getUnique({ where: { kn: params.kn } })
+    const storeConfig = await this.rawTableService.getStoreConfig()
 
     const deleteParams: Required<DeleteParams> = {
       where: params.where,
       type: 'postgres',
-      paths: [storeConfig.data.dbName, bussinessTable.name],
+      paths: [storeConfig.data.dbName, rawTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -99,18 +99,18 @@ export default class BussinessTableService {
 
     return {
       row,
-      bussinessTable,
+      rawTable,
     }
   }
 
   async explorerCreate(params: ExplorerCreateParams) {
-    const bussinessTable = await this.bussinessTableService.getUnique({ where: { kn: params.kn } })
-    const storeConfig = await this.bussinessTableService.getStoreConfig()
+    const rawTable = await this.rawTableService.getUnique({ where: { kn: params.kn } })
+    const storeConfig = await this.rawTableService.getStoreConfig()
 
     const createParams: Required<CreateParams> = {
       input: params.input,
       type: 'postgres',
-      paths: [storeConfig.data.dbName, bussinessTable.name],
+      paths: [storeConfig.data.dbName, rawTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -123,19 +123,19 @@ export default class BussinessTableService {
 
     return {
       row,
-      bussinessTable,
+      rawTable,
     }
   }
 
   async explorerUpdate(params: ExplorerUpdateParams) {
-    const bussinessTable = await this.bussinessTableService.getUnique({ where: { kn: params.kn } })
-    const storeConfig = await this.bussinessTableService.getStoreConfig()
+    const rawTable = await this.rawTableService.getUnique({ where: { kn: params.kn } })
+    const storeConfig = await this.rawTableService.getStoreConfig()
 
     const updateParams: Required<UpdateParams> = {
       input: params.input,
       where: params.where,
       type: 'postgres',
-      paths: [storeConfig.data.dbName, bussinessTable.name],
+      paths: [storeConfig.data.dbName, rawTable.name],
       storeConfig: {
         host: storeConfig.data.host,
         port: storeConfig.data.port,
@@ -148,7 +148,7 @@ export default class BussinessTableService {
 
     return {
       row,
-      bussinessTable,
+      rawTable,
     }
   }
 }

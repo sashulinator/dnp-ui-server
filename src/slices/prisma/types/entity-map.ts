@@ -1,11 +1,11 @@
 import type {
-  BussinessTable,
   DictionaryTable,
   Heap,
   NormalizationConfig,
   OperationalTable,
   Prisma,
   Process,
+  RawTable,
   StoreConfig,
   TargetTable,
   Translation,
@@ -19,7 +19,7 @@ export type EntityMap = {
   process: Process
   storeConfig: StoreConfig
   normalizationConfig: NormalizationConfig
-  bussinessTable: BussinessTable
+  rawTable: RawTable
   dictionaryTable: DictionaryTable
   targetTable: TargetTable
   operationalTable: OperationalTable
