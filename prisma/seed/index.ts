@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 
 import seedDictionaryTablesData from './dictionary-tables-data'
+import { seedHeap } from './heap'
 import seedOperationalTables from './operational-tables'
 import seedOperationalTablesData from './operational-tables-data'
 import seedTargetTables from './target-tables'
@@ -17,6 +18,9 @@ async function main() {
 
   await seedTranslations(prisma)
   console.log('Translations seeded')
+
+  await seedHeap(prisma)
+  console.log('Heap seeded')
 
   // knex
 
