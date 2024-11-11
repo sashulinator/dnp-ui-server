@@ -1,10 +1,8 @@
 import { type BaseBussinessTable } from '../../../src/entities/bussiness-table/models'
-import { rawStoreConfig } from './store-config'
 import { systemUser } from './users'
 
 export const countriesBussinessTable: BaseBussinessTable = {
   kn: 'countries',
-  storeConfigId: rawStoreConfig.kn,
   display: 'Страны',
   name: 'countries',
   nav: true,
@@ -44,7 +42,6 @@ export const countriesBussinessTable: BaseBussinessTable = {
 
 export const employeesBussinessTable: BaseBussinessTable = {
   kn: 'employees',
-  storeConfigId: rawStoreConfig.kn,
   display: 'Работники',
   name: 'employees',
   nav: true,
@@ -105,7 +102,6 @@ export const employeesBussinessTable: BaseBussinessTable = {
 
 export const rfSubjectsBussinessTable: BaseBussinessTable = {
   kn: 'rfSubjects',
-  storeConfigId: rawStoreConfig.kn,
   display: 'Субъекты РФ',
   name: 'rf_subjects',
   nav: true,

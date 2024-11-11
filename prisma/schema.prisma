@@ -73,21 +73,20 @@ model StoreConfig {
 }
 
 model BussinessTable {
-  kn            String        @db.VarChar(24)
-  display       String        @db.VarChar(24)
-  name          String        @db.VarChar(24)
-  storeConfigId String        @db.VarChar(24)
-  description   String
-  defaultView   TableViewType
-  columns       Json
-  nav           Boolean
+  kn          String        @db.VarChar(24)
+  display     String        @db.VarChar(24)
+  name        String        @db.VarChar(24)
+  description String
+  defaultView TableViewType
+  columns     Json
+  nav         Boolean
   // meta
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  createdById   String        @db.VarChar(24)
-  updatedById   String        @db.VarChar(24)
-  createdBy     User          @relation("bussinessTableCreators", fields: [createdById], references: [id])
-  updatedBy     User          @relation("bussinessTableUpdaters", fields: [updatedById], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  createdById String        @db.VarChar(24)
+  updatedById String        @db.VarChar(24)
+  createdBy   User          @relation("bussinessTableCreators", fields: [createdById], references: [id])
+  updatedBy   User          @relation("bussinessTableUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
 }

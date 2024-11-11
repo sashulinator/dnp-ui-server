@@ -14,7 +14,6 @@ import { userSchema } from '../user'
  */
 
 export const baseBussinessTableSchema = v.object({
-  storeConfigId: v.pipe(v.string(), v.nonEmpty()),
   ...tableTableSchema.entries,
   // meta
   ...crudableModel.entries,
