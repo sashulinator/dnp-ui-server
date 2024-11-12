@@ -1,6 +1,7 @@
+/* eslint-disable no-console */
 import { type Knex } from 'knex'
 
-import { asyncCatchError } from '../../_lib/catch-error'
+import { asyncCatchError } from '../../_utils/catch-error'
 
 export async function drop(knex: Knex, databaseName: string) {
   const [error] = await asyncCatchError(knex.raw(`DROP DATABASE ${databaseName} WITH (FORCE);`))

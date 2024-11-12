@@ -1,6 +1,6 @@
 import { type Knex } from 'knex'
 
-import { asyncCatchError } from '../../_lib/catch-error'
+import { asyncCatchError } from '../../_utils/catch-error'
 
 export async function create(knex: Knex, databaseName: string) {
   const [error] = await asyncCatchError(knex.raw(`CREATE DATABASE ${databaseName}`))
