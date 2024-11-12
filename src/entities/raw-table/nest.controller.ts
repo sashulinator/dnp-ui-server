@@ -13,7 +13,7 @@ import Service, {
   type WhereUniqueInput,
 } from './nest.service'
 
-@NestJSController('api/v1/dictionary-tables')
+@NestJSController('api/v1/raw-tables')
 export default class RawTableController {
   constructor(private readonly service: Service) {}
 

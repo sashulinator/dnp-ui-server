@@ -7,7 +7,7 @@ import Service, {
   type ExplorerUpdateParams,
 } from './nest.service.explorer'
 
-@NestJSController('api/v1/dictionary-tables/explorer')
+@NestJSController('api/v1/raw-tables/explorer')
 export default class RawTableController {
   constructor(private readonly service: Service) {}
 
