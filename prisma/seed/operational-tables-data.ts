@@ -1,4 +1,4 @@
-import { operationalStoreConfig } from '../../database/create/data/store-config'
+import { operationalStoreConfig } from '../../database/seeds/store-config'
 import { type OperationalTable } from '../../src/entities/operational-table/dto'
 import { _idColumn } from '../../src/entities/operational-table/models/_id-column'
 import { _statusColumn } from '../../src/entities/operational-table/models/_status'

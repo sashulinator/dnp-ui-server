@@ -2,8 +2,8 @@ import {
   countriesDictionaryTable,
   employeesDictionaryTable,
   rfSubjectsDictionaryTable,
-} from '../../database/create/data/dictionary-table'
-import { targetStoreConfig } from '../../database/create/data/store-config'
+} from '../../database/seeds/dictionary-table'
+import { targetStoreConfig } from '../../database/seeds/store-config'
 import Database from '../../src/slices/database'
 import rfSubjects from './dictionary-table/rf-subjects'
 import countryList from './dictionary-table/seed-list.country'

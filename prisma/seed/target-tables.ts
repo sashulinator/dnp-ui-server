@@ -1,7 +1,7 @@
 import { createId } from '@paralleldrive/cuid2'
 import { type Prisma, type PrismaClient } from '@prisma/client'
 
-import { systemUser } from '../../database/create/data/users'
+import { systemUser } from '../../database/seeds/users'
 
 const targetTableName = 'targetTable'
 type CreateInput = Prisma.TargetTableUncheckedCreateInput

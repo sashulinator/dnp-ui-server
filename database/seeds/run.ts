@@ -1,6 +1,6 @@
 import { type Knex } from 'knex'
 
-import { type DatabaseConfigMap } from '../../_lib/get-database-config-map'
+import { type DatabaseConfigMap } from '../_lib/get-database-config-map'
 import { countriesDictionaryTable, employeesDictionaryTable, rfSubjectsDictionaryTable } from './dictionary-table'
 import { countriesRawTable, employeesRawTable, rfSubjectsRawTable } from './raw-table'
 import { operationalStoreConfig, targetStoreConfig } from './store-config'

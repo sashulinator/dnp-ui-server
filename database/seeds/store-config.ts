@@ -1,5 +1,5 @@
-import { type BaseStoreConfig } from '../../../src/entities/store-configs/dto'
-import { getDatabaseConfigMap } from '../../_lib/get-database-config-map'
+import { type BaseStoreConfig } from '../../src/entities/store-configs/dto'
+import { getDatabaseConfigMap } from '../_lib/get-database-config-map'
 import { systemUser } from './users'
 
 const databaseConfigMap = getDatabaseConfigMap()

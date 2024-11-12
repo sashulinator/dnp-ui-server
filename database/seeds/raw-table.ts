@@ -1,4 +1,4 @@
-import { type BaseRawTable } from '../../../src/entities/raw-table/models'
+import { type BaseRawTable } from '../../src/entities/raw-table/models'
 import { systemUser } from './users'
 
 export const countriesRawTable: BaseRawTable = {

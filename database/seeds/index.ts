@@ -1,8 +1,7 @@
 import knex from 'knex'
 
 import { getDatabaseConfigMap } from '../_lib/get-database-config-map'
-import { run as runData } from './data/run'
-import { run as runDatabase } from './database/run'
+import { run } from './run'
 
 async function emit() {
   const databaseConfigMap = getDatabaseConfigMap()
@@ -18,8 +17,7 @@ async function emit() {
     },
   })
 
-  await runDatabase(appKnex, databaseConfigMap)
-  await runData(appKnex, databaseConfigMap)
+  run(appKnex, databaseConfigMap)
 }
 
 ;(() => {
