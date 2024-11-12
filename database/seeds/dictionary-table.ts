@@ -41,9 +41,9 @@ export const countriesDictionaryTable: BaseDictionaryTable = {
 }
 
 export const employeesDictionaryTable: BaseDictionaryTable = {
-  kn: 'employees',
+  kn: 'employes',
   display: 'Работники',
-  name: 'employees',
+  name: 'employes',
   nav: true,
   defaultView: 'table',
   description: 'Этот словарь был создан автоматически для примера',
