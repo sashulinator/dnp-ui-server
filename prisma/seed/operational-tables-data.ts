@@ -57,6 +57,33 @@ export default async function seedOperationalTables() {
 
   await Promise.all(carsPromises)
 
+  // Med
+
+  // @ts-ignore
+  const medOt = operationalTables[3] as OperationalTable
+
+  await database.dropTableIfExists(medOt.name)
+
+  await database.createTable(
+    medOt.name,
+    [_idColumn, _statusColumn, ...medOt.columns].map((col) => {
+      return { ...col, type: 'string' }
+    }),
+  )
+
+  const medRows = new Array(3).fill(undefined).map((_, i) => {
+    return medOt.columns.reduce((acc, item) => {
+      acc[item.name] = `seeded-${item.name}-${i}`
+      return acc
+    }, {})
+  })
+
+  const medPromises = medRows.map((row) => {
+    return database.insertRow(medOt.name, row)
+  })
+
+  await Promise.all(medPromises)
+
   // Демо
 
   const datasetOt = operationalTables[2] as OperationalTable
