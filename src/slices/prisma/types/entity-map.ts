@@ -1,4 +1,5 @@
 import type {
+  AnalyticalActions,
   DictionaryTable,
   Heap,
   NormalizationConfig,
@@ -25,6 +26,7 @@ export type EntityMap = {
   operationalTable: OperationalTable
   translation: Translation
   heap: Heap
+  analyticalActions: AnalyticalActions
 }
 
 // В случае изменений Prisma схемы, здесь появится ошибка

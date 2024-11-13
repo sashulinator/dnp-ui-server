@@ -185,6 +185,19 @@ model Translation {
   @@id([id])
 }
 
+model AnalyticalActions {
+  id          Int
+  name        String
+  display     String
+  group       String
+  description String
+  isText      Boolean
+  isInt       Boolean
+  isDate      Boolean
+
+  @@id([id])
+}
+
 enum StoreType {
   postgres
   s3

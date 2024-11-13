@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common'
 import { APP_FILTER } from '@nestjs/core'
 
+import AnalyticalActionsModule from '~/entities/analytical-actions/module'
+
 import DictionaryTableModule from '../entities/dictionary-table/nest.module'
 import FilesModule from '../entities/files/module'
 import HeapModule from '../entities/heap/module'
@@ -31,6 +33,7 @@ import ExceptionFilter from './exception.filter'
     ExplorerModule,
     FilesModule,
     HeapModule,
+    AnalyticalActionsModule,
   ],
   providers: [
     {
