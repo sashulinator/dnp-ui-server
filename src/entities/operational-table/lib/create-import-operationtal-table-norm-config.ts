@@ -3,6 +3,14 @@ interface CreateConfigParams {
   fileExtension: string
   destinationTable: string
   trackingId: number
+  bucketName: string
+  databaseConfig: {
+    username: string
+    password: string
+    database: string
+    host: string
+    port: number
+  }
 }
 
 export const createImportOperationalTableNormalizationConfig = ({
@@ -10,6 +18,8 @@ export const createImportOperationalTableNormalizationConfig = ({
   fileExtension,
   destinationTable,
   trackingId,
+  bucketName,
+  databaseConfig,
 }: CreateConfigParams) => {
   const format = fileExtension === 'csv' ? 'csv' : 'excel'
 
@@ -22,7 +32,7 @@ export const createImportOperationalTableNormalizationConfig = ({
           connections: {
             s3_base: {
               connection: {
-                bucket: 'dnp-datastore',
+                bucket: bucketName,
                 'dataset-path': `/`,
                 format,
                 options: {
@@ -47,7 +57,7 @@ export const createImportOperationalTableNormalizationConfig = ({
           connections: {
             jdbc_base: {
               connection: {
-                url: 'jdbc:postgresql://10.4.40.11:5432/operational?user=dnp_user&password=dnp_db_password',
+                url: `jdbc:postgresql://${databaseConfig.host}:${databaseConfig.port}/${databaseConfig.database}?user=${databaseConfig.username}&password=${databaseConfig.password}`,
                 schema: 'public',
                 truncate: 'true',
               },

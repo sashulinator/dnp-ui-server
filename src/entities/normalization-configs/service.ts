@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { createId } from '@paralleldrive/cuid2'
 import { Prisma, type NormalizationConfig as PrismaNormalizationConfig, type Process } from '@prisma/client'
 
-import { isInstanceOf } from 'utils/core'
+import { generateId, isInstanceOf } from 'utils/core'
 
 import { EngineService } from '~/slices/engine'
 import PrismaService from '~/slices/prisma/service'
@@ -184,13 +184,20 @@ export default class Service {
     // TODO: Выкинуть кастомную ошибку
     assertObject(data)
 
+    const normalizationConfigFileNameParams = [
+      ['type', TYPE],
+      ['name', normalizationConfig.name],
+      ['id', normalizationConfig.id],
+    ]
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&')
+
+    const normalizationConfigFileName = `${normalizationConfigFileNameParams}-${generateId()}.json`
+
     await this.engineService.normalize({
-      fileName: [
-        ['type', TYPE],
-        ['name', normalizationConfig.name],
-        ['id', normalizationConfig.id],
-      ],
-      data,
+      fileName: normalizationConfigFileName,
+      bucketName: 'dnp-datastore',
+      normalizationConfig: data,
     })
 
     const createdProcess = await this.processService.create({

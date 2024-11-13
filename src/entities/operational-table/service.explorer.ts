@@ -10,7 +10,7 @@ import ExplorerService, {
   type UpdateParams,
   type Where,
 } from '~/slices/explorer/service'
-import { random } from '~/utils/core'
+import { generateId, random } from '~/utils/core'
 
 import ProcessService from '../processes/service'
 import { assertColumn } from './assertions'
@@ -24,7 +24,7 @@ export type ExplorerFindManyParams = FindManyParams & {
 export type ExplorerCreateParams = { kn: string; input: Record<string, unknown> }
 export type ExplorerDeleteParams = { kn: string; where: Where }
 export type ExplorerUpdateParams = { kn: string; input: { _id: string } & Record<string, string> }
-export type ExplorerFileToTableParams = { fileName: string; operationalTableId: string; tableName: string }
+export type ExplorerFileToTableParams = { operationalTableId: string; fileNames: string[]; bucketName: string }
 
 @Injectable()
 export default class OperationalTableService {
@@ -147,37 +147,59 @@ export default class OperationalTableService {
   async explorerFileToTable(params: ExplorerFileToTableParams) {
     const TYPE = 'import'
     const trackingId = random(0, 999999999)
+    const databaseConfig = await this.operationalTableService.getStoreConfig()
+    const operationaTable = await this.operationalTableService.findFirst({ where: { kn: params.operationalTableId } })
 
-    const fileNameSplitted = params.fileName.split('.')
+    const promises = params.fileNames.map(async (fileName) => {
+      const fileNameSplitted = fileName.split('.')
 
-    const fileExt = fileNameSplitted.at(-1)
+      const fileExt = fileNameSplitted.at(-1)
 
-    const normalizationConfig = createImportOperationalTableNormalizationConfig({
-      sourceFileName: params.fileName,
-      fileExtension: fileExt,
-      destinationTable: params.tableName,
-      trackingId,
-    })
-
-    this.engineService.normalize({
-      fileName: [
-        ['type', TYPE],
-        ['name', params.fileName],
-      ],
-      data: normalizationConfig,
-    })
-
-    return this.processService.create({
-      data: {
-        id: createId(),
-        type: TYPE,
-        initiatorId: params.operationalTableId,
-        data: {
-          trackingId,
-          normalizationConfig,
-          tableId: params.operationalTableId,
+      const normalizationConfig = createImportOperationalTableNormalizationConfig({
+        sourceFileName: fileName,
+        fileExtension: fileExt,
+        destinationTable: operationaTable.name,
+        trackingId,
+        bucketName: params.bucketName,
+        databaseConfig: {
+          username: databaseConfig.data.username,
+          password: databaseConfig.data.password,
+          database: databaseConfig.data.dbName,
+          host: databaseConfig.data.host,
+          port: Number(databaseConfig.data.port),
         },
-      },
+      })
+
+      const normalizationConfigFileNameParams = [
+        ['type', TYPE],
+        ['name', fileName],
+      ]
+        .map(([key, value]) => `${key}=${value}`)
+        .join('&')
+
+      const normalizationConfigFileName = `${normalizationConfigFileNameParams}-${generateId()}.json`
+
+      await this.engineService.normalize({
+        fileName: normalizationConfigFileName,
+        bucketName: params.bucketName,
+        normalizationConfig: normalizationConfig,
+      })
+
+      return this.processService.create({
+        data: {
+          id: createId(),
+          type: TYPE,
+          initiatorId: params.operationalTableId,
+          data: {
+            trackingId,
+            normalizationConfigFileName,
+            normalizationConfig,
+            tableId: params.operationalTableId,
+          },
+        },
+      })
     })
+
+    return Promise.all(promises)
   }
 }

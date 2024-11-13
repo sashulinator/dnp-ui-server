@@ -21,7 +21,13 @@ export default async function seedOperationalTables() {
 
   await database.dropTableIfExists(employeesOt.name)
 
-  await database.createTable(employeesOt.name, [_idColumn, _statusColumn, ...employeesOt.columns])
+  await database.createTable(employeesOt.name, [
+    ...employeesOt.columns.map((item) => {
+      return { name: item.name, type: 'string', index: Boolean(item.index) } as const
+    }),
+    _idColumn,
+    _statusColumn,
+  ])
 
   const employeesRows = new Array(3).fill(undefined).map((_, i) => {
     return employeesOt.columns.reduce((acc, item) => {
@@ -42,7 +48,13 @@ export default async function seedOperationalTables() {
 
   await database.dropTableIfExists(carsOt.name)
 
-  await database.createTable(carsOt.name, [_idColumn, _statusColumn, ...carsOt.columns])
+  await database.createTable(carsOt.name, [
+    ...carsOt.columns.map((item) => {
+      return { name: item.name, type: 'string', index: Boolean(item.index) } as const
+    }),
+    _idColumn,
+    _statusColumn,
+  ])
 
   const carsRows = new Array(3).fill(undefined).map((_, i) => {
     return carsOt.columns.reduce((acc, item) => {
@@ -64,12 +76,13 @@ export default async function seedOperationalTables() {
 
   await database.dropTableIfExists(medOt.name)
 
-  await database.createTable(
-    medOt.name,
-    [_idColumn, _statusColumn, ...medOt.columns].map((col) => {
-      return { ...col, type: 'string' }
+  await database.createTable(medOt.name, [
+    ...medOt.columns.map((item) => {
+      return { name: item.name, type: 'string', index: Boolean(item.index) } as const
     }),
-  )
+    _idColumn,
+    _statusColumn,
+  ])
 
   const medRows = new Array(3).fill(undefined).map((_, i) => {
     return medOt.columns.reduce((acc, item) => {

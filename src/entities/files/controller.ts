@@ -1,8 +1,21 @@
-import { Delete, Get, Controller as NestJSController, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
+import {
+  Body,
+  Delete,
+  Get,
+  Controller as NestJSController,
+  Param,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { createId } from '@paralleldrive/cuid2'
 
 import Service from './service'
+
+type UploadParam = {
+  bucketName: string
+}
 
 @NestJSController('api/v1/files')
 export default class Controller {
@@ -10,16 +23,15 @@ export default class Controller {
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  async upload(@Body() body: UploadParam, @UploadedFile() file: Express.Multer.File) {
     const fileNameSplitted = file.originalname.split('.')
-
     const fileExt = fileNameSplitted[fileNameSplitted.length - 1]
+    const fileName = fileNameSplitted.slice(0, fileNameSplitted.length - 1).join('.')
+    const newFileName = `fileName=${fileName}&id=${createId()}.${fileExt}`
 
-    const fileId = `${createId()}.${fileExt}`
+    const minioRet = await this.service.create(file, newFileName, body.bucketName)
 
-    await this.service.create(file, fileId)
-
-    return { fileId }
+    return { ...minioRet, fileName: newFileName, bucketName: body.bucketName }
   }
 
   @Get(':id')
