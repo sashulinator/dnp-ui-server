@@ -1,1 +1,1 @@
-export const NAME = 'Analytical-actions'
+export const SLICE = 'Analytical-actions'
