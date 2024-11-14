@@ -144,7 +144,7 @@ export default class OperationalTableService {
     }
   }
 
-  async explorerFileToTable(params: ExplorerFileToTableParams) {
+  async explorerImportFromFile(params: ExplorerFileToTableParams) {
     const TYPE = 'import'
     const trackingId = random(0, 999999999)
     const databaseConfig = await this.operationalTableService.getStoreConfig()
@@ -170,10 +170,7 @@ export default class OperationalTableService {
         },
       })
 
-      const normalizationConfigFileNameParams = [
-        ['type', TYPE],
-        ['name', fileName],
-      ]
+      const normalizationConfigFileNameParams = [['fileName', fileName]]
         .map(([key, value]) => `${key}=${value}`)
         .join('&')
 

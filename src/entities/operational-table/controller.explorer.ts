@@ -17,7 +17,7 @@ export default class OperationalTableController {
    */
   @Post('import')
   async explorerImport(@Body() body: ExplorerFileToTableParams) {
-    return this.service.explorerFileToTable(body)
+    return this.service.explorerImportFromFile(body)
   }
 
   /**
