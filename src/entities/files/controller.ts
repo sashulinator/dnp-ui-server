@@ -15,6 +15,7 @@ import Service from './service'
 
 type UploadParam = {
   bucketName: string
+  fileName: string
 }
 
 @NestJSController('api/v1/files')
@@ -24,7 +25,7 @@ export default class Controller {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async upload(@Body() body: UploadParam, @UploadedFile() file: Express.Multer.File) {
-    const fileNameSplitted = file.originalname.split('.')
+    const fileNameSplitted = body.fileName.split('.')
     const fileExt = fileNameSplitted[fileNameSplitted.length - 1]
     const fileName = fileNameSplitted.slice(0, fileNameSplitted.length - 1).join('.')
     const newFileName = `fileName=${fileName}&id=${createId()}.${fileExt}`
