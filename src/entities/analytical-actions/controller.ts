@@ -1,4 +1,4 @@
-import { Get, Controller as NestJSController } from '@nestjs/common'
+import { Controller as NestJSController, Post } from '@nestjs/common'
 
 import type { AnalyticalActions } from './service'
 import Service from './service'
@@ -7,9 +7,8 @@ import Service from './service'
 export class Controller {
   constructor(private readonly service: Service) {}
 
-  /* ------------ GET ANALYTICAL ACTIONS ------------*/
-  @Get()
-  get(): Promise<AnalyticalActions[]> {
+  @Post('/find-many')
+  findMany(): Promise<AnalyticalActions[]> {
     return this.service.findMany()
   }
 }
