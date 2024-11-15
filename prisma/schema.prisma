@@ -20,8 +20,6 @@ model User {
   password String @db.VarChar(24)
   avatar   String
 
-  processCreators Process[] @relation("processCreators")
-
   storeConfigCreators StoreConfig[] @relation("storeConfigCreators")
   storeConfigUpdaters StoreConfig[] @relation("storeConfigUpdaters")
 
@@ -43,16 +41,15 @@ model User {
   @@id([id])
 }
 
-model Process {
-  id          String   @db.VarChar(24)
-  type        String   @db.VarChar(24)
-  // id сущности которая вызвала процесс
-  initiatorId String?  @db.VarChar(24)
-  data        Json?
-  // meta
-  createdAt   DateTime @default(now())
-  createdById String?  @db.VarChar(24)
-  createdBy   User?    @relation("processCreators", fields: [createdById], references: [id])
+model AnalyticalActions {
+  id          Int
+  name        String
+  display     String
+  group       String
+  description String
+  isText      Boolean
+  isInt       Boolean
+  isDate      Boolean
 
   @@id([id])
 }
@@ -70,6 +67,11 @@ model StoreConfig {
   updatedBy   User      @relation("storeConfigUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
+}
+
+enum StoreType {
+  postgres
+  s3
 }
 
 model RawTable {
@@ -148,6 +150,11 @@ model OperationalTable {
   @@id([kn])
 }
 
+enum TableViewType {
+  tree
+  table
+}
+
 model NormalizationConfig {
   id          String   @db.VarChar(24)
   name        String
@@ -165,15 +172,18 @@ model NormalizationConfig {
   @@id([id])
 }
 
-model Heap {
-  name        String @unique
-  description String
-  data        Json
-}
-
 // **************
 // *** SYSTEM ***
 // **************
+
+model Store {
+  name        String
+  description String
+  data        Json
+
+  @@id([name])
+  @@map("_Store")
+}
 
 model Translation {
   id     Int    @default(autoincrement())
@@ -183,27 +193,19 @@ model Translation {
   data   String
 
   @@id([id])
+  @@map("_Translation")
 }
 
-model AnalyticalActions {
-  id          Int
-  name        String
-  display     String
-  group       String
-  description String
-  isText      Boolean
-  isInt       Boolean
-  isDate      Boolean
+model Process {
+  id          String   @db.VarChar(24)
+  type        String   @db.VarChar(24)
+  // можно положить id сущности которая вызвала процесс
+  trackId     String?  @db.VarChar(24)
+  data        Json?
+  // meta
+  createdAt   DateTime @default(now())
+  createdById String?  @db.VarChar(24)
 
   @@id([id])
-}
-
-enum StoreType {
-  postgres
-  s3
-}
-
-enum TableViewType {
-  tree
-  table
+  @@map("_Process")
 }

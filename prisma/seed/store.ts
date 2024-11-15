@@ -1,9 +1,7 @@
 import { type PrismaClient } from '@prisma/client'
 
-import { link } from 'fs'
-
-export async function seedHeap(prisma: PrismaClient) {
-  const heapData = [
+export async function seedStore(prisma: PrismaClient) {
+  const storeData = [
     {
       name: 'navMenu',
       description: 'Меню навигации',
@@ -66,11 +64,16 @@ export async function seedHeap(prisma: PrismaClient) {
         },
       ],
     },
+    {
+      name: 'OperationalStoreConfigId',
+      description: 'Указывает какой StoreConfig является операционным',
+      data: '',
+    },
   ]
 
-  for (const heap of heapData) {
-    await prisma.heap.create({
-      data: heap,
+  for (const store of storeData) {
+    await prisma.store.create({
+      data: store,
     })
   }
 }

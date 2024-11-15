@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common'
 import type { AnalyticalActions as AnalyticalActionsPrisma } from '@prisma/client'
 
 import { CrudDelegator } from '~/slices/crud'
-
-import PrismaService from '../../slices/prisma/service'
+import { PrismaService } from '~/slices/prisma'
 
 export type AnalyticalActions = AnalyticalActionsPrisma
 

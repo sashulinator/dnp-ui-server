@@ -2,12 +2,18 @@ import { Body, Get, Controller as NestJSController, Param, Post, Search } from '
 import { createId } from '@paralleldrive/cuid2'
 import { type Process as PrismaProcess } from '@prisma/client'
 
-import { type CreateProcess, type Process } from './dto'
-import Service, { type OrderByWithRelationInput, type Select, type WhereInput, type WhereUniqueInput } from './service'
+import { type CreateProcess, type Process } from './models'
+import {
+  type OrderByWithRelationInput,
+  ProcessService,
+  type Select,
+  type WhereInput,
+  type WhereUniqueInput,
+} from './nest.service'
 
 @NestJSController('api/v1/processes')
-export default class Controller {
-  constructor(private readonly service: Service) {}
+export class ProcessController {
+  constructor(private readonly service: ProcessService) {}
 
   @Post()
   /**

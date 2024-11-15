@@ -5,10 +5,10 @@ import { Prisma, type NormalizationConfig as PrismaNormalizationConfig, type Pro
 import { generateId, isInstanceOf } from 'utils/core'
 
 import { EngineService } from '~/slices/engine'
-import PrismaService from '~/slices/prisma/service'
+import { PrismaService } from '~/slices/prisma'
+import { ProcessService } from '~/slices/process'
 import { assertObject } from '~/utils/assertions/object'
 
-import ProcessService from '../processes/service'
 import { type BaseNormalizationConfig, type CreateNormalizationConfig, type UpdateNormalizationConfig } from './dto'
 
 export type WhereUniqueInput = Prisma.NormalizationConfigWhereUniqueInput
@@ -133,7 +133,7 @@ export default class Service {
   ): Promise<PrismaNormalizationConfig> {
     const prismaItem = await this.getFirst(where)
 
-    const processes = await this.prisma.process.findFirst({ where: { initiatorId: prismaItem.id } })
+    const processes = await this.prisma.process.findFirst({ where: { trackId: prismaItem.id } })
 
     // Если нет процессов, то просто обновляем данные
     if (!processes) {
@@ -202,7 +202,7 @@ export default class Service {
 
     const createdProcess = await this.processService.create({
       data: {
-        initiatorId: normalizationConfig.id,
+        trackId: normalizationConfig.id,
         id: createId(),
         type: 'normalization',
       },

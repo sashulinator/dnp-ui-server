@@ -2,8 +2,8 @@ import * as v from 'valibot'
 
 import { creatableModel } from '~/common/slices/crud/models/crudable'
 
-import { getKeys } from '../../slices/dictionary'
-import { userSchema } from '../user'
+import { userSchema } from '../../entities/user'
+import { getKeys } from '../dictionary'
 
 /**
  * BaseProcess
@@ -11,8 +11,8 @@ import { userSchema } from '../user'
 
 export const baseProcessSchema = v.object({
   id: v.pipe(v.string(), v.nonEmpty()),
-  // Id сущности инициатора процесса
-  initiatorId: v.pipe(v.string(), v.nonEmpty()),
+  // можно положить id сущности которая вызвала процесс
+  trackId: v.pipe(v.string(), v.nonEmpty()),
   type: v.pipe(v.string(), v.nonEmpty()),
   data: v.object({}),
   ...creatableModel.entries,

@@ -7,7 +7,7 @@ import Database from '~/slices/database'
 import { HttpException, HttpStatus } from '~/slices/error'
 
 import ExplorerService from '../../slices/explorer/service'
-import PrismaService from '../../slices/prisma/service'
+import { PrismaService } from '../../slices/prisma'
 import type { StoreConfig } from '../store-configs/dto'
 import { toDatabasConfig } from '../store-configs/lib/to-database-config'
 import { assertColumn } from './assertions'

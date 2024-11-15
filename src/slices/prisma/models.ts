@@ -1,12 +1,12 @@
 import type {
   AnalyticalActions,
   DictionaryTable,
-  Heap,
   NormalizationConfig,
   OperationalTable,
   Prisma,
   Process,
   RawTable,
+  Store,
   StoreConfig,
   TargetTable,
   Translation,
@@ -17,16 +17,17 @@ import { check } from '~/utils/types/test'
 
 export type EntityMap = {
   user: User
-  process: Process
   storeConfig: StoreConfig
   normalizationConfig: NormalizationConfig
   rawTable: RawTable
   dictionaryTable: DictionaryTable
   targetTable: TargetTable
   operationalTable: OperationalTable
-  translation: Translation
-  heap: Heap
   analyticalActions: AnalyticalActions
+  // System
+  process: Process
+  store: Store
+  translation: Translation
 }
 
 // В случае изменений Prisma схемы, здесь появится ошибка

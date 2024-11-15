@@ -3,7 +3,7 @@ import { Prisma, type Translation } from '@prisma/client'
 
 import { isInstanceOf } from 'utils/core'
 
-import PrismaService from '../prisma/service'
+import { PrismaService } from '~/slices/prisma'
 
 const TAKE = 100
 

@@ -10,9 +10,9 @@ import ExplorerService, {
   type UpdateParams,
   type Where,
 } from '~/slices/explorer/service'
+import { ProcessService } from '~/slices/process'
 import { generateId, random } from '~/utils/core'
 
-import ProcessService from '../processes/service'
 import { assertColumn } from './assertions'
 import { createImportOperationalTableNormalizationConfig } from './lib/create-import-operationtal-table-norm-config'
 import Service from './service'
@@ -186,7 +186,7 @@ export default class OperationalTableService {
         data: {
           id: createId(),
           type: TYPE,
-          initiatorId: params.operationalTableId,
+          trackId: params.operationalTableId,
           data: {
             trackingId,
             normalizationConfigFileName,

@@ -2,7 +2,7 @@
 import { type Process as PrismaType } from '@prisma/client'
 
 //            ↓
-import { type BaseProcess as DtoType } from '~/entities/processes/dto'
+import { type BaseProcess as DtoType } from '~/slices/process/models'
 
 import { type DateToString, check } from './_private'
 

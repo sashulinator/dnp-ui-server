@@ -8,7 +8,7 @@ import { red } from 'colors'
 const parseDbUrl = require('parse-database-url')
 
 @Injectable()
-export default class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   async onModuleInit() {
     try {
       console.log('process.env.DATABASE_URL', process.env.DATABASE_URL)

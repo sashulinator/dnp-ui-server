@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 
-import PrismaModule from '~/slices/prisma/module'
+import { PrismaModule } from '~/slices/prisma'
 
 import { Controller } from './controller'
 import Service from './service'
@@ -10,4 +10,4 @@ import Service from './service'
   providers: [Service],
   imports: [PrismaModule],
 })
-export default class HeapModule {}
+export default class StoreModule {}

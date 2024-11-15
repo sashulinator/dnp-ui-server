@@ -3,7 +3,7 @@ import { Injectable, StreamableFile } from '@nestjs/common'
 import MinioService from '~/slices/minio/service'
 
 @Injectable()
-export default class Service {
+export class FileService {
   constructor(protected minio: MinioService) {}
 
   async create(file: Express.Multer.File, fileName: string, bucketName: string) {

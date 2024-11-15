@@ -3,7 +3,8 @@ import { Prisma, type StoreConfig as PrismaStoreConfig } from '@prisma/client'
 
 import { isInstanceOf } from 'utils/core'
 
-import PrismaService from '../../slices/prisma/service'
+import { PrismaService } from '~/slices/prisma'
+
 import { type CreateStoreConfig, type UpdateStoreConfig } from './dto'
 
 export type WhereUniqueInput = Prisma.StoreConfigWhereUniqueInput

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common'
 
 import Database from '~/slices/database'
 import ExplorerModule from '~/slices/explorer/module'
-import PrismaModule from '~/slices/prisma/module'
+import { PrismaModule } from '~/slices/prisma'
 
 import Controller from './controller'
 import ExplorerController from './controller.explorer'

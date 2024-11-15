@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common'
 
-import ExplorerModule from '../../slices/explorer/module'
-import PrismaModule from '../../slices/prisma/module'
+import ExplorerModule from '~/slices/explorer/module'
+import { PrismaModule } from '~/slices/prisma'
+
 import Controller from './controller'
 import Service from './service'
 

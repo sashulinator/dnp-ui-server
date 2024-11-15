@@ -4,9 +4,9 @@ import { type Prisma, type TargetTable as PrismaTargetTable } from '@prisma/clie
 import { _idColumn } from '~/common/entities/operational-table'
 import { Delegator } from '~/slices/crud/lib/delegator'
 import Database from '~/slices/database'
+import { PrismaService } from '~/slices/prisma'
 
 import ExplorerService from '../../slices/explorer/service'
-import PrismaService from '../../slices/prisma/service'
 import type { StoreConfig } from '../store-configs/dto'
 import { toDatabasConfig } from '../store-configs/lib/to-database-config'
 import { assertColumns } from './assertions'

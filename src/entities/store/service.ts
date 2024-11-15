@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common'
-import type { Heap as HeapPrisma, Prisma } from '@prisma/client'
+import type { Prisma, Store as StorePrisma } from '@prisma/client'
 
 import { CrudDelegator } from '~/slices/crud'
+import { PrismaService } from '~/slices/prisma'
 
-import PrismaService from '../../slices/prisma/service'
-
-export type Heap = HeapPrisma
-export type CreateHeap = Prisma.HeapUncheckedCreateInput
-export type UpdateHeap = Prisma.HeapUncheckedUpdateInput
+export type Store = StorePrisma
+export type CreateStore = Prisma.StoreUncheckedCreateInput
+export type UpdateStore = Prisma.StoreUncheckedUpdateInput
 
 @Injectable()
-export default class Service extends CrudDelegator<Heap, CreateHeap, UpdateHeap> {
+export default class Service extends CrudDelegator<Store, CreateStore, UpdateStore> {
   constructor(protected prisma: PrismaService) {
     super(
       {},
@@ -18,9 +17,9 @@ export default class Service extends CrudDelegator<Heap, CreateHeap, UpdateHeap>
         count: CrudDelegator.notAllowed,
         create: CrudDelegator.notAllowed,
         delete: CrudDelegator.notAllowed,
-        update: prisma.heap.update.bind(prisma),
+        update: prisma.store.update.bind(prisma),
         getFirst: CrudDelegator.notAllowed,
-        getUnique: prisma.heap.findUniqueOrThrow.bind(prisma),
+        getUnique: prisma.store.findUniqueOrThrow.bind(prisma),
         findFirst: CrudDelegator.notAllowed,
         findMany: CrudDelegator.notAllowed,
         findUnique: CrudDelegator.notAllowed,
