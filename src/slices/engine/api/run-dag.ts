@@ -1,5 +1,6 @@
 export type RequestData = {
   s3ConfigPath: string
+  name: string
 }
 
 export type ResponseData = {
@@ -22,7 +23,7 @@ export async function request(requestData: RequestData): Promise<{ response: Res
   headers.set('Content-Type', 'application/json;charset=UTF-8')
 
   // Trigger the Airflow DAG run
-  const response = await fetch('http://10.4.40.30:8080/api/v1/dags/dnp_rest_api_trigger/dagRuns', {
+  const response = await fetch(`http://10.4.40.30:8080/api/v1/dags/${requestData.name}/dagRuns`, {
     method: 'POST',
     headers,
     body: JSON.stringify({

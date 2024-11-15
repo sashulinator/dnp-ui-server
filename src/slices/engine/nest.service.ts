@@ -20,7 +20,10 @@ export default class Service {
     await this.minioService.putObject(params.bucketName, params.fileName, buffer)
 
     // Trigger the Airflow DAG run
-    const ret = await runDag({ s3ConfigPath: `${params.bucketName}/${params.fileName}` })
+    const ret = await runDag({
+      name: 'dnp_rest_api_trigger',
+      s3ConfigPath: `${params.bucketName}/${params.fileName}`,
+    })
 
     return ret.data
   }
