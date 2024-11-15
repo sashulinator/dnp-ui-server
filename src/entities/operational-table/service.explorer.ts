@@ -170,6 +170,8 @@ export default class OperationalTableService {
         },
       })
 
+      // return normalizationConfig
+
       const normalizationConfigFileNameParams = [['fileName', fileName]]
         .map(([key, value]) => `${key}=${value}`)
         .join('&')
@@ -190,7 +192,7 @@ export default class OperationalTableService {
           data: {
             trackingId,
             normalizationConfigFileName,
-            normalizationConfig,
+            normalizationConfig: normalizationConfig as any,
             tableId: params.operationalTableId,
           },
         },

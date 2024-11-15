@@ -1399,6 +1399,11 @@
   dependencies:
     undici-types "~5.26.4"
 
+"@types/omit-empty@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@types/omit-empty/-/omit-empty-1.0.4.tgz#a12252026b7cdfe16b262121644880c6c0d6abaa"
+  integrity sha512-MyclmBmRRCfEuawCDfg4YeN6T7/guBZqbkGSJiy7xXkIDDZLJRCfLdptkXMFEfAC+2lxzVRCgjWCe46s0D7ZkQ==
+
 "@types/parse-json@^4.0.0":
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.2.tgz#5950e50960793055845e956c427fc2b0d70c5239"
@@ -4503,6 +4508,11 @@ keyv@^4.5.3:
   dependencies:
     json-buffer "3.0.1"
 
+kind-of@^6.0.2:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
+  integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
+
 kleur@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-3.0.3.tgz#a79c9ecc86ee1ce3fa6206d1216c501f147fc07e"
@@ -5143,6 +5153,13 @@ object-inspect@^1.13.1:
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.13.1.tgz#b96c6109324ccfef6b12216a956ca4dc2ff94bc2"
   integrity sha512-5qoj1RUiKOMsCCNLV1CBiPYE10sziTsnmNxkAI/rZhiD63CF7IqdFGC/XzjWjpSgLf0LxXX3bDFIh0E18f6UhQ==
+
+omit-empty@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/omit-empty/-/omit-empty-1.0.0.tgz#827ad1fdc569511bb9fb3f038a9171a7f10d9040"
+  integrity sha512-eaWd8kwqDyChgf7IYVyfZf2b9b9JOIhpAow4cegg8CVx29U2mZKgCvpfvOSeJctmRTqjGWTZeO2Us58ebDtQ4A==
+  dependencies:
+    kind-of "^6.0.2"
 
 on-finished@2.4.1:
   version "2.4.1"
