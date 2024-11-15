@@ -3,7 +3,7 @@ import * as v from 'valibot'
 import { crudableModel } from '~/common/slices/crud/models/crudable'
 
 import { getKeys } from '../../slices/dictionary'
-import { baseProcessSchema } from '../process'
+import { baseProcessSchema } from '../../slices/process'
 import { userSchema } from '../user'
 
 /**
