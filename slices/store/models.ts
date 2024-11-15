@@ -7,8 +7,10 @@ import * as v from 'valibot'
 export const baseStoreSchema = v.object({
   name: v.string(),
   description: v.string(),
-  data: v.looseObject({}),
+  data: v.any(),
 })
+
+export type Store = v.InferOutput<typeof createStoreSchema>
 
 /**
  * CreateStoreSchema
@@ -16,7 +18,7 @@ export const baseStoreSchema = v.object({
 
 export const createStoreSchema = baseStoreSchema
 
-export type CreateStoreSchema = v.InferOutput<typeof createStoreSchema>
+export type CreateStore = v.InferOutput<typeof createStoreSchema>
 
 /**
  * UpdateStoreSchema
