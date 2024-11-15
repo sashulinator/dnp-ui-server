@@ -22,4 +22,4 @@ export type {
   UpdateDictionaryTable,
   Column,
   Row,
-} from './models.dictionary-table'
+} from './models'
