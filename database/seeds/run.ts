@@ -10,13 +10,13 @@ import { systemUser } from './users'
 export async function run(appKnex: Knex, databaseConfigMap: DatabaseConfigMap) {
   // User
 
-  await insert(appKnex, 'User', systemUser, ['id'])
+  await insert(appKnex, 'public', 'User', systemUser, ['id'])
 
   // DictionaryTable
 
   await Promise.all(
     [countriesDictionaryTable, employeesDictionaryTable, rfSubjectsDictionaryTable].map((data) =>
-      insert(appKnex, 'DictionaryTable', { ...data, columns: JSON.stringify(data.columns) }, ['kn']),
+      insert(appKnex, 'storeContainer', 'DictionaryTable', { ...data, columns: JSON.stringify(data.columns) }, ['kn']),
     ),
   )
 
@@ -24,7 +24,7 @@ export async function run(appKnex: Knex, databaseConfigMap: DatabaseConfigMap) {
 
   await Promise.all(
     [countriesRawTable, employeesRawTable, rfSubjectsRawTable].map((data) =>
-      insert(appKnex, 'RawTable', { ...data, columns: JSON.stringify(data.columns) }, ['kn']),
+      insert(appKnex, 'storeContainer', 'RawTable', { ...data, columns: JSON.stringify(data.columns) }, ['kn']),
     ),
   )
 
@@ -32,12 +32,12 @@ export async function run(appKnex: Knex, databaseConfigMap: DatabaseConfigMap) {
 
   await Promise.all(
     [operationalStoreConfig, targetStoreConfig].map((data) =>
-      insert(appKnex, 'StoreConfig', { ...data, data: JSON.stringify(data.data) }, ['kn']),
+      insert(appKnex, 'storeContainer', 'StoreConfig', { ...data, data: JSON.stringify(data.data) }, ['kn']),
     ),
   )
 }
 
-async function insert(appKnex: Knex, tableName: string, data: any, conflict: string[]) {
-  await appKnex(tableName).insert(data).onConflict(conflict).merge()
+async function insert(appKnex: Knex, schemaName: string, tableName: string, data: any, conflict: string[]) {
+  await appKnex(tableName).withSchema(schemaName).insert(data).onConflict(conflict).merge()
   console.log(`${tableName} with ${conflict[0]} '${data[conflict[0]]}' upserted.`)
 }

@@ -5,13 +5,15 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-3.0.x"]
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "debian-openssl-3.0.x"]
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["public", "system", "translation", "storeContainer"]
 }
 
 model User {
@@ -39,6 +41,7 @@ model User {
   normalizationConfigUpdaters NormalizationConfig[] @relation("normalizationConfigUpdaters")
 
   @@id([id])
+  @@schema("public")
 }
 
 model AnalyticalActions {
@@ -52,7 +55,30 @@ model AnalyticalActions {
   isDate      Boolean
 
   @@id([id])
+  @@schema("public")
 }
+
+model NormalizationConfig {
+  id          String   @db.VarChar(24)
+  name        String
+  v           Int
+  last        Boolean  @default(true)
+  data        Json
+  // meta
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String   @db.VarChar(24)
+  updatedById String   @db.VarChar(24)
+  createdBy   User     @relation("normalizationConfigCreators", fields: [createdById], references: [id])
+  updatedBy   User     @relation("normalizationConfigUpdaters", fields: [updatedById], references: [id])
+
+  @@id([id])
+  @@schema("public")
+}
+
+// ***********************
+// *** STORE_CONTAINER ***
+// ***********************
 
 model StoreConfig {
   kn          String    @db.VarChar(24)
@@ -67,11 +93,14 @@ model StoreConfig {
   updatedBy   User      @relation("storeConfigUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
+  @@schema("storeContainer")
 }
 
 enum StoreType {
   postgres
   s3
+
+  @@schema("storeContainer")
 }
 
 model RawTable {
@@ -91,6 +120,7 @@ model RawTable {
   updatedBy   User          @relation("rawTableUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
+  @@schema("storeContainer")
 }
 
 model DictionaryTable {
@@ -110,6 +140,7 @@ model DictionaryTable {
   updatedBy   User          @relation("dictionaryTableUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
+  @@schema("storeContainer")
 }
 
 model TargetTable {
@@ -129,6 +160,7 @@ model TargetTable {
   updatedBy   User          @relation("targetTableUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
+  @@schema("storeContainer")
 }
 
 model OperationalTable {
@@ -148,28 +180,14 @@ model OperationalTable {
   updatedBy   User          @relation("operationalTableUpdaters", fields: [updatedById], references: [id])
 
   @@id([kn])
+  @@schema("storeContainer")
 }
 
 enum TableViewType {
   tree
   table
-}
 
-model NormalizationConfig {
-  id          String   @db.VarChar(24)
-  name        String
-  v           Int
-  last        Boolean  @default(true)
-  data        Json
-  // meta
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdById String   @db.VarChar(24)
-  updatedById String   @db.VarChar(24)
-  createdBy   User     @relation("normalizationConfigCreators", fields: [createdById], references: [id])
-  updatedBy   User     @relation("normalizationConfigUpdaters", fields: [updatedById], references: [id])
-
-  @@id([id])
+  @@schema("storeContainer")
 }
 
 // **************
@@ -182,18 +200,7 @@ model Store {
   data        Json
 
   @@id([name])
-  @@map("_Store")
-}
-
-model Translation {
-  id     Int    @default(autoincrement())
-  key    String
-  ns     String
-  locale String
-  data   String
-
-  @@id([id])
-  @@map("_Translation")
+  @@schema("system")
 }
 
 model Process {
@@ -207,5 +214,20 @@ model Process {
   createdById String?  @db.VarChar(24)
 
   @@id([id])
-  @@map("_Process")
+  @@schema("system")
+}
+
+// *******************
+// *** TRANSLATION ***
+// *******************
+
+model Translation {
+  id     Int    @default(autoincrement())
+  key    String
+  ns     String
+  locale String
+  data   String
+
+  @@id([id])
+  @@schema("translation")
 }
