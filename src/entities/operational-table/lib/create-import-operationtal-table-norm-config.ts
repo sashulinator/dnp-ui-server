@@ -38,7 +38,7 @@ export const createImportOperationalTableNormalizationConfig = ({
       schema: 'public',
       truncate: true,
     })
-    .addOut('dnp_data', { table: destinationTable }, JDBC_NAME)
+    .addOut('dnp_data', { table: destinationTable, extends: JDBC_NAME })
     .addConnection(S3_NAME, {
       format: fileExtension === 'csv' ? 'csv' : 'excel',
       path: `/`,
@@ -48,13 +48,10 @@ export const createImportOperationalTableNormalizationConfig = ({
         delimiter: ';',
       },
     })
-    .addIn(
-      'dnp_data',
-      {
-        fileName: sourceFileName,
-      },
-      S3_NAME,
-    )
+    .addIn('dnp_data', {
+      fileName: sourceFileName,
+      extends: S3_NAME,
+    })
     .addExecutable({
       indentity: {
         id: 'DnpDataPostprocessing',

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { has, random } from '~/utils/core'
 
 import type * as EngineConfigType from '../models/engine-config'
@@ -29,7 +28,6 @@ export class ConfigBuilder {
     this._writeMode = mode
   }
 
-  /** @deprecated попробуем пока не пользоваться, пользуемся addIn и addOut */
   addConnection(name: string, connection: JdbcProviderConfigConnection | S3ProviderConfigConnection) {
     if (isS3ProviderConfigConnection(connection)) {
       this._providerConfig.s3 = {
@@ -76,14 +74,11 @@ export class ConfigBuilder {
     return this
   }
 
-  addIn<TExtend extends string | never>(
+  addIn(
     name: string,
-    connection: TExtend extends never
-      ? S3ConfigByTableConnectionRequired | JdbcConfigByTableConnectionRequired
-      :
-          | (JdbcConfigByTableConnectionRequired & Partial<JdbcProviderConfigConnection>)
-          | (S3ConfigByTableConnectionRequired & Partial<S3ProviderConfigConnection>),
-    extendsConnectionName?: string,
+    connection:
+      | (JdbcConfigByTableConnectionRequired & Partial<JdbcProviderConfigConnection>)
+      | (S3ConfigByTableConnectionRequired & Partial<S3ProviderConfigConnection>),
   ) {
     if (isS3ConfigByTableConnection(connection)) {
       this._providerConfig = {
@@ -93,7 +88,7 @@ export class ConfigBuilder {
           'config-by-table': {
             ...this._providerConfig.s3?.['config-by-table'],
             [name]: {
-              'based-on-in': extendsConnectionName,
+              'based-on-in': connection.extends,
               in: {
                 connection: {
                   bucket: connection.bucket,
@@ -118,7 +113,7 @@ export class ConfigBuilder {
           'config-by-table': {
             ...this._providerConfig?.jdbc?.['config-by-table'],
             [name]: {
-              'based-on-in': extendsConnectionName,
+              'based-on-in': connection.extends,
               in: {
                 connection: {
                   url: connection.client
@@ -138,14 +133,11 @@ export class ConfigBuilder {
     return this
   }
 
-  addOut<TExtend extends string | never>(
+  addOut(
     name: string,
-    connection: TExtend extends never
-      ? S3ConfigByTableConnectionRequired | JdbcConfigByTableConnectionRequired
-      :
-          | (JdbcConfigByTableConnectionRequired & Partial<JdbcProviderConfigConnection>)
-          | (S3ConfigByTableConnectionRequired & Partial<S3ProviderConfigConnection>),
-    extendsConnectionName?: string,
+    connection:
+      | (JdbcConfigByTableConnectionRequired & Partial<JdbcProviderConfigConnection>)
+      | (S3ConfigByTableConnectionRequired & Partial<S3ProviderConfigConnection>),
   ) {
     if (isS3ConfigByTableConnection(connection)) {
       this._providerConfig = {
@@ -155,7 +147,7 @@ export class ConfigBuilder {
           'config-by-table': {
             ...this._providerConfig.s3?.['config-by-table'],
             [name]: {
-              'based-on-out': extendsConnectionName,
+              'based-on-out': connection.extends,
               out: {
                 connection: {
                   bucket: connection.bucket,
@@ -178,9 +170,9 @@ export class ConfigBuilder {
         jdbc: {
           ...this._providerConfig?.jdbc,
           'config-by-table': {
-            ...this._providerConfig.jdbc?.['config-by-table'],
+            ...this._providerConfig?.jdbc?.['config-by-table'],
             [name]: {
-              'based-on-out': extendsConnectionName,
+              'based-on-out': connection.extends,
               out: {
                 connection: {
                   url: connection.client
@@ -255,6 +247,6 @@ function isS3ProviderConfigConnection(input: unknown): input is S3ProviderConfig
   return has(input, 'bucket')
 }
 
-function isS3ConfigByTableConnection(input: unknown): input is S3ConfigByTableConnection {
+function isS3ConfigByTableConnection(input: unknown): input is S3ConfigByTableConnectionRequired {
   return has(input, 'fileName')
 }
