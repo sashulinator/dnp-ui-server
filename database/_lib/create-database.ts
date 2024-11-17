@@ -1,9 +1,9 @@
 import { type Knex } from 'knex'
 
-import { asyncCatchError } from '../_utils/catch-error'
+import { asyncCatchError } from '../../src/utils/error/catch-error'
 
-export async function create(knex: Knex, databaseName: string) {
-  const [error] = await asyncCatchError(knex.raw(`CREATE DATABASE ${databaseName}`))
+export async function createDatabase(knex: Knex, databaseName: string) {
+  const [error] = await asyncCatchError<Error>(knex.raw(`CREATE DATABASE ${databaseName}`))
 
   if (error) {
     if (error.message.includes('already exists')) {

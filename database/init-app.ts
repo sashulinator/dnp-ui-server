@@ -1,8 +1,8 @@
 import knex from 'knex'
 
+import { createDatabase } from './_lib/create-database'
+import { dropDatabase } from './_lib/drop-database'
 import { getDatabaseConfigMap } from './_lib/get-database-config-map'
-import { create } from './databases/create'
-import { drop } from './databases/drop'
 import { run } from './seeds/run'
 
 ;(async () => {
@@ -54,14 +54,14 @@ import { run } from './seeds/run'
   })
 
   // Удаляем базы если они существуют
-  await drop(targetPostgresKnex, databaseConfigMap.target.database)
-  await drop(operationalPostgresKnex, databaseConfigMap.operational.database)
-  await drop(rawPostgresKnex, databaseConfigMap.raw.database)
+  await dropDatabase(targetPostgresKnex, databaseConfigMap.target.database)
+  await dropDatabase(operationalPostgresKnex, databaseConfigMap.operational.database)
+  await dropDatabase(rawPostgresKnex, databaseConfigMap.raw.database)
 
   // Создаем базы
-  await create(rawPostgresKnex, databaseConfigMap.raw.database)
-  await create(targetPostgresKnex, databaseConfigMap.target.database)
-  await create(operationalPostgresKnex, databaseConfigMap.operational.database)
+  await createDatabase(rawPostgresKnex, databaseConfigMap.raw.database)
+  await createDatabase(targetPostgresKnex, databaseConfigMap.target.database)
+  await createDatabase(operationalPostgresKnex, databaseConfigMap.operational.database)
 
   await run(appKnex, databaseConfigMap)
 

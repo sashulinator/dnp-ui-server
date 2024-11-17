@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
 import { type Knex } from 'knex'
 
-import { asyncCatchError } from '../_utils/catch-error'
+import { asyncCatchError } from '../../src/utils/error/catch-error'
 
-export async function drop(knex: Knex, databaseName: string) {
-  const [error] = await asyncCatchError(knex.raw(`DROP DATABASE ${databaseName} WITH (FORCE);`))
+export async function dropDatabase(knex: Knex, databaseName: string) {
+  const [error] = await asyncCatchError<Error>(knex.raw(`DROP DATABASE ${databaseName} WITH (FORCE);`))
 
   if (error) {
     if (error.message.includes('does not exist')) {
