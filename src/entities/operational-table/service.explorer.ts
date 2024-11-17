@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { createId } from '@paralleldrive/cuid2'
 
-import { EngineService } from '~/slices/engine'
+import { ConfigBuilder, EngineService } from '~/slices/engine'
 import ExplorerService, {
   type CreateParams,
   type DeleteParams,
@@ -14,7 +14,6 @@ import { ProcessService } from '~/slices/process'
 import { generateId, random } from '~/utils/core'
 
 import { assertColumn } from './assertions'
-import { createImportOperationalTableNormalizationConfig } from './lib/create-import-operationtal-table-norm-config'
 import Service from './service'
 
 export type ExplorerFindManyParams = FindManyParams & {
@@ -155,22 +154,49 @@ export default class OperationalTableService {
 
       const fileExt = fileNameSplitted.at(-1)
 
-      const normalizationConfig = createImportOperationalTableNormalizationConfig({
-        sourceFileName: fileName,
-        fileExtension: fileExt,
-        destinationTable: operationaTable.name,
-        trackingId,
-        bucketName: params.bucketName,
-        databaseConfig: {
-          username: databaseConfig.data.username,
-          password: databaseConfig.data.password,
-          database: databaseConfig.data.dbName,
+      const JDBC_NAME = 'jdbc_base'
+      const S3_NAME = 's3_base'
+
+      const normalizationConfig = new ConfigBuilder()
+        .setTrackId(trackingId)
+        .addConnection(JDBC_NAME, {
+          client: 'postgresql',
           host: databaseConfig.data.host,
           port: Number(databaseConfig.data.port),
-        },
-      })
-
-      // return normalizationConfig
+          database: databaseConfig.data.dbName,
+          username: databaseConfig.data.username,
+          password: databaseConfig.data.password,
+          schema: 'public',
+          truncate: true,
+        })
+        .addOut('dnp_data', { table: operationaTable.name, extends: JDBC_NAME })
+        .addConnection(S3_NAME, {
+          format: fileExt === 'csv' ? 'csv' : 'excel',
+          path: `/`,
+          bucket: params.bucketName,
+          options: {
+            header: true,
+            delimiter: ';',
+          },
+        })
+        .addIn('dnp_data', {
+          fileName: fileName,
+          extends: S3_NAME,
+        })
+        .addExecutable({
+          indentity: {
+            id: 'DnpDataPostprocessing',
+          },
+          'computable-config': {
+            'computable-name': 'dnp-common/artifacts/procedures/DnpDataPostprocessing',
+            version: '0.0.1',
+          },
+          'sdk-config': {
+            'sdk-name': 'risk-engine-corp-sdk',
+            version: '1.1.2',
+          },
+        })
+        .build()
 
       const normalizationConfigFileNameParams = [['fileName', fileName]]
         .map(([key, value]) => `${key}=${value}`)
@@ -192,6 +218,7 @@ export default class OperationalTableService {
           data: {
             trackingId,
             normalizationConfigFileName,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             normalizationConfig: normalizationConfig as any,
             tableId: params.operationalTableId,
           },
