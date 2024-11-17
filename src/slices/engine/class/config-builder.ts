@@ -1,4 +1,5 @@
 import { has, random } from '~/utils/core'
+import { toDatabaseUrl } from '~/utils/database/to-database-url'
 
 import type * as EngineConfigType from '../models/engine-config'
 import type {
@@ -56,7 +57,14 @@ export class ConfigBuilder {
             ...this._providerConfig?.jdbc?.connections,
             [name]: {
               connection: {
-                url: `jdbc:${connection.client}://${connection.host}:${connection.port}/${connection.database}?user=${connection.username}&password=${connection.password}`,
+                url: `jdbc:${toDatabaseUrl({
+                  client: connection.client,
+                  host: connection.host,
+                  port: connection.port,
+                  database: connection.database,
+                  user: connection.username,
+                  password: connection.password,
+                })}`,
                 schema: connection.schema,
                 truncate: connection.truncate,
               },
@@ -80,115 +88,36 @@ export class ConfigBuilder {
       | (JdbcConfigByTableConnectionRequired & Partial<JdbcProviderConfigConnection>)
       | (S3ConfigByTableConnectionRequired & Partial<S3ProviderConfigConnection>),
   ) {
-    if (isS3ConfigByTableConnection(connection)) {
-      this._providerConfig = {
-        ...this._providerConfig,
-        s3: {
-          ...this._providerConfig?.s3,
-          'config-by-table': {
-            ...this._providerConfig.s3?.['config-by-table'],
-            [name]: {
-              'based-on-in': connection.extends,
-              in: {
-                connection: {
-                  bucket: connection.bucket,
-                  'dataset-name': connection.fileName,
-                  'dataset-path': connection.path,
-                  format: connection.format,
-                  options: {
-                    header: connection.options?.header,
-                    delimiter: connection.options?.delimiter,
-                  },
-                },
-              },
-            },
-          },
+    const type = isS3ConfigByTableConnection(connection) ? 's3' : 'jdbc'
+    this._providerConfig = {
+      ...this._providerConfig,
+      [type]: {
+        ...this._providerConfig?.[type],
+        'config-by-table': {
+          ...this._providerConfig?.[type]?.['config-by-table'],
+          ...this._buildConfigByTableConnection(name, connection, 'in'),
         },
-      }
-    } else {
-      this._providerConfig = {
-        ...this._providerConfig,
-        jdbc: {
-          ...this._providerConfig?.jdbc,
-          'config-by-table': {
-            ...this._providerConfig?.jdbc?.['config-by-table'],
-            [name]: {
-              'based-on-in': connection.extends,
-              in: {
-                connection: {
-                  url: connection.client
-                    ? `jdbc:${connection.client}://${connection.host}:${connection.port}/${connection.database}?user=${connection.username}&password=${connection.password}`
-                    : undefined,
-                  schema: connection.schema,
-                  truncate: connection.truncate,
-                  dbtable: connection.table,
-                },
-              },
-            },
-          },
-        },
-      }
+      },
     }
-
     return this
   }
-
   addOut(
     name: string,
     connection:
       | (JdbcConfigByTableConnectionRequired & Partial<JdbcProviderConfigConnection>)
       | (S3ConfigByTableConnectionRequired & Partial<S3ProviderConfigConnection>),
   ) {
-    if (isS3ConfigByTableConnection(connection)) {
-      this._providerConfig = {
-        ...this._providerConfig,
-        s3: {
-          ...this._providerConfig?.s3,
-          'config-by-table': {
-            ...this._providerConfig.s3?.['config-by-table'],
-            [name]: {
-              'based-on-out': connection.extends,
-              out: {
-                connection: {
-                  bucket: connection.bucket,
-                  'dataset-path': connection.path,
-                  format: connection.format,
-                  options: {
-                    header: connection.options?.header,
-                    delimiter: connection.options?.delimiter,
-                  },
-                  'dataset-name': connection.fileName,
-                },
-              },
-            },
-          },
+    const type = isS3ConfigByTableConnection(connection) ? 's3' : 'jdbc'
+    this._providerConfig = {
+      ...this._providerConfig,
+      [type]: {
+        ...this._providerConfig?.[type],
+        'config-by-table': {
+          ...this._providerConfig?.[type]?.['config-by-table'],
+          ...this._buildConfigByTableConnection(name, connection, 'out'),
         },
-      }
-    } else {
-      this._providerConfig = {
-        ...this._providerConfig,
-        jdbc: {
-          ...this._providerConfig?.jdbc,
-          'config-by-table': {
-            ...this._providerConfig?.jdbc?.['config-by-table'],
-            [name]: {
-              'based-on-out': connection.extends,
-              out: {
-                connection: {
-                  url: connection.client
-                    ? `jdbc:${connection.client}://${connection.host}:${connection.port}/${connection.database}?user=${connection.username}&password=${connection.password}`
-                    : undefined,
-                  schema: connection.schema,
-                  truncate: connection.truncate,
-                  dbtable: connection.table,
-                },
-              },
-            },
-          },
-        },
-      }
+      },
     }
-
     return this
   }
 
@@ -196,6 +125,57 @@ export class ConfigBuilder {
     this._executables.push(executable)
 
     return this
+  }
+
+  private _buildConfigByTableConnection(
+    name: string,
+    connection:
+      | (JdbcConfigByTableConnectionRequired & Partial<JdbcProviderConfigConnection>)
+      | (S3ConfigByTableConnectionRequired & Partial<S3ProviderConfigConnection>),
+    inputName: 'out' | 'in',
+  ) {
+    if (isS3ConfigByTableConnection(connection)) {
+      return {
+        [name]: {
+          [`based-on-${inputName}`]: connection.extends,
+          [inputName]: {
+            connection: {
+              bucket: connection.bucket,
+              'dataset-name': connection.fileName,
+              'dataset-path': connection.path,
+              format: connection.format,
+              options: {
+                header: connection.options?.header,
+                delimiter: connection.options?.delimiter,
+              },
+            },
+          },
+        },
+      }
+    } else {
+      return {
+        [name]: {
+          [`based-on-${inputName}`]: connection.extends,
+          [inputName]: {
+            connection: {
+              url: connection.client
+                ? `jdbc:${toDatabaseUrl({
+                    client: connection.client,
+                    host: connection.host,
+                    port: connection.port,
+                    database: connection.database,
+                    user: connection.username,
+                    password: connection.password,
+                  })}`
+                : undefined,
+              schema: connection.schema,
+              truncate: connection.truncate,
+              dbtable: connection.table,
+            },
+          },
+        },
+      }
+    }
   }
 
   build(): EngineConfigType.EngineConfig {

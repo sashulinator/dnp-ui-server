@@ -8,11 +8,11 @@ export { type AnalyticalActions }
 export type FindManyParams = Parameters<PrismaService['analyticalActions']['findMany']>[0]
 
 @Injectable()
-export class AnaliticalActionsService {
+export class AnalyticalActionsService {
   constructor(protected prisma: PrismaService) {}
 
   /** @final */
-  findMany(params: FindManyParams): Promise<AnalyticalActions[]> {
+  findMany(params?: FindManyParams): Promise<AnalyticalActions[]> {
     return this.prisma.analyticalActions.findMany(params)
   }
 }
