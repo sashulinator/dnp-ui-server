@@ -13,7 +13,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["public", "system", "translation", "storeContainer"]
+  schemas  = ["public", "system", "translation", "storeContainer", "databaseContainer"]
 }
 
 model User {
@@ -94,6 +94,80 @@ model StoreConfig {
 
   @@id([kn])
   @@schema("storeContainer")
+}
+
+// **************************
+// *** DATABASE_CONTAINER ***
+// **************************
+
+model DcService {
+  id       String @db.VarChar(24)
+  display  String @db.VarChar(255)
+  host     String @db.VarChar(255)
+  port     Int
+  username String
+  password String
+
+  DcDatabase DcDatabase[]
+
+  @@id([id])
+  @@map("Service")
+  @@schema("databaseContainer")
+}
+
+model DcDatabase {
+  id        String @db.VarChar(24)
+  name      String @db.VarChar(255)
+  display   String @db.VarChar(255)
+  serviceId String @db.VarChar(50)
+
+  Service DcService  @relation(fields: [serviceId], references: [id])
+  Schemas DcSchema[]
+
+  @@id([id])
+  @@map("Database")
+  @@schema("databaseContainer")
+}
+
+model DcSchema {
+  id         String @db.VarChar(24)
+  name       String @db.VarChar(50)
+  display    String @db.VarChar(50)
+  databaseId String @db.VarChar(50)
+
+  Database DcDatabase @relation(fields: [databaseId], references: [id])
+  Tables   DcTable[]
+
+  @@id([id])
+  @@map("Schema")
+  @@schema("databaseContainer")
+}
+
+model DcTable {
+  id       String @db.VarChar(24)
+  name     String @db.VarChar(50)
+  display  String @db.VarChar(50)
+  schemaId String @db.VarChar(50)
+
+  Database DcSchema   @relation(fields: [schemaId], references: [id])
+  Columns  DcColumn[]
+
+  @@id([id])
+  @@map("Table")
+  @@schema("databaseContainer")
+}
+
+model DcColumn {
+  id      String @db.VarChar(24)
+  name    String @db.VarChar(50)
+  display String @db.VarChar(50)
+  tableId String @db.VarChar(50)
+
+  Table DcTable @relation(fields: [tableId], references: [id])
+
+  @@id([id])
+  @@map("Column")
+  @@schema("databaseContainer")
 }
 
 enum StoreType {

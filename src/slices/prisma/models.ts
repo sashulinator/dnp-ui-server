@@ -1,5 +1,10 @@
 import type {
   AnalyticalActions,
+  DcColumn,
+  DcDatabase,
+  DcSchema,
+  DcService,
+  DcTable,
   DictionaryTable,
   NormalizationConfig,
   OperationalTable,
@@ -16,6 +21,17 @@ import type {
 import { check } from '~/utils/types/test'
 
 export type EntityMap = {
+  // DatabaseContainer
+  dcColumn: DcColumn
+  dcDatabase: DcDatabase
+  dcSchema: DcSchema
+  dcService: DcService
+  dcTable: DcTable
+  // System
+  process: Process
+  store: Store
+  translation: Translation
+  // other
   user: User
   storeConfig: StoreConfig
   normalizationConfig: NormalizationConfig
@@ -24,10 +40,6 @@ export type EntityMap = {
   targetTable: TargetTable
   operationalTable: OperationalTable
   analyticalActions: AnalyticalActions
-  // System
-  process: Process
-  store: Store
-  translation: Translation
 }
 
 // В случае изменений Prisma схемы, здесь появится ошибка
