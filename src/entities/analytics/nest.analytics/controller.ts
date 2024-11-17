@@ -1,4 +1,4 @@
-import { Controller as NestJSController, Post } from '@nestjs/common'
+import { Body, Controller as NestJSController, Post } from '@nestjs/common'
 
 import { AnalyticsService, type RunParams } from './service'
 
@@ -7,7 +7,7 @@ export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
   @Post('run')
-  run(body: { data: RunParams }) {
-    body
+  run(@Body() body: { data: RunParams }) {
+    return this.analyticsService.run(body.data)
   }
 }

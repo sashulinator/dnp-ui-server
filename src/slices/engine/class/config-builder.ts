@@ -18,15 +18,18 @@ export class ConfigBuilder {
   protected _writeMode: EngineConfigType.WriteMode
   protected _trackId: number
   protected _executables: Record<string, unknown>[]
+  protected _universalServices: string[]
 
   constructor() {
     this._writeMode = 'overwrite'
     this._providerConfig = null
     this._executables = []
+    this._universalServices = []
   }
 
   setWriteMode(mode: WriteMode) {
     this._writeMode = mode
+    return this
   }
 
   addConnection(name: string, connection: JdbcProviderConfigConnection | S3ProviderConfigConnection) {
@@ -127,6 +130,12 @@ export class ConfigBuilder {
     return this
   }
 
+  addUniversalService(service: string) {
+    this._universalServices.push(service)
+
+    return this
+  }
+
   private _buildConfigByTableConnection(
     name: string,
     connection:
@@ -199,11 +208,7 @@ export class ConfigBuilder {
           'config-tables-path': 's3a://dnp-case-4/configtables',
           'config-tables-max-size': 300,
         },
-        'universal-services': [
-          'ru.datatech.sdk.service.dataframe.DFactory',
-          'ru.datatech.sdk.service.configtables.ConfigTablesFactory',
-          'ru.datatech.sdk.service.procedure.ProcedureConfigFactory',
-        ],
+        'universal-services': this._universalServices,
       },
 
       'preload-jars': [

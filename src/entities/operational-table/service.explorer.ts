@@ -196,6 +196,9 @@ export default class OperationalTableService {
             version: '1.1.2',
           },
         })
+        .addUniversalService('ru.datatech.sdk.service.dataframe.DFactory')
+        .addUniversalService('ru.datatech.sdk.service.configtables.ConfigTablesFactory')
+        .addUniversalService('ru.datatech.sdk.service.procedure.ProcedureConfigFactory')
         .build()
 
       const normalizationConfigFileNameParams = [['fileName', fileName]]
@@ -204,7 +207,7 @@ export default class OperationalTableService {
 
       const normalizationConfigFileName = `${normalizationConfigFileNameParams}-${generateId()}.json`
 
-      await this.engineService.normalize({
+      await this.engineService.runNormalization({
         fileName: normalizationConfigFileName,
         bucketName: params.bucketName,
         normalizationConfig: normalizationConfig,

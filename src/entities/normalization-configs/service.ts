@@ -194,7 +194,7 @@ export default class Service {
 
     const normalizationConfigFileName = `${normalizationConfigFileNameParams}-${generateId()}.json`
 
-    await this.engineService.normalize({
+    await this.engineService.runNormalization({
       fileName: normalizationConfigFileName,
       bucketName: 'dnp-datastore',
       normalizationConfig: data,
