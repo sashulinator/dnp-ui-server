@@ -14,3 +14,5 @@ export const analyticalActions = v.object({
   isInt: v.boolean(),
   isDate: v.boolean(),
 })
+
+export type AnalyticalActions = v.InferOutput<typeof analyticalActions>
