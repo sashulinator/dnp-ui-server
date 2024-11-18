@@ -3,7 +3,7 @@
  */
 
 export { default as EngineModule } from './nest.module'
-export { default as EngineService } from './nest.service'
+export { default as EngineService, type RunNormalizeParams } from './nest.service'
 export type * as EngineServiceProps from './nest.service'
 
 /**

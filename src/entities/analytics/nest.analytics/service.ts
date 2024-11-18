@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import type { AnalyticalActions } from '@prisma/client'
 
-import type { EngineConfig } from '~/slices/engine'
-import { ConfigBuilder, EngineService } from '~/slices/engine'
+import { ConfigBuilder, EngineService, type RunNormalizeParams } from '~/slices/engine'
 import { PrismaService } from '~/slices/prisma'
-import { generateId } from '~/utils/core'
 import { parseDatabaseUrl } from '~/utils/database'
 
 export { type AnalyticalActions }
@@ -31,21 +29,16 @@ export type RunParams = {
   }[]
 }
 
-type EngineConfigs = {
-  fileName: string
-  bucketName: string
-  engineConfig: EngineConfig
-}
-
 @Injectable()
 export class AnalyticsService {
   constructor(
     protected prisma: PrismaService,
     protected engineService: EngineService,
   ) {}
+
   run(params: RunParams) {
     const appDatabaseConnection = parseDatabaseUrl(process.env.DATABASE_URL)
-    const engineConfigs: EngineConfigs[] = []
+    const runAnaliticsParams: RunNormalizeParams[] = []
 
     params.services.forEach((service) => {
       service.databases.forEach((database) => {
@@ -94,26 +87,24 @@ export class AnalyticsService {
               })
               .addOut(table.name, {
                 table: table.name,
+                extends: 'app',
               })
               .addUniversalService('ru.datatech.engine.sdk.service.dataframe.CorpDataFrameServiceFactory')
               .addUniversalService('ru.datatech.engine.sdk.service.configtables.ConfigTablesFactory')
               .addExecutable(executables)
 
-            engineConfigs.push({
-              fileName: `${table.name}-table----${generateId()}.json`,
-              bucketName: 'test1',
-              engineConfig: configBulder.build(),
+            runAnaliticsParams.push({
+              configFileName: `tableName=${table.name}&date=${new Date()}`,
+              config: configBulder.build(),
+              type: 'analytics',
             })
           })
         })
       })
     })
-    return engineConfigs.forEach((config) =>
-      this.engineService.runAnalytics({
-        fileName: config.fileName,
-        bucketName: config.bucketName,
-        analyticsConfig: config.engineConfig,
-      }),
-    )
+
+    runAnaliticsParams.forEach((params) => this.engineService.runNormalization(params))
+
+    return runAnaliticsParams
   }
 }

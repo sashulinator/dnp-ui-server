@@ -208,9 +208,9 @@ export default class OperationalTableService {
       const normalizationConfigFileName = `${normalizationConfigFileNameParams}-${generateId()}.json`
 
       await this.engineService.runNormalization({
-        fileName: normalizationConfigFileName,
-        bucketName: params.bucketName,
-        normalizationConfig: normalizationConfig,
+        configFileName: normalizationConfigFileName,
+        config: normalizationConfig,
+        type: 'import',
       })
 
       return this.processService.create({
