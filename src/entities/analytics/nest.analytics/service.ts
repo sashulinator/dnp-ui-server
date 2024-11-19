@@ -78,6 +78,7 @@ export class AnalyticsService {
 
             configBulder
               .setWriteMode('append')
+              .setStorageProvider('jdbc')
               .addConnection(configName, {
                 client: 'postgresql',
                 host: service.host,

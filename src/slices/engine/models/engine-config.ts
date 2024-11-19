@@ -1,5 +1,7 @@
 export type WriteMode = 'overwrite' | 'append'
 
+export type StorageProvider = 'mixed' | 'jdbc'
+
 export type S3ProviderConfigConnection = {
   bucket: string
   'dataset-path': string

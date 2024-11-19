@@ -7,6 +7,7 @@ import type {
   JdbcProviderConfigConnection,
   S3ConfigByTableConnectionRequired,
   S3ProviderConfigConnection,
+  StorageProvider,
   WriteMode,
 } from './config'
 
@@ -16,12 +17,14 @@ const omitEmpty = require('omit-empty')
 export class ConfigBuilder {
   protected _providerConfig: Record<'s3' | 'jdbc', EngineConfigType.ProviderConfig> | null
   protected _writeMode: EngineConfigType.WriteMode
+  protected _storageProvider: EngineConfigType.StorageProvider
   protected _trackId: number
   protected _executables: Record<string, unknown>[]
   protected _universalServices: string[]
 
   constructor() {
     this._writeMode = 'overwrite'
+    this._storageProvider = 'mixed'
     this._providerConfig = null
     this._executables = []
     this._universalServices = []
@@ -29,6 +32,11 @@ export class ConfigBuilder {
 
   setWriteMode(mode: WriteMode) {
     this._writeMode = mode
+    return this
+  }
+
+  setStorageProvider(provider: StorageProvider) {
+    this._storageProvider = provider
     return this
   }
 
@@ -194,7 +202,7 @@ export class ConfigBuilder {
       'calc-id': this._trackId,
 
       sdk: {
-        'storage-provider': 'mixed',
+        'storage-provider': this._storageProvider,
         'write-mode': this._writeMode,
         'provider-config': this._providerConfig,
 
