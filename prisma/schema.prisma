@@ -101,9 +101,9 @@ model StoreConfig {
 // **************************
 
 model DcService {
-  id       String @db.VarChar(24)
-  display  String @db.VarChar(255)
-  host     String @db.VarChar(255)
+  id       String  @default(uuid()) @db.Uuid()
+  display  String? @db.VarChar(255)
+  host     String  @db.VarChar(255)
   port     Int
   username String
   password String
@@ -116,10 +116,10 @@ model DcService {
 }
 
 model DcDatabase {
-  id        String @db.VarChar(24)
+  id        String @default(uuid()) @db.Uuid()
   name      String @db.VarChar(255)
   display   String @db.VarChar(255)
-  serviceId String @db.VarChar(50)
+  serviceId String @db.Uuid()
 
   Service DcService  @relation(fields: [serviceId], references: [id])
   Schemas DcSchema[]
@@ -130,10 +130,10 @@ model DcDatabase {
 }
 
 model DcSchema {
-  id         String @db.VarChar(24)
+  id         String @default(uuid()) @db.Uuid()
   name       String @db.VarChar(50)
   display    String @db.VarChar(50)
-  databaseId String @db.VarChar(50)
+  databaseId String @db.Uuid()
 
   Database DcDatabase @relation(fields: [databaseId], references: [id])
   Tables   DcTable[]
@@ -144,10 +144,10 @@ model DcSchema {
 }
 
 model DcTable {
-  id       String @db.VarChar(24)
+  id       String @default(uuid()) @db.Uuid()
   name     String @db.VarChar(50)
   display  String @db.VarChar(50)
-  schemaId String @db.VarChar(50)
+  schemaId String @db.Uuid()
 
   Database DcSchema   @relation(fields: [schemaId], references: [id])
   Columns  DcColumn[]
@@ -158,10 +158,10 @@ model DcTable {
 }
 
 model DcColumn {
-  id      String @db.VarChar(24)
+  id      String @default(uuid()) @db.Uuid()
   name    String @db.VarChar(50)
   display String @db.VarChar(50)
-  tableId String @db.VarChar(50)
+  tableId String @db.Uuid()
 
   Table DcTable @relation(fields: [tableId], references: [id])
 

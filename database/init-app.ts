@@ -1,3 +1,5 @@
+import { PrismaClient } from '@prisma/client'
+
 import knex from 'knex'
 
 import { createDatabase } from './_lib/create-database'
@@ -6,6 +8,8 @@ import { getDatabaseConfigMap } from './_lib/get-database-config-map'
 import { run } from './seeds/run'
 
 ;(async () => {
+  const prisma = new PrismaClient()
+
   // Инициализируем переменные
   const databaseConfigMap = getDatabaseConfigMap()
 
@@ -50,6 +54,40 @@ import { run } from './seeds/run'
       user: databaseConfigMap.operational.user,
       password: databaseConfigMap.operational.password,
       database: 'postgres',
+    },
+  })
+
+  const service = await prisma.dcService.create({
+    data: {
+      display: 'test',
+      host: databaseConfigMap.operational.host,
+      port: Number(databaseConfigMap.operational.port),
+      username: databaseConfigMap.operational.user,
+      password: databaseConfigMap.operational.password,
+    },
+  })
+
+  const dcDatabase = await prisma.dcDatabase.create({
+    data: {
+      name: 'test',
+      display: 'Test',
+      serviceId: service.id,
+    },
+  })
+
+  const dcSchema = await prisma.dcSchema.create({
+    data: {
+      name: 'public',
+      display: 'Public',
+      databaseId: dcDatabase.id,
+    },
+  })
+
+  await prisma.dcTable.create({
+    data: {
+      name: 'tableTest',
+      display: 'TableTest',
+      schemaId: dcSchema.id,
     },
   })
 

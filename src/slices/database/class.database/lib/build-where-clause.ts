@@ -15,7 +15,9 @@ import {
 } from '../../models'
 
 // Функция для построения условий WHERE
-export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where): Knex.QueryBuilder {
+export function buildWhereClause(queryBuilder: Knex.QueryBuilder, where: Where | undefined): Knex.QueryBuilder {
+  if (where === undefined) return queryBuilder
+
   const clonedWhere = { ...where }
 
   if (has(clonedWhere, 'AND')) {
