@@ -6,9 +6,12 @@ import { type Knex } from 'knex'
 
 import { type Sort, type Where } from '~/slices/database'
 import { buildWhereClause } from '~/slices/database/class.database/lib/build-where-clause'
-import { ConfigBuilder, EngineService, type RunNormalizeParams } from '~/slices/engine'
+import { EngineService, type RunNormalizeParams } from '~/slices/engine'
 import { PrismaService } from '~/slices/prisma'
+import { generateId } from '~/utils/core'
 import { parseDatabaseUrl } from '~/utils/database'
+
+import { createAnalyticsConfig } from './lib/create-analytical-config'
 
 export { type AnalyticalActions }
 
@@ -56,9 +59,6 @@ export class AnalyticsService {
       service.databases.forEach((database) => {
         database.schemas.forEach((schema) => {
           schema.tables.forEach((table) => {
-            const configBulder = new ConfigBuilder()
-            const configName = `in_${table.name}`
-
             const executables = {
               'computable-config': {
                 'computable-name': 'dnp-common/artifacts/procedures/DnpTableStats',
@@ -76,39 +76,19 @@ export class AnalyticsService {
               executables.parameters.stats[column.name] = column.actions
             })
 
-            configBulder
-              .setWriteMode('append')
-              .setStorageProvider('jdbc')
-              .addConnection(configName, {
-                client: 'postgresql',
-                host: service.host,
-                port: service.port,
-                username: service.username,
-                password: service.password,
-                database: database.name,
-                schema: schema.name,
-              })
-              .addConnection('app', {
-                client: 'postgresql',
+            runAnaliticsParams.push({
+              configFileName: `tableName=${table.name}&date=${generateId()}.json`,
+              config: createAnalyticsConfig({
+                tableName: table.name,
+                schemaName: schema.name,
+                executableStats: executables.parameters.stats,
                 host: appDatabaseConnection.host,
                 port: appDatabaseConnection.port,
-                username: appDatabaseConnection.user,
+                user: appDatabaseConnection.user,
                 password: appDatabaseConnection.password,
                 database: appDatabaseConnection.database,
-                schema: 'public',
-                truncate: true,
-              })
-              .addOut(table.name, {
-                table: table.name,
-                extends: 'app',
-              })
-              .addUniversalService('ru.datatech.engine.sdk.service.dataframe.CorpDataFrameServiceFactory')
-              .addUniversalService('ru.datatech.engine.sdk.service.configtables.ConfigTablesFactory')
-              .addExecutable(executables)
-
-            runAnaliticsParams.push({
-              configFileName: `tableName=${table.name}&date=${new Date()}`,
-              config: configBulder.build(),
+                client: 'postgresql',
+              }),
               type: 'analytics',
             })
           })

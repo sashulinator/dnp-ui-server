@@ -20,7 +20,7 @@ export default class Service {
   async runNormalization(params: RunNormalizeParams): Promise<NormalizeResult> {
     const buffer = JSON.stringify(params.config)
 
-    await this.minioService.putObject(BUCKET, `${params}/${params.type}`, buffer)
+    await this.minioService.putObject(BUCKET, `${params.type}/${params.configFileName}`, buffer)
 
     // Trigger the Airflow DAG run
     const ret = await runDag({
