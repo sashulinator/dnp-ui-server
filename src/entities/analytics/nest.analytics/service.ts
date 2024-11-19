@@ -38,8 +38,8 @@ export type RunParams = {
 }
 
 export type FindManyAndCountTablesParams = {
-  take?: number | undefined
-  skip?: number | undefined
+  limit?: number | undefined
+  offset?: number | undefined
   where?: Where | undefined
   sort?: Record<string, 'asc' | 'desc'> | undefined
 }
@@ -126,6 +126,8 @@ export class AnalyticsService {
     findManyRows(queryBuilder, params)
     queryBuilder.select(
       'Table.id',
+      'Table.name',
+      'Table.display',
       'Schema.id as schemaId',
       'Schema.name as schemaName',
       'Schema.display as schemaDisplay',
@@ -134,6 +136,7 @@ export class AnalyticsService {
       'Database.display as databaseDisplay',
       'Service.id as serviceId',
       'Service.display as serviceDisplay',
+      'Service.id as serviceId',
     )
     queryBuilder.join('Schema', 'Schema.id', '=', 'Table.schemaId')
     queryBuilder.join('Database', 'Database.id', '=', 'Schema.databaseId')

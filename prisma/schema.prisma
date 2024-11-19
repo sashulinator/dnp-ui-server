@@ -102,8 +102,8 @@ model StoreConfig {
 
 model DcService {
   id       String  @default(uuid()) @db.Uuid()
-  display  String? @db.VarChar(255)
-  host     String  @db.VarChar(255)
+  display  String?
+  host     String
   port     Int
   username String
   password String
@@ -117,8 +117,8 @@ model DcService {
 
 model DcDatabase {
   id        String @default(uuid()) @db.Uuid()
-  name      String @db.VarChar(255)
-  display   String @db.VarChar(255)
+  name      String
+  display   String
   serviceId String @db.Uuid()
 
   Service DcService  @relation(fields: [serviceId], references: [id])
@@ -131,8 +131,8 @@ model DcDatabase {
 
 model DcSchema {
   id         String @default(uuid()) @db.Uuid()
-  name       String @db.VarChar(50)
-  display    String @db.VarChar(50)
+  name       String
+  display    String
   databaseId String @db.Uuid()
 
   Database DcDatabase @relation(fields: [databaseId], references: [id])
@@ -145,8 +145,8 @@ model DcSchema {
 
 model DcTable {
   id       String @default(uuid()) @db.Uuid()
-  name     String @db.VarChar(50)
-  display  String @db.VarChar(50)
+  name     String
+  display  String
   schemaId String @db.Uuid()
 
   Database DcSchema   @relation(fields: [schemaId], references: [id])
@@ -159,8 +159,8 @@ model DcTable {
 
 model DcColumn {
   id      String @default(uuid()) @db.Uuid()
-  name    String @db.VarChar(50)
-  display String @db.VarChar(50)
+  name    String
+  display String
   tableId String @db.Uuid()
 
   Table DcTable @relation(fields: [tableId], references: [id])

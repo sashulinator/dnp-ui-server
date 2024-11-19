@@ -12,7 +12,7 @@ export class AnalyticsController {
   }
 
   @Post('find-many-and-count-tables')
-  findManyAndCountTables(params: FindManyAndCountTablesParams) {
-    return this.analyticsService.findManyAndCountTables(params)
+  findManyAndCountTables(@Body() body: { data: FindManyAndCountTablesParams }) {
+    return this.analyticsService.findManyAndCountTables(body.data)
   }
 }
