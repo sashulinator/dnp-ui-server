@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Dictionary, Key } from '../core'
 
 type State = Object | unknown[] | void

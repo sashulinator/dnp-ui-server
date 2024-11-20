@@ -10,6 +10,7 @@ import { EngineService, type RunNormalizeParams } from '~/slices/engine'
 import { PrismaService } from '~/slices/prisma'
 import { generateId } from '~/utils/core'
 import { parseDatabaseUrl } from '~/utils/database'
+import { setPath, walk } from '~/utils/dictionary'
 
 import { createAnalyticsConfig } from './lib/create-analytical-config'
 
@@ -104,6 +105,33 @@ export class AnalyticsService {
   async findManyAndCountTables(params?: FindManyAndCountTablesParams) {
     const connection = parseDatabaseUrl(process.env.DATABASE_URL)
 
+    const map = {
+      id: 'Table.id',
+      name: 'Table.name',
+      display: 'Table.display',
+      schemaId: 'Schema.id',
+      schemaName: 'Schema.name',
+      schemaDisplay: 'Schema.display',
+      databaseId: 'Database.id',
+      databaseName: 'Database.name',
+      databaseDisplay: 'Database.display',
+      serviceId: 'Service.id',
+      serviceDisplay: 'Service.display',
+      serviceHost: 'Service.host',
+      servicePort: 'Service.port',
+      serviceUsername: 'Service.username',
+      servicePassword: 'Service.password',
+    }
+
+    let newWhere = {}
+    walk(params?.where || {}, ({ path, value, key }) => {
+      if (key in map) {
+        const pathClone = [...path]
+        pathClone.pop()
+        newWhere = setPath(newWhere, [...pathClone, map[key]], value)
+      }
+    })
+
     const kx = knex({
       client: 'pg',
       connection: {
@@ -120,27 +148,32 @@ export class AnalyticsService {
     queryBuilder.table('Table')
 
     const countQueryBuilder = queryBuilder.clone()
-    buildWhereClause(queryBuilder, params?.where)
+    buildWhereClause(queryBuilder, newWhere)
     const count = await countQueryBuilder.count('*').first()
 
-    findManyRows(queryBuilder, params)
-    queryBuilder.select(
-      'Table.id',
-      'Table.name',
-      'Table.display',
-      'Schema.id as schemaId',
-      'Schema.name as schemaName',
-      'Schema.display as schemaDisplay',
-      'Database.id as databaseId',
-      'Database.name as databaseName',
-      'Database.display as databaseDisplay',
-      'Service.id as serviceId',
-      'Service.display as serviceDisplay',
-      'Service.id as serviceId',
-    )
-    queryBuilder.join('Schema', 'Schema.id', '=', 'Table.schemaId')
-    queryBuilder.join('Database', 'Database.id', '=', 'Schema.databaseId')
-    queryBuilder.join('Service', 'Service.id', '=', 'Database.serviceId')
+    findManyRows(queryBuilder, { ...params, where: newWhere })
+      .select(
+        'Table.id as id',
+        'Table.name as name',
+        'Table.display as display',
+        'Schema.id as schemaId',
+        'Schema.name as schemaName',
+        'Schema.display as schemaDisplay',
+        'Database.id as databaseId',
+        'Database.name as databaseName',
+        'Database.display as databaseDisplay',
+        'Service.id as serviceId',
+        'Service.display as serviceDisplay',
+        kx.raw('json_agg("Column".*) AS "columns"'),
+      )
+      .join('Schema', 'Schema.id', '=', 'Table.schemaId')
+      .join('Database', 'Database.id', '=', 'Schema.databaseId')
+      .join('Service', 'Service.id', '=', 'Database.serviceId')
+      .leftJoin('Column', 'Column.tableId', '=', 'Table.id')
+      .groupBy('Table.id')
+      .groupBy('Schema.id')
+      .groupBy('Database.id')
+      .groupBy('Service.id')
 
     const items = await queryBuilder
 
