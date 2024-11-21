@@ -1,4 +1,4 @@
-import { Body, Get, Controller as NestJSController, Param, Put } from '@nestjs/common'
+import { Body, Controller as NestJSController, Param, Post } from '@nestjs/common'
 
 import { type UpdateStoreSchema } from '~/common/slices/store'
 
@@ -9,15 +9,13 @@ import Service from './service'
 export class Controller {
   constructor(private readonly service: Service) {}
 
-  /* ------------ GET HEAP BY NAME ------------*/
-  @Get(':name')
-  get(@Param('name') name: string): Promise<Store> {
-    return this.service.getUnique({ where: { name } })
+  @Post('get-unique/:name')
+  getUnique(@Param('name') name: string): Promise<Store> {
+    return this.service.getUnique(name)
   }
 
-  /* ------------ UPDATE HEAP ------------*/
-  @Put(':name')
+  @Post('update/:name')
   update(@Param('name') name: string, @Body() body: UpdateStoreSchema): Promise<Store> {
-    return this.service.update({ where: { name }, data: body })
+    return this.service.update(name, body)
   }
 }

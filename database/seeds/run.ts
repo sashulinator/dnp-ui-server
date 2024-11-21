@@ -3,6 +3,7 @@ import { type Knex } from 'knex'
 import { type DatabaseConfigMap } from '../_lib/get-database-config-map'
 import { countriesDictionaryTable, employeesDictionaryTable, rfSubjectsDictionaryTable } from './dictionary-table'
 import { countriesRawTable, employeesRawTable, rfSubjectsRawTable } from './raw-table'
+import { navMenu, operationalStoreConfigId } from './store'
 import { operationalStoreConfig, targetStoreConfig } from './store-config'
 import { systemUser } from './users'
 
@@ -35,6 +36,10 @@ export async function run(appKnex: Knex, databaseConfigMap: DatabaseConfigMap) {
       insert(appKnex, 'storeContainer', 'StoreConfig', { ...data, data: JSON.stringify(data.data) }, ['kn']),
     ),
   )
+
+  // Store
+
+  await Promise.all([navMenu, operationalStoreConfigId].map((data) => insert(appKnex, 'public', 'Store', data, ['id'])))
 }
 
 async function insert(appKnex: Knex, schemaName: string, tableName: string, data: any, conflict: string[]) {
