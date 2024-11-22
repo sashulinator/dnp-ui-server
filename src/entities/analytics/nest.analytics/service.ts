@@ -60,6 +60,7 @@ export class AnalyticsService {
       service.databases.forEach((database) => {
         database.schemas.forEach((schema) => {
           schema.tables.forEach((table) => {
+            if (!table.columns) return
             const executables = {
               'computable-config': {
                 'computable-name': 'dnp-common/artifacts/procedures/DnpTableStats',
@@ -140,6 +141,11 @@ export class AnalyticsService {
         user: connection.user,
         password: connection.password,
         database: connection.database,
+        pool: {
+          idleTimeoutMillis: 1,
+          max: 10,
+          acquireTimeoutMillis: 10_000,
+        },
       },
     })
     const queryBuilder = kx.queryBuilder()
@@ -164,7 +170,11 @@ export class AnalyticsService {
         'Database.display as databaseDisplay',
         'Service.id as serviceId',
         'Service.display as serviceDisplay',
-        kx.raw('json_agg("Column".*) AS "columns"'),
+        'Service.host as serviceHost',
+        'Service.port as servicePort',
+        'Service.username as serviceUsername',
+        'Service.password as servicePassword',
+        kx.raw('json_agg("Column".*) FILTER (WHERE "Column".* IS NOT NULL) AS "columns"'),
       )
       .join('Schema', 'Schema.id', '=', 'Table.schemaId')
       .join('Database', 'Database.id', '=', 'Schema.databaseId')

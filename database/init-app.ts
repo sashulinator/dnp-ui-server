@@ -83,11 +83,19 @@ import { run } from './seeds/run'
     },
   })
 
-  await prisma.dcTable.create({
+  const dcTable = await prisma.dcTable.create({
     data: {
       name: 'tableTest',
       display: 'TableTest',
       schemaId: dcSchema.id,
+    },
+  })
+
+  await prisma.dcColumn.create({
+    data: {
+      name: 'columnName',
+      display: 'columnDisply',
+      tableId: dcTable.id,
     },
   })
 
