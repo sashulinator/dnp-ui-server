@@ -1,5 +1,8 @@
 import { type Knex } from 'knex'
 
+import StoreService from '~/entities/store/service'
+import { PrismaService } from '~/slices/prisma'
+
 import { type DatabaseConfigMap } from '../_lib/get-database-config-map'
 import { countriesDictionaryTable, employeesDictionaryTable, rfSubjectsDictionaryTable } from './dictionary-table'
 import { countriesRawTable, employeesRawTable, rfSubjectsRawTable } from './raw-table'
@@ -9,6 +12,8 @@ import { systemUser } from './users'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function run(appKnex: Knex, databaseConfigMap: DatabaseConfigMap) {
+  const prisma = new PrismaService()
+
   // User
 
   await insert(appKnex, 'public', 'User', systemUser, ['id'])
@@ -39,7 +44,7 @@ export async function run(appKnex: Knex, databaseConfigMap: DatabaseConfigMap) {
 
   // Store
 
-  await Promise.all([navMenu, operationalStoreConfigId].map((data) => insert(appKnex, 'public', 'Store', data, ['id'])))
+  await Promise.all([navMenu, operationalStoreConfigId].map((data) => new StoreService(prisma).create({ ...data })))
 }
 
 async function insert(appKnex: Knex, schemaName: string, tableName: string, data: any, conflict: string[]) {

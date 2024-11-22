@@ -9,13 +9,13 @@ import Service from './service'
 export class Controller {
   constructor(private readonly service: Service) {}
 
-  @Post('get-unique/:name')
+  @Post('get-unique')
   getUnique(@Param('name') name: string): Promise<Store> {
     return this.service.getUnique(name)
   }
 
-  @Post('update/:name')
-  update(@Param('name') name: string, @Body() body: UpdateStoreSchema): Promise<Store> {
-    return this.service.update(name, body)
+  @Post('update')
+  update(@Body() body: { data: UpdateStoreSchema }): Promise<Store> {
+    return this.service.update(body.data)
   }
 }

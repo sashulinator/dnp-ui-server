@@ -1,8 +1,4 @@
-export interface Store {
-  name: string
-  description: string
-  data: unknown
-}
+import { Store } from '@prisma/client'
 
 export const navMenu: Store = {
   name: 'navMenu',

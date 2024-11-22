@@ -11,6 +11,7 @@ export type UpdateStore = Prisma.StoreUncheckedUpdateInput
 export default class StoreService {
   constructor(private prisma: PrismaService) {}
 
+  /** @final */
   async getUnique(name: string): Promise<Store> {
     return this.prisma.store.findUniqueOrThrow({ where: { name } })
   }
@@ -19,7 +20,8 @@ export default class StoreService {
     return this.prisma.store.create({ data })
   }
 
-  async update(name: string, data: UpdateStore): Promise<Store> {
-    return this.prisma.store.update({ where: { name }, data })
+  async update(data: UpdateStore): Promise<Store> {
+    if (!data.name || typeof data.name !== 'string') throw new Error('name is required')
+    return this.prisma.store.update({ where: { name: data.name }, data })
   }
 }
