@@ -17,9 +17,11 @@ export type FlatTable = {
   servicePort: number
   serviceUsername: string
   servicePassword: string
-  columns: {
-    id: string
-    name: string
-    display: string
-  }[]
+  columns:
+    | null
+    | {
+        id: string
+        name: string
+        display: string
+      }[]
 }
