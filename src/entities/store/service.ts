@@ -1,27 +1,36 @@
 import { Injectable } from '@nestjs/common'
-import type { Prisma, Store as StorePrisma } from '@prisma/client'
+import { type Prisma, type Store } from '@prisma/client'
 
 import { PrismaService } from '~/slices/prisma'
 
-export type Store = StorePrisma
-export type CreateStore = Prisma.StoreUncheckedCreateInput
-export type UpdateStore = Prisma.StoreUncheckedUpdateInput
+export { type Store }
+export type FindUniqueOrThrowParams = Parameters<PrismaService['store']['findUniqueOrThrow']>[0]
+export type CreateParams = Parameters<PrismaService['store']['create']>[0]
+export type CreateManyParams = Parameters<PrismaService['store']['createMany']>[0]
+export type UpdateParams = Parameters<PrismaService['store']['update']>[0]
+export type UniqueInput = Prisma.StoreWhereUniqueInput
 
 @Injectable()
 export default class StoreService {
   constructor(private prisma: PrismaService) {}
 
   /** @final */
-  async getUnique(name: string): Promise<Store> {
-    return this.prisma.store.findUniqueOrThrow({ where: { name } })
+  async findUniqueOrThrow(params: FindUniqueOrThrowParams): Promise<Store> {
+    return this.prisma.store.findUniqueOrThrow(params)
   }
 
-  async create(data: CreateStore): Promise<Store> {
-    return this.prisma.store.create({ data })
+  /** @final */
+  async createMany(params: CreateManyParams): Promise<{ count: number }> {
+    return this.prisma.store.createMany(params)
   }
 
-  async update(data: UpdateStore): Promise<Store> {
-    if (!data.name || typeof data.name !== 'string') throw new Error('name is required')
-    return this.prisma.store.update({ where: { name: data.name }, data })
+  /** @final */
+  async create(params: CreateParams): Promise<Store> {
+    return this.prisma.store.create(params)
+  }
+
+  /** @final */
+  async update(params: UpdateParams): Promise<Store> {
+    return this.prisma.store.update(params)
   }
 }

@@ -34,7 +34,7 @@ export const createAnalyticsConfig = ({
     password: password,
   })}`
   const baseUrlOut = 'jdbc:postgresql://10.4.40.11:5432/target?user=dnp_user&password=dnp_db_password'
-  const dbTableOut = 'med'
+  const dbTableOut = 'analyticReport'
 
   return {
     sdk: {

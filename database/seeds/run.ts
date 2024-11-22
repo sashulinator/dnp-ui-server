@@ -44,7 +44,7 @@ export async function run(appKnex: Knex, databaseConfigMap: DatabaseConfigMap) {
 
   // Store
 
-  await Promise.all([navMenu, operationalStoreConfigId].map((data) => new StoreService(prisma).create({ ...data })))
+  new StoreService(prisma).createMany({ data: [navMenu, operationalStoreConfigId] })
 }
 
 async function insert(appKnex: Knex, schemaName: string, tableName: string, data: any, conflict: string[]) {

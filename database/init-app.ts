@@ -99,6 +99,14 @@ import { run } from './seeds/run'
     },
   })
 
+  await prisma.dcTable.create({
+    data: {
+      name: 'tableWithoutColumns',
+      display: 'tableWithoutColumns',
+      schemaId: dcSchema.id,
+    },
+  })
+
   // Удаляем базы если они существуют
   await dropDatabase(targetPostgresKnex, databaseConfigMap.target.database)
   await dropDatabase(operationalPostgresKnex, databaseConfigMap.operational.database)

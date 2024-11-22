@@ -1,11 +1,10 @@
-import { type PrismaClient } from '@prisma/client'
+import { type Prisma, type PrismaClient } from '@prisma/client'
 
 export async function seedAnalyticalActions(prisma: PrismaClient) {
-  const actionData = [
+  const actionData: Prisma.AnalyticalActionsCreateInput[] = [
     {
       id: 1,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Кол-во строк',
       name: 'values-count',
       description: 'Это общее количество заполненных значений в столбце. Игнорирует значения NULL.',
@@ -16,7 +15,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 2,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Процент значений',
       name: 'values-percentage',
       description: 'Процент значений в столбце по отношению к числу строк.',
@@ -27,7 +25,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 3,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Количество незаполненных значений',
       name: 'null-count',
       description: 'Количество значений NULL в столбце(пустые).',
@@ -38,7 +35,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 4,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Пропорция незаполненных значений',
       name: 'null-proportion',
       description: 'Показывает отношение значений NULL к общему количеству значений в столбце.',
@@ -49,7 +45,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 5,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Количество дубликатов',
       name: 'duplicate-count',
       description:
@@ -61,7 +56,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 6,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Количество уникальных значений',
       name: 'unique-count',
       description:
@@ -73,7 +67,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 7,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Пропорция уникальных значений',
       name: 'unique-proportion',
       description: 'Соотношение количества уникальных значений и общего числа записей',
@@ -84,7 +77,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 8,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Количество отличительных значений',
       name: 'distinct-count',
       description:
@@ -96,7 +88,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 9,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Пропорция отличительных значений',
       name: 'distinct-proportion',
       description: 'Соотношение количества исключительных значений по отношению к общему числу записей.',
@@ -107,7 +98,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 10,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Мин',
       name: 'min',
       description: 'Только для числовых значений. Возвращает минимальное значение.',
@@ -118,7 +108,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 11,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Макс',
       name: 'max',
       description: 'Только для числовых значений. Возвращает максимальное значение.',
@@ -129,7 +118,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 12,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Минимальная длина',
       name: 'min-length',
       description: 'Только для текстовых значений. Возвращает минимальную длину значений в столбце.',
@@ -140,7 +128,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 13,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Максимальная длина',
       name: 'max-length',
       description: 'Только для текстовых значений. Возвращает максимальную длину значений в столбце.',
@@ -151,7 +138,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 14,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Значения',
       name: 'mean',
       description: 'Текстовые значения: возвращает среднюю длину значений.',
@@ -162,7 +148,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 15,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Медиана',
       name: 'median',
       description: 'Только для числовых значений.',
@@ -173,7 +158,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 16,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Сумма',
       name: 'sum',
       description: 'Только для числовых значений. Возвращает сумму всех значений в столбце.',
@@ -184,7 +168,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 17,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Стандартное отклонение',
       name: 'standard-deviation',
       description: 'Только для числовых значений. Возвращает стандартное отклонение.',
@@ -195,7 +178,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 18,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Первый квартиль',
       name: 'first-quantile',
       description: 'Только для числовых значений. Среднее число между наименьшим значением и медианой',
@@ -206,7 +188,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 19,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Третий квартиль',
       name: 'third-quantile',
       description: 'Только для числовых значений. Среднее число между медианой и наибольшим значением',
@@ -217,7 +198,6 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
     {
       id: 20,
       group: 'Конструктор метрик для столбцов',
-      subgroup: '',
       display: 'Межквартильный диапазон',
       name: 'inter-quantile-range',
       description: 'Только для числовых значений. Разница между третьим и первым квартилем',
