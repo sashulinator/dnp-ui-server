@@ -4,24 +4,18 @@ import * as v from 'valibot'
  * BaseStore
  */
 
-export const baseStoreSchema = v.object({
+export const storeSchema = v.object({
   name: v.string(),
   description: v.string(),
   data: v.looseObject({}),
 })
 
-/**
- * CreateStoreSchema
- */
-
-export const createStoreSchema = baseStoreSchema
-
-export type CreateStoreSchema = v.InferOutput<typeof createStoreSchema>
+export type Store = v.InferOutput<typeof storeSchema>
 
 /**
  * UpdateStoreSchema
  */
 
-export const updateStoreSchema = baseStoreSchema
+export const storeUpdateInputSchema = storeSchema
 
-export type UpdateStoreSchema = v.InferOutput<typeof updateStoreSchema>
+export type StoreUpdateInput = v.InferOutput<typeof storeUpdateInputSchema>
