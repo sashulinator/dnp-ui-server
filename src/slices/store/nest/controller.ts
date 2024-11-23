@@ -1,25 +1,25 @@
 import { Body, Controller as NestJSController, Post } from '@nestjs/common'
 
-import { Data, serialize } from '~/slices/api'
+import { serialize } from '~/slices/api'
 
-import * as api from '../api'
+import * as api from '../api.v1'
 import { StoreService } from './service'
 
-@NestJSController(api.v1url)
+@NestJSController()
 export class StoreController {
   constructor(private readonly storeService: StoreService) {}
 
-  @Post(api.getByName.NAME)
-  async getByName(@Body('name') body: Data<api.getByName.RequestParams>): Promise<api.getByName.Result> {
-    const ret = await this.storeService.findUniqueOrThrow({ where: { name: body.params.name } })
+  @Post(api.getByName.url)
+  async getByName(@Body('params') params: api.getByName.RequestParams): Promise<api.getByName.Result> {
+    const ret = await this.storeService.findUniqueOrThrow({ where: { name: params.name } })
     return serialize<api.getByName.Result>(ret)
   }
 
-  @Post(api.update.NAME)
-  async update(@Body() body: Data<api.update.RequestParams>): Promise<api.update.Result> {
+  @Post(api.update.url)
+  async update(@Body('params') params: api.update.RequestParams): Promise<api.update.Result> {
     const ret = await this.storeService.update({
-      where: { name: body.params.name },
-      data: body.params.input,
+      where: { name: params.input.name },
+      data: params.input,
     })
     return serialize<api.update.Result>(ret)
   }
