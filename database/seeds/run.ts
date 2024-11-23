@@ -1,7 +1,7 @@
 import { type Knex } from 'knex'
 
-import StoreService from '~/entities/store/service'
 import { PrismaService } from '~/slices/prisma'
+import { StoreService } from '~/slices/store'
 
 import { type DatabaseConfigMap } from '../_lib/get-database-config-map'
 import { countriesDictionaryTable, employeesDictionaryTable, rfSubjectsDictionaryTable } from './dictionary-table'
