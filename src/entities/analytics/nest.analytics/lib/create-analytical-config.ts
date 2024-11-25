@@ -101,7 +101,7 @@ export const createAnalyticsConfig = ({
           version: '2.0.0',
         },
         'sdk-config': {
-          'sdk-name': 'risk-engine-corp-sdk',
+          name: 'risk-engine-corp-sdk',
           version: '2.0.1-beta',
         },
         parameters: {

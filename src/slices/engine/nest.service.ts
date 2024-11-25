@@ -24,7 +24,7 @@ export default class Service {
 
     // Trigger the Airflow DAG run
     const ret = await runDag({
-      name: 'dnp_rest_api_trigger',
+      name: 'dnp_rest_api_trigger_v2',
       s3ConfigPath: `${BUCKET}/${params.type}/${params.configFileName}`,
     })
 

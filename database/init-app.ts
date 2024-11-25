@@ -23,7 +23,7 @@ import { run } from './seeds/run'
   })
 
   await appKnex.schema.createTable('analytics_report', (tableBuilder) => {
-    tableBuilder.string('id').primary()
+    tableBuilder.string('id')
     tableBuilder.string('table')
     tableBuilder.string('stats')
   })
