@@ -1,4 +1,5 @@
-import { toDatabaseUrl } from '~/utils/database'
+import { random } from '~/utils/core'
+import { parseDatabaseUrl, toDatabaseUrl } from '~/utils/database'
 
 interface CreateConfigParams {
   tableName: string
@@ -33,8 +34,19 @@ export const createAnalyticsConfig = ({
     user: user,
     password: password,
   })}`
-  const baseUrlOut = 'jdbc:postgresql://10.4.40.11:5432/target?user=dnp_user&password=dnp_db_password'
-  const dbTableOut = 'analyticReport'
+
+  const parsedDatabaseUrl = parseDatabaseUrl(process.env.DATABASE_URL)
+
+  const baseUrlOut = `jdbc:${toDatabaseUrl({
+    client: 'postgresql',
+    host: parsedDatabaseUrl.host,
+    port: parsedDatabaseUrl.port,
+    database: parsedDatabaseUrl.database,
+    user: parsedDatabaseUrl.user,
+    password: parsedDatabaseUrl.password,
+  })}`
+
+  const dbTableOut = 'analyticsReport'
 
   return {
     sdk: {
@@ -89,7 +101,7 @@ export const createAnalyticsConfig = ({
           version: '2.0.0',
         },
         'sdk-config': {
-          name: 'risk-engine-corp-sdk',
+          'sdk-name': 'risk-engine-corp-sdk',
           version: '2.0.1-beta',
         },
         parameters: {
@@ -101,7 +113,7 @@ export const createAnalyticsConfig = ({
     ],
     'computable-factory': 'ru.datatech.engine.sdk.compute.BaseSDKProcedureFactory',
     'computables-prefix': 'ru.datatech.procedures',
-    'calc-id': 909,
+    'calc-id': random(0, 999999999),
     spark: {
       'app.name': 'dnp-demo-dev',
     },
