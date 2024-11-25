@@ -53,7 +53,6 @@ export class AnalyticsService {
   ) {}
 
   run(params: RunParams) {
-    const appDatabaseConnection = parseDatabaseUrl(process.env.DATABASE_URL)
     const runAnaliticsParams: RunNormalizeParams[] = []
 
     params.services.forEach((service) => {
@@ -84,11 +83,11 @@ export class AnalyticsService {
                 tableName: table.name,
                 schemaName: schema.name,
                 executableStats: executables.parameters.stats,
-                host: appDatabaseConnection.host,
-                port: appDatabaseConnection.port,
-                user: appDatabaseConnection.user,
-                password: appDatabaseConnection.password,
-                database: appDatabaseConnection.database,
+                host: service.host,
+                port: service.port,
+                user: service.username,
+                password: service.password,
+                database: database.name,
                 client: 'postgresql',
               }),
               type: 'analytics',

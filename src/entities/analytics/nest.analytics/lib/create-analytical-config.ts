@@ -46,7 +46,7 @@ export const createAnalyticsConfig = ({
     password: parsedDatabaseUrl.password,
   })}`
 
-  const dbTableOut = 'analyticsReport'
+  const dbTableOut = 'analytics_report'
 
   return {
     sdk: {
@@ -105,7 +105,7 @@ export const createAnalyticsConfig = ({
           version: '2.0.1-beta',
         },
         parameters: {
-          id: '1',
+          id: '2',
           table: tableName,
           stats: { ...executableStats },
         },
