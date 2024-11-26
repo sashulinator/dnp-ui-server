@@ -6,7 +6,45 @@ import { systemUser } from '../../database/seeds/users'
 const targetTableName = 'targetTable'
 type CreateInput = Prisma.TargetTableUncheckedCreateInput
 
-export const targetTables = [_create({ kn: 'first', display: 'first' })] as const
+export const targetTables = [
+  _create({ kn: 'first', display: 'first' }),
+  _create({
+    kn: 'analytics_report',
+    display: 'Результаты профилирования',
+    columns: [
+      {
+        id: 'id0',
+        name: 'id',
+        display: 'ID',
+        type: 'string',
+      },
+      {
+        id: 'id1',
+        name: 'table_name',
+        display: 'Название таблицы',
+        type: 'string',
+      },
+      {
+        id: 'id2',
+        name: 'column_name',
+        display: 'Название колонки',
+        type: 'string',
+      },
+      {
+        id: 'id3',
+        name: 'metric_name',
+        display: 'Название Метрики',
+        type: 'string',
+      },
+      {
+        id: 'id4',
+        name: 'result_value',
+        display: 'Результат',
+        type: 'string',
+      },
+    ],
+  }),
+] as const
 
 function _create(defaultValues: Partial<CreateInput>): CreateInput {
   const instance: CreateInput = {
