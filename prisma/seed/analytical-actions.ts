@@ -141,7 +141,7 @@ export async function seedAnalyticalActions(prisma: PrismaClient) {
       display: 'Значения',
       name: 'mean',
       description: 'Текстовые значения: возвращает среднюю длину значений.',
-      isText: true,
+      isText: false,
       isInt: true,
       isDate: false,
     },

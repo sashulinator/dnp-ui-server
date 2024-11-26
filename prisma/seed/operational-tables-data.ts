@@ -1,4 +1,5 @@
 import { operationalStoreConfig } from '../../database/seeds/store-config'
+import { IsNegative } from '../../dist/src/utils/types/number/is-negative'
 import { type OperationalTable } from '../../src/entities/operational-table/dto'
 import { _idColumn } from '../../src/entities/operational-table/models/_id-column'
 import { _statusColumn } from '../../src/entities/operational-table/models/_status'
@@ -78,7 +79,16 @@ export default async function seedOperationalTables() {
 
   await database.createTable(medOt.name, [
     ...medOt.columns.map((item) => {
-      return { name: item.name, type: 'string', index: Boolean(item.index) } as const
+      if (item.name === 'price') {
+        return {
+          name: item.name,
+          type: 'integer',
+          isNegativeAllowed: Boolean(item.index),
+          index: Boolean(item.index),
+        } as const
+      } else {
+        return { name: item.name, type: 'string', index: Boolean(item.index) } as const
+      }
     }),
     _idColumn,
     _statusColumn,
@@ -86,7 +96,9 @@ export default async function seedOperationalTables() {
 
   const medRows = new Array(3).fill(undefined).map((_, i) => {
     return medOt.columns.reduce((acc, item) => {
-      acc[item.name] = `seeded-${item.name}-${i}`
+      if (item.name === 'price') {
+        acc[item.name] = 1 + i
+      } else acc[item.name] = `seeded-${item.name}-${i}`
       return acc
     }, {})
   })

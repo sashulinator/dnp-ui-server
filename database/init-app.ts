@@ -83,7 +83,7 @@ import { run } from './seeds/run'
       {
         name: 'price',
         display: 'Цена',
-        type: 'int',
+        type: 'integer',
         tableId: dcMedTable.id,
       },
       {

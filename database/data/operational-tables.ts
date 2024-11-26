@@ -213,9 +213,8 @@ export const medOperationalTable: BaseOperationalTable = {
       id: 'id4',
       name: 'price',
       display: 'Цена',
-      type: 'float',
+      type: 'integer',
       maxLength: 50,
-      decimalPlaces: 2,
       isNegativeAllowed: false,
     },
     {

@@ -179,7 +179,7 @@ export const operationalTables = [
         id: 'id5',
         name: 'price',
         display: 'цена',
-        type: 'string',
+        type: 'integer',
         maxLength: 50,
       },
       {

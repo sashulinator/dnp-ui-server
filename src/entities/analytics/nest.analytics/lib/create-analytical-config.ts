@@ -1,4 +1,4 @@
-import { random } from '~/utils/core'
+import { generateId, random } from '~/utils/core'
 import { parseDatabaseUrl, toDatabaseUrl } from '~/utils/database'
 
 interface CreateConfigParams {
@@ -105,7 +105,7 @@ export const createAnalyticsConfig = ({
           version: '2.0.1-beta',
         },
         parameters: {
-          id: '2',
+          id: generateId(),
           table: tableName,
           stats: { ...executableStats },
         },
