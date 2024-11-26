@@ -39,7 +39,7 @@ export const createAnalyticsConfig = ({
 
   const baseUrlOut = `jdbc:${toDatabaseUrl({
     client: 'postgresql',
-    host: parsedDatabaseUrl.host,
+    host: '10.4.40.11',
     port: parsedDatabaseUrl.port,
     database: parsedDatabaseUrl.database,
     user: parsedDatabaseUrl.user,

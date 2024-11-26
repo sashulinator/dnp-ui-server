@@ -25,7 +25,7 @@ import { run } from './seeds/run'
   const service = await prisma.dcService.create({
     data: {
       display: 'App',
-      host: databaseConfigMap.operational.host,
+      host: '10.4.40.11',
       port: Number(databaseConfigMap.operational.port),
       username: databaseConfigMap.operational.user,
       password: databaseConfigMap.operational.password,
