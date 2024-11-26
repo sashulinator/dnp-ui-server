@@ -254,7 +254,7 @@ function _createOnIteration(_: unknown, i: number): CreateInput {
 }
 
 export default async function seedOperationalTables(prisma: PrismaClient) {
-  const generatedOperationalTables = Array(20).fill(35).map(_createOnIteration)
+  const generatedOperationalTables = Array(0).fill(undefined).map(_createOnIteration)
   const allSeeds = [...operationalTables, ...generatedOperationalTables]
   const seedPromises = allSeeds.map((seed) => prisma[operationalTableName].create({ data: seed }))
   return Promise.all([...seedPromises])

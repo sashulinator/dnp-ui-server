@@ -48,10 +48,26 @@ import { run } from './seeds/run'
     },
   })
 
-  const dcTable = await prisma.dcTable.create({
+  const dcMedTable = await prisma.dcTable.create({
     data: {
       name: 'med',
       display: 'Мед',
+      schemaId: dcSchema.id,
+    },
+  })
+
+  const dcCarsTable = await prisma.dcTable.create({
+    data: {
+      name: 'cars',
+      display: 'Автомобили',
+      schemaId: dcSchema.id,
+    },
+  })
+
+  const dcEmployeesTable = await prisma.dcTable.create({
+    data: {
+      name: 'employees',
+      display: 'Работники',
       schemaId: dcSchema.id,
     },
   })
@@ -61,33 +77,74 @@ import { run } from './seeds/run'
       {
         name: 'name',
         display: 'Название',
-        tableId: dcTable.id,
+        tableId: dcMedTable.id,
       },
       {
         name: 'price',
         display: 'Цена',
-        tableId: dcTable.id,
+        tableId: dcMedTable.id,
       },
       {
         name: 'articul',
         display: 'Артикул',
-        tableId: dcTable.id,
+        tableId: dcMedTable.id,
       },
       {
         name: 'group',
         display: 'Группа',
-        tableId: dcTable.id,
+        tableId: dcMedTable.id,
       },
     ],
   })
 
-  await prisma.dcTable.create({
-    data: {
-      name: 'tableWithoutColumns',
-      display: 'tableWithoutColumns',
-      schemaId: dcSchema.id,
-    },
+  await prisma.dcColumn.createMany({
+    data: [
+      {
+        name: 'model',
+        display: 'Модель',
+        tableId: dcCarsTable.id,
+      },
+      {
+        name: 'brand',
+        display: 'Бренд',
+        tableId: dcCarsTable.id,
+      },
+    ],
   })
+
+  await prisma.dcColumn.createMany({
+    data: [
+      {
+        name: 'employeesId',
+        display: 'Id',
+        tableId: dcEmployeesTable.id,
+      },
+      {
+        name: 'firstName',
+        display: 'Имя',
+        tableId: dcEmployeesTable.id,
+      },
+      {
+        name: 'secondName',
+        display: 'Фамилия',
+        tableId: dcEmployeesTable.id,
+      },
+    ],
+  })
+
+  const promises = Array(5)
+    .fill(undefined)
+    .map((_, i) => {
+      return prisma.dcTable.create({
+        data: {
+          name: `tableWithoutColumns-${i}`,
+          display: `tableWithoutColumns-${i}`,
+          schemaId: dcSchema.id,
+        },
+      })
+    })
+
+  await Promise.all(promises)
 
   await run(appKnex, databaseConfigMap)
 

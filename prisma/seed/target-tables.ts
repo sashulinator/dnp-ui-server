@@ -51,7 +51,7 @@ function _createOnIteration(_: unknown, i: number): CreateInput {
 }
 
 export default async function seedtargetTables(prisma: PrismaClient) {
-  const generatedtargetTables = Array(20).fill(35).map(_createOnIteration)
+  const generatedtargetTables = Array(0).fill(undefined).map(_createOnIteration)
   const allSeeds = [...targetTables, ...generatedtargetTables]
   const seedPromises = allSeeds.map((seed) => prisma[targetTableName].create({ data: seed }))
   return Promise.all([...seedPromises])
