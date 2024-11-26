@@ -22,12 +22,6 @@ import { run } from './seeds/run'
     },
   })
 
-  await appKnex.schema.createTable('analytics_report', (tableBuilder) => {
-    tableBuilder.string('id')
-    tableBuilder.string('table')
-    tableBuilder.string('stats')
-  })
-
   const service = await prisma.dcService.create({
     data: {
       display: 'App',
