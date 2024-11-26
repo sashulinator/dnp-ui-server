@@ -1,5 +1,4 @@
 import { operationalStoreConfig } from '../../database/seeds/store-config'
-import { IsNegative } from '../../dist/src/utils/types/number/is-negative'
 import { type OperationalTable } from '../../src/entities/operational-table/dto'
 import { _idColumn } from '../../src/entities/operational-table/models/_id-column'
 import { _statusColumn } from '../../src/entities/operational-table/models/_status'
