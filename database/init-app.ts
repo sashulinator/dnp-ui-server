@@ -77,21 +77,25 @@ import { run } from './seeds/run'
       {
         name: 'name',
         display: 'Название',
+        type: 'string',
         tableId: dcMedTable.id,
       },
       {
         name: 'price',
         display: 'Цена',
+        type: 'int',
         tableId: dcMedTable.id,
       },
       {
         name: 'articul',
         display: 'Артикул',
+        type: 'string',
         tableId: dcMedTable.id,
       },
       {
         name: 'group',
         display: 'Группа',
+        type: 'string',
         tableId: dcMedTable.id,
       },
     ],
@@ -102,11 +106,13 @@ import { run } from './seeds/run'
       {
         name: 'model',
         display: 'Модель',
+        type: 'string',
         tableId: dcCarsTable.id,
       },
       {
         name: 'brand',
         display: 'Бренд',
+        type: 'string',
         tableId: dcCarsTable.id,
       },
     ],
@@ -117,16 +123,19 @@ import { run } from './seeds/run'
       {
         name: 'employeesId',
         display: 'Id',
+        type: 'string',
         tableId: dcEmployeesTable.id,
       },
       {
         name: 'firstName',
         display: 'Имя',
+        type: 'string',
         tableId: dcEmployeesTable.id,
       },
       {
         name: 'secondName',
         display: 'Фамилия',
+        type: 'string',
         tableId: dcEmployeesTable.id,
       },
     ],

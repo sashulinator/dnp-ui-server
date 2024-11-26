@@ -161,6 +161,7 @@ model DcColumn {
   id      String @default(uuid()) @db.Uuid()
   name    String
   display String
+  type    String
   tableId String @db.Uuid()
 
   Table DcTable @relation(fields: [tableId], references: [id])
