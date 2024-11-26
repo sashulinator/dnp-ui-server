@@ -7,8 +7,9 @@ import * as v from 'valibot'
 export const baseColumnSchema = v.object({
   id: v.pipe(v.string(), v.nonEmpty()),
   name: v.pipe(v.string(), v.nonEmpty()),
-  tableId: v.pipe(v.string(), v.nonEmpty()),
   display: v.string(),
+  type: v.pipe(v.string(), v.nonEmpty()),
+  tableId: v.pipe(v.string(), v.nonEmpty()),
 })
 
 export type BaseColumn = v.InferOutput<typeof baseColumnSchema>
