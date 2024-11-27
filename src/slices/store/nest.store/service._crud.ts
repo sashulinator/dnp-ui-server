@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common'
 import { type Prisma, type Store } from '@prisma/client'
 
 import { PrismaService } from '~/slices/prisma'
@@ -13,8 +12,7 @@ export type CreateManyParams = Parameters<PrismaService[Name]['createMany']>[0]
 export type UpdateParams = Parameters<PrismaService[Name]['update']>[0]
 export type UniqueInput = Prisma.StoreWhereUniqueInput
 
-@Injectable()
-export class StoreService {
+export class _CrudService {
   constructor(private prisma: PrismaService) {}
 
   /** @final */

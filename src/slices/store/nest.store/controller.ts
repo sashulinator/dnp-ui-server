@@ -2,7 +2,7 @@ import { Body, Controller as NestJSController, Post } from '@nestjs/common'
 
 import { serialize } from '~/slices/api'
 
-import * as api from '../api.v1'
+import * as api from '../api.store.v1'
 import { StoreService } from './service'
 
 @NestJSController()
