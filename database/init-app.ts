@@ -1,18 +1,21 @@
-import { PrismaClient } from '@prisma/client'
-
 import knex from 'knex'
 
+import { PrismaService } from '~/slices/prisma'
+import { StoreService } from '~/slices/store'
 import { parseDatabaseUrl } from '~/utils/database'
 
 import { getEnvVariable } from './_lib/get-env-variables'
+import dcDatabaseList from './seeds/database-containers/database'
+import dcSchemaList, { currentAppOperationalSchema } from './seeds/database-containers/schema'
+import dcServiceList from './seeds/database-containers/service'
 import { run } from './seeds/run'
+import storeList from './seeds/store'
 
 ;(async () => {
-  const prisma = new PrismaClient()
+  const prisma = new PrismaService()
 
   // Инициализируем переменные
   const databaseConfig = parseDatabaseUrl(getEnvVariable('DATABASE_URL'))
-  const externalHost = getEnvVariable('EXTERNAL_HOST')
 
   const appKnex = knex({
     client: 'pg',
@@ -25,37 +28,15 @@ import { run } from './seeds/run'
     },
   })
 
-  const service = await prisma.dcService.create({
-    data: {
-      display: 'Текущее приложение',
-      host: externalHost,
-      port: Number(databaseConfig.port),
-      username: databaseConfig.user,
-      password: databaseConfig.password,
-    },
-  })
-
-  const dcDatabase = await prisma.dcDatabase.create({
-    data: {
-      display: 'Operational',
-      name: 'operational',
-      serviceId: service.id,
-    },
-  })
-
-  const dcSchema = await prisma.dcSchema.create({
-    data: {
-      display: 'Public',
-      name: 'public',
-      databaseId: dcDatabase.id,
-    },
-  })
+  await prisma.dcService.createMany({ data: dcServiceList })
+  await prisma.dcDatabase.createMany({ data: dcDatabaseList })
+  await prisma.dcSchema.createMany({ data: dcSchemaList })
 
   const dcMedTable = await prisma.dcTable.create({
     data: {
       name: 'med',
       display: 'Мед',
-      schemaId: dcSchema.id,
+      schemaId: currentAppOperationalSchema.id,
     },
   })
 
@@ -63,7 +44,7 @@ import { run } from './seeds/run'
     data: {
       name: 'cars',
       display: 'Автомобили',
-      schemaId: dcSchema.id,
+      schemaId: currentAppOperationalSchema.id,
     },
   })
 
@@ -71,7 +52,7 @@ import { run } from './seeds/run'
     data: {
       name: 'employees',
       display: 'Работники',
-      schemaId: dcSchema.id,
+      schemaId: currentAppOperationalSchema.id,
     },
   })
 
@@ -151,12 +132,15 @@ import { run } from './seeds/run'
         data: {
           name: `tableWithoutColumns-${i}`,
           display: `tableWithoutColumns-${i}`,
-          schemaId: dcSchema.id,
+          schemaId: currentAppOperationalSchema.id,
         },
       })
     })
 
   await Promise.all(promises)
+
+  // Store
+  new StoreService(prisma).createMany({ data: storeList })
 
   await run(appKnex)
 

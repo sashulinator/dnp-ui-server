@@ -4,7 +4,6 @@ import { seedAnalyticalActions } from './analytical-actions'
 import seedDictionaryTablesData from './dictionary-tables-data'
 import seedOperationalTables from './operational-tables'
 import seedOperationalTablesData from './operational-tables-data'
-import { seedStore } from './store'
 import seedTargetTables from './target-tables'
 import { seedTranslations } from './translations'
 
@@ -19,9 +18,6 @@ async function main() {
 
   await seedTranslations(prisma)
   console.log('Translations seeded')
-
-  await seedStore(prisma)
-  console.log('Store seeded')
 
   await seedAnalyticalActions(prisma)
   console.log('AnalyticalActions seeded')

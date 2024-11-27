@@ -22,15 +22,15 @@ import { getEnvVariable } from './_lib/get-env-variables'
 
   // Удаляем базы если они существуют
   await dropDatabase(appKnex, databaseConfig.database)
-  await dropDatabase(appKnex, 'operational')
-  await dropDatabase(appKnex, 'target')
-  await dropDatabase(appKnex, 'initial')
+  await dropDatabase(appKnex, '"dnp-operational-data"')
+  await dropDatabase(appKnex, '"dnp-target-data"')
+  await dropDatabase(appKnex, '"dnp-initial-data"')
 
   // Создаем базы
   await createDatabase(appKnex, databaseConfig.database)
-  await createDatabase(appKnex, 'operational')
-  await createDatabase(appKnex, 'target')
-  await createDatabase(appKnex, 'initial')
+  await createDatabase(appKnex, '"dnp-operational-data"')
+  await createDatabase(appKnex, '"dnp-target-data"')
+  await createDatabase(appKnex, '"dnp-initial-data"')
 
   process.exit(0)
 })()

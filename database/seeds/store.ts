@@ -1,6 +1,6 @@
-import { Store } from '@prisma/client'
+import { type Prisma } from '@prisma/client'
 
-export const navMenu: Store = {
+export const navMenu: Prisma.StoreCreateInput = {
   name: 'navMenu',
   description: 'Меню навигации',
   data: [
@@ -62,8 +62,11 @@ export const navMenu: Store = {
     },
   ],
 }
-export const operationalStoreConfigId: Store = {
+
+export const operationalDatabaseId: Prisma.StoreCreateInput = {
   name: 'OperationalStoreConfigId',
   description: 'Указывает какой StoreConfig является операционным',
   data: '',
 }
+
+export default [navMenu, operationalDatabaseId]
