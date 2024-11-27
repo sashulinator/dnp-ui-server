@@ -9,6 +9,7 @@ import { PrismaService } from '~/slices/prisma'
 
 import type { StoreConfig } from '../store-configs/dto'
 import { toDatabasConfig } from '../store-configs/lib/to-database-config'
+import { TARGET_STORE } from '../working-data'
 import { assertColumns } from './lib.assertions'
 import { type Column } from './models.dictionary-table'
 
@@ -151,9 +152,11 @@ export default class DictionaryTableService extends CrudDelegator<
    * @returns {Promise<StoreConfig>}
    */
   async getStoreConfig(): Promise<StoreConfig> {
-    const storeConfig = await this.prisma.storeConfig.findUnique({ where: { kn: 'TARGET_TABLE' } })
+    const storeTargetDatabaseId = await this.prisma.store.findUnique({ where: { name: TARGET_STORE } })
 
-    if (!storeConfig)
+    const targetDatabaseId = storeTargetDatabaseId.data as string
+
+    if (!targetDatabaseId)
       throw new HttpException(
         {
           message: `Create StoreConfig with TARGET_TABLE`,
@@ -162,6 +165,6 @@ export default class DictionaryTableService extends CrudDelegator<
         HttpStatus.NOT_FOUND,
       )
 
-    return storeConfig as unknown as StoreConfig
+    return storeTargetDatabaseId as unknown as StoreConfig
   }
 }

@@ -1,5 +1,9 @@
 import { type Prisma } from '@prisma/client'
 
+import { INITIAL_STORE, OPERATIONAL_STORE, TARGET_STORE } from '~/entities/working-data'
+
+import { initialDatabase, operationalDatabase, targetDatabase } from './database-containers/database'
+
 export const navMenu: Prisma.StoreCreateInput = {
   name: 'navMenu',
   description: 'Меню навигации',
@@ -64,9 +68,21 @@ export const navMenu: Prisma.StoreCreateInput = {
 }
 
 export const operationalDatabaseId: Prisma.StoreCreateInput = {
-  name: 'OperationalStoreConfigId',
-  description: 'Указывает какой StoreConfig является операционным',
-  data: '',
+  name: OPERATIONAL_STORE,
+  data: operationalDatabase.id,
+  description: 'Хранит Id "Базы данных", которая хранит операционные данные',
 }
 
-export default [navMenu, operationalDatabaseId]
+export const targetDatabaseId: Prisma.StoreCreateInput = {
+  name: TARGET_STORE,
+  data: targetDatabase.id,
+  description: 'Хранит Id "Базы данных", которая хранит целевые данные',
+}
+
+export const initialDatabaseIdы: Prisma.StoreCreateInput = {
+  name: INITIAL_STORE,
+  data: [initialDatabase.id],
+  description: 'Хранит список Id "Баз данных", которые хранят исходные данные',
+}
+
+export default [navMenu, operationalDatabaseId, targetDatabaseId, initialDatabaseIdы]
