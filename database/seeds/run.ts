@@ -3,15 +3,13 @@ import { type Knex } from 'knex'
 import { PrismaService } from '~/slices/prisma'
 import { StoreService } from '~/slices/store'
 
-import { type DatabaseConfigMap } from '../_lib/get-database-config-map'
 import { countriesDictionaryTable, employeesDictionaryTable, rfSubjectsDictionaryTable } from './dictionary-table'
 import { countriesRawTable, employeesRawTable, rfSubjectsRawTable } from './raw-table'
 import { navMenu, operationalStoreConfigId } from './store'
 import { operationalStoreConfig, targetStoreConfig } from './store-config'
 import { systemUser } from './users'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function run(appKnex: Knex, databaseConfigMap: DatabaseConfigMap) {
+export async function run(appKnex: Knex) {
   const prisma = new PrismaService()
 
   // User

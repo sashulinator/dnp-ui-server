@@ -2,33 +2,36 @@ import { PrismaClient } from '@prisma/client'
 
 import knex from 'knex'
 
-import { getDatabaseConfigMap } from './_lib/get-database-config-map'
+import { parseDatabaseUrl } from '~/utils/database'
+
+import { getEnvVariable } from './_lib/get-env-variables'
 import { run } from './seeds/run'
 
 ;(async () => {
   const prisma = new PrismaClient()
 
   // Инициализируем переменные
-  const databaseConfigMap = getDatabaseConfigMap()
+  const databaseConfig = parseDatabaseUrl(getEnvVariable('DATABASE_URL'))
+  const externalHost = getEnvVariable('EXTERNAL_HOST')
 
   const appKnex = knex({
     client: 'pg',
     connection: {
-      host: databaseConfigMap.app.host,
-      port: databaseConfigMap.app.port,
-      user: databaseConfigMap.app.user,
-      password: databaseConfigMap.app.password,
-      database: databaseConfigMap.app.database,
+      host: databaseConfig.host,
+      port: databaseConfig.port,
+      user: databaseConfig.user,
+      password: databaseConfig.password,
+      database: databaseConfig.database,
     },
   })
 
   const service = await prisma.dcService.create({
     data: {
-      display: 'App',
-      host: '10.4.40.11',
-      port: Number(databaseConfigMap.operational.port),
-      username: databaseConfigMap.operational.user,
-      password: databaseConfigMap.operational.password,
+      display: 'Текущее приложение',
+      host: externalHost,
+      port: Number(databaseConfig.port),
+      username: databaseConfig.user,
+      password: databaseConfig.password,
     },
   })
 
@@ -155,7 +158,7 @@ import { run } from './seeds/run'
 
   await Promise.all(promises)
 
-  await run(appKnex, databaseConfigMap)
+  await run(appKnex)
 
   process.exit(0)
 })()

@@ -1,8 +1,12 @@
+import { getEnvVariable } from 'database/_lib/get-env-variables'
+
+import { parseDatabaseUrl } from '~/utils/database'
+
 import { type BaseStoreConfig } from '../../src/entities/store-configs/dto'
-import { getDatabaseConfigMap } from '../_lib/get-database-config-map'
 import { systemUser } from './users'
 
-const databaseConfigMap = getDatabaseConfigMap()
+const databaseConfig = parseDatabaseUrl(getEnvVariable('DATABASE_URL'))
+const externalHost = getEnvVariable('EXTERNAL_HOST')
 
 export const rawStoreConfig: BaseStoreConfig = {
   kn: 'RAW_TABLE',
@@ -12,11 +16,11 @@ export const rawStoreConfig: BaseStoreConfig = {
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   data: {
-    username: databaseConfigMap.raw.user,
-    password: databaseConfigMap.raw.password,
-    host: databaseConfigMap.raw.host,
-    port: String(databaseConfigMap.raw.port),
-    dbName: databaseConfigMap.raw.database,
+    username: databaseConfig.user,
+    password: databaseConfig.password,
+    host: externalHost,
+    port: String(databaseConfig.port),
+    dbName: databaseConfig.database,
   },
 }
 
@@ -28,11 +32,11 @@ export const operationalStoreConfig: BaseStoreConfig = {
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   data: {
-    username: databaseConfigMap.operational.user,
-    password: databaseConfigMap.operational.password,
-    host: databaseConfigMap.operational.host,
-    port: String(databaseConfigMap.operational.port),
-    dbName: databaseConfigMap.operational.database,
+    username: databaseConfig.user,
+    password: databaseConfig.password,
+    host: databaseConfig.host,
+    port: String(databaseConfig.port),
+    dbName: databaseConfig.database,
   },
 }
 
@@ -44,10 +48,10 @@ export const targetStoreConfig: BaseStoreConfig = {
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   data: {
-    username: databaseConfigMap.target.user,
-    password: databaseConfigMap.target.password,
-    host: databaseConfigMap.target.host,
-    port: String(databaseConfigMap.target.port),
-    dbName: databaseConfigMap.target.database,
+    username: databaseConfig.user,
+    password: databaseConfig.password,
+    host: databaseConfig.host,
+    port: String(databaseConfig.port),
+    dbName: databaseConfig.database,
   },
 }
