@@ -2,5 +2,5 @@
  * nest
  */
 
-export { StoreModule } from './nest.store/module'
-export { StoreService } from './nest.store/service'
+export { StoreModule } from './store/nest/module'
+export { StoreService } from './store/nest/service'

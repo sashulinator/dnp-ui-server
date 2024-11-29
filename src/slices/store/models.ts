@@ -1,1 +1,1 @@
-export * from '~/common/slices/store/models'
+export * from '~/common/slices/store/store/models'
