@@ -7,7 +7,7 @@ import { _Crud } from './_crud'
 export type * from './_crud'
 
 @Injectable()
-export class StoreService extends _Crud {
+export class DcserviceService extends _Crud {
   constructor(protected prisma: PrismaService) {
     super(prisma)
   }

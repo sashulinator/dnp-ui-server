@@ -2,7 +2,7 @@
 import { type DcService as PrismaType } from '@prisma/client'
 
 //            ↓
-import { type BaseService as DtoType } from '~/entities/database-container/models'
+import { type DcserviceBase as DtoType } from '~/entities/database-container/dcservice/models'
 
 import { type DateToString, check } from './_private'
 
