@@ -13,7 +13,7 @@ export type UpdateParams = Parameters<PrismaService[Name]['update']>[0]
 export type UniqueInput = Prisma.StoreWhereUniqueInput
 
 export class _CrudService {
-  constructor(private prisma: PrismaService) {}
+  constructor(protected prisma: PrismaService) {}
 
   /** @final */
   async findUniqueOrThrow(params: FindUniqueOrThrowParams): Promise<Store> {
