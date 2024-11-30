@@ -4,7 +4,7 @@ import * as v from 'valibot'
  * AnalyticalActions
  */
 
-export const analyticalActions = v.object({
+export const action = v.object({
   id: v.number(),
   description: v.string(),
   name: v.string(),
@@ -15,4 +15,4 @@ export const analyticalActions = v.object({
   isDate: v.boolean(),
 })
 
-export type AnalyticalActions = v.InferOutput<typeof analyticalActions>
+export type Action = v.InferOutput<typeof action>

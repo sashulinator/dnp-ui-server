@@ -23,5 +23,6 @@ export type FlatTable = {
         id: string
         name: string
         display: string
+        type: string
       }[]
 }
