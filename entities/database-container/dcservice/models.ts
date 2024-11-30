@@ -37,7 +37,7 @@ export type Dcservice = v.InferOutput<typeof dcserviceSchema>
  * CreateService
  */
 
-export const dcserviceCreateInputSchema = dcserviceBaseSchema
+export const dcserviceCreateInputSchema = v.omit(dcserviceBaseSchema, ['id'])
 
 export type DcserviceCreateInput = v.InferOutput<typeof dcserviceCreateInputSchema>
 
