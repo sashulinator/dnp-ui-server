@@ -3,6 +3,7 @@
  */
 
 export { DcserviceService } from './nest/service'
+export { DcserviceModule } from './nest/module'
 
 /**
  * models
