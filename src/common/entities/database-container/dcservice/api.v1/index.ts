@@ -1,3 +1,5 @@
 export * as getById from './get-by-id'
 export * as update from './update'
+export * as create from './create'
+export * as testConnection from './test-connection'
 export * as findWithTotal from './find-with-total'
