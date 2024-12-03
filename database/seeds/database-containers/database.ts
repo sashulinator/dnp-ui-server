@@ -23,4 +23,4 @@ export const targetDatabase = {
   serviceId: currentAppService.id,
 }
 
-export default [operationalDatabase]
+export default [operationalDatabase, initialDatabase, targetDatabase]
