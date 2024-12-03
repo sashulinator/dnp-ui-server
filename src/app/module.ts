@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { APP_FILTER } from '@nestjs/core'
 
-import { AnalyticalActionsModule, AnalyticsModule } from '~/entities/analytics'
+import { ActionsModule, AnalyticsModule } from '~/entities/analytics'
 import { DcserviceModule } from '~/entities/database-container'
 import DictionaryTableModule from '~/entities/dictionary-table/nest.module'
 import NormalizationConfigModule from '~/entities/normalization-configs/module'
@@ -23,7 +23,7 @@ import ExceptionFilter from './exception.filter'
   controllers: [AppController],
   imports: [
     DcserviceModule,
-    AnalyticalActionsModule,
+    ActionsModule,
     AnalyticsModule,
     DictionaryTableModule,
     FileModule,

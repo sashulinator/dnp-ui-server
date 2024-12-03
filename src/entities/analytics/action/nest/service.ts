@@ -8,7 +8,7 @@ export { type AnalyticalActions }
 export type FindManyParams = Parameters<PrismaService['analyticalActions']['findMany']>[0]
 
 @Injectable()
-export class AnalyticalActionsService {
+export class ActionService {
   constructor(protected prisma: PrismaService) {}
 
   /** @final */

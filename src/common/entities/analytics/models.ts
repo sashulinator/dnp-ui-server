@@ -1,7 +1,7 @@
 import * as v from 'valibot'
 
 /**
- * AnalyticalActions
+ * Actions
  */
 
 export const action = v.object({
