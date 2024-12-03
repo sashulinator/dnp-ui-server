@@ -8,4 +8,4 @@ import { ProcessingDataService } from './service'
   providers: [ProcessingDataService],
   imports: [PrismaModule],
 })
-export class StoreModule {}
+export class ProcessingDataModule {}

@@ -10,6 +10,7 @@ import ExplorerService, {
   type Where,
 } from '~/slices/explorer/service'
 
+import { ProcessingDataService, TARGET_STORE } from '../processing-data'
 import { assertColumns } from './lib.assertions'
 import Service from './nest.service'
 
@@ -27,11 +28,12 @@ export default class DictionaryTableService {
     private explorerService: ExplorerService,
     private dictionaryTableService: Service,
     private database: Database,
+    private processingDataService: ProcessingDataService,
   ) {}
 
   async explorerFindManyAndCountRows(params: ExplorerFindManyParams) {
     const dictionaryTable = await this.dictionaryTableService.getUnique({ where: { kn: params.kn } })
-    const storeConfig = await this.dictionaryTableService.getStoreConfig()
+    const storeConfig = await this.processingDataService.getDatabaseConfig({ name: TARGET_STORE })
 
     const columns = dictionaryTable.columns
     assertColumns(columns)
@@ -45,11 +47,11 @@ export default class DictionaryTableService {
 
     this.database.setConfig({
       client: 'postgres',
-      host: storeConfig.data.host,
-      port: storeConfig.data.port,
-      username: storeConfig.data.username,
-      password: storeConfig.data.password,
-      dbName: storeConfig.data.dbName,
+      host: storeConfig.host,
+      port: storeConfig.port,
+      username: storeConfig.username,
+      password: storeConfig.password,
+      dbName: storeConfig.database,
     })
 
     const pk = await this.database.getPrimaryKey(dictionaryTable.name)
@@ -62,12 +64,12 @@ export default class DictionaryTableService {
       sort: params.sort || { [pk]: 'asc' },
       where: { AND: [{ OR: searchOR }, params.where] },
       type: 'postgres',
-      paths: [storeConfig.data.dbName, dictionaryTable.name],
+      paths: [storeConfig.database, dictionaryTable.name],
       storeConfig: {
-        host: storeConfig.data.host,
-        port: storeConfig.data.port,
-        username: storeConfig.data.username,
-        password: storeConfig.data.password,
+        host: storeConfig.host,
+        port: storeConfig.port.toString(),
+        username: storeConfig.username,
+        password: storeConfig.password,
       },
     }
 
