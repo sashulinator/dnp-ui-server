@@ -7,9 +7,9 @@ import Database from '~/slices/database'
 import ExplorerService from '~/slices/explorer/service'
 import { PrismaService } from '~/slices/prisma'
 
+import { TARGET_STORE } from '../processing-data'
 import type { StoreConfig } from '../store-configs/dto'
 import { toDatabasConfig } from '../store-configs/lib/to-database-config'
-import { TARGET_STORE } from '../working-data'
 import { assertColumns } from './lib.assertions'
 import { type Column } from './models.dictionary-table'
 
