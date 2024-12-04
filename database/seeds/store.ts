@@ -1,6 +1,6 @@
 import { type Prisma } from '@prisma/client'
 
-import { INITIAL_STORE, OPERATIONAL_STORE, TARGET_STORE } from '~/entities/working-data'
+import { INITIAL_STORE, OPERATIONAL_STORE, TARGET_STORE } from '~/entities/processing-data'
 
 import { initialDatabase, operationalDatabase, targetDatabase } from './database-containers/database'
 

@@ -1,9 +1,10 @@
+import { targetDatabase } from '../../database/seeds/database-containers/database'
+import { currentAppService } from '../../database/seeds/database-containers/service'
 import {
   countriesDictionaryTable,
   employeesDictionaryTable,
   rfSubjectsDictionaryTable,
 } from '../../database/seeds/dictionary-table'
-import { targetStoreConfig } from '../../database/seeds/store-config'
 import Database from '../../src/slices/database'
 import rfSubjects from './dictionary-table/rf-subjects'
 import countryList from './dictionary-table/seed-list.country'
@@ -12,11 +13,11 @@ import userList from './dictionary-table/seed-list.users'
 export default async function seedDictionaryTables() {
   const database = new Database().setConfig({
     client: 'pg',
-    host: targetStoreConfig.data.host,
-    port: targetStoreConfig.data.port,
-    username: targetStoreConfig.data.username,
-    password: targetStoreConfig.data.password,
-    dbName: targetStoreConfig.data.dbName,
+    host: currentAppService.host,
+    port: currentAppService.port,
+    username: currentAppService.username,
+    password: currentAppService.password,
+    dbName: targetDatabase.name,
   })
 
   // countries
