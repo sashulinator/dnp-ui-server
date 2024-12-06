@@ -1,7 +1,7 @@
 import * as v from 'valibot'
 
 /**
- * BaseDatabase
+ * Base
  */
 
 export const baseDatabaseSchema = v.object({
@@ -32,17 +32,17 @@ export const databaseSchema = v.intersect([baseDatabaseSchema, databaseRelations
 export type Database = v.InferOutput<typeof databaseSchema>
 
 /**
- * CreateDatabase
+ * CreateInput
  */
 
-export const createDatabaseSchema = baseDatabaseSchema
+export const databaseCreateInputSchema = baseDatabaseSchema
 
-export type CreateDatabase = v.InferOutput<typeof createDatabaseSchema>
+export type DatabaseCreateInput = v.InferOutput<typeof databaseCreateInputSchema>
 
 /**
- * UpdateDatabase
+ * UpdateInput
  */
 
-export const updateDatabaseSchema = baseDatabaseSchema
+export const databaseUpdateInputSchema = baseDatabaseSchema
 
-export type UpdateDatabase = v.InferOutput<typeof updateDatabaseSchema>
+export type DatabaseUpdateInput = v.InferOutput<typeof databaseUpdateInputSchema>
