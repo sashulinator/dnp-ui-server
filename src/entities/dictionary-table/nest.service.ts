@@ -1,15 +1,12 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { type Prisma, type DictionaryTable as PrismaDictionaryTable } from '@prisma/client'
 
 import { _idColumn } from '~/common/entities/operational-table'
 import { CrudDelegator } from '~/slices/crud'
 import Database from '~/slices/database'
-import ExplorerService from '~/slices/explorer/service'
 import { PrismaService } from '~/slices/prisma'
 
-import { TARGET_STORE } from '../processing-data'
-import type { StoreConfig } from '../store-configs/dto'
-import { toDatabasConfig } from '../store-configs/lib/to-database-config'
+import { ProcessingDataService, TARGET_STORE } from '../processing-data'
 import { assertColumns } from './lib.assertions'
 import { type Column } from './models.dictionary-table'
 
@@ -31,7 +28,7 @@ export default class DictionaryTableService extends CrudDelegator<
 > {
   constructor(
     protected prisma: PrismaService,
-    private explorerService: ExplorerService,
+    private processingDataService: ProcessingDataService,
     private database: Database,
   ) {
     const include: Include = { updatedBy: true, createdBy: true }
@@ -59,12 +56,19 @@ export default class DictionaryTableService extends CrudDelegator<
   }
 
   async create(params: { data: CreateDictionaryTable; select?: Select; include?: Include }): Promise<DictionaryTable> {
-    const storeConfig = await this.getStoreConfig()
+    const databaseConfig = await this.processingDataService.getDatabaseConfig({ name: TARGET_STORE })
 
     const tableSchema = params.data
     assertColumns(tableSchema.columns)
 
-    this.database.setConfig(toDatabasConfig(storeConfig))
+    this.database.setConfig({
+      client: 'pg',
+      dbName: databaseConfig.database,
+      host: databaseConfig.host,
+      port: databaseConfig.port,
+      username: databaseConfig.username,
+      password: databaseConfig.password,
+    })
 
     const ret = await this.prisma.$transaction(async (prismaTrx) => {
       return this.database.transaction(async (databaseTrx) => {
@@ -86,9 +90,16 @@ export default class DictionaryTableService extends CrudDelegator<
     where: WhereUniqueInput
   }): Promise<DictionaryTable> {
     const currentDictionaryTable = await this.getUnique({ where: params.where })
-    const storeConfig = await this.getStoreConfig()
+    const databaseConfig = await this.processingDataService.getDatabaseConfig({ name: TARGET_STORE })
 
-    this.database.setConfig(toDatabasConfig(storeConfig))
+    this.database.setConfig({
+      client: 'pg',
+      dbName: databaseConfig.database,
+      host: databaseConfig.host,
+      port: databaseConfig.port,
+      username: databaseConfig.username,
+      password: databaseConfig.password,
+    })
 
     const currentTableSchema = currentDictionaryTable
     assertColumns(currentTableSchema.columns, "Невалидные данные в Промежуточной таблице в поле 'tableSchema' в БД")
@@ -143,28 +154,5 @@ export default class DictionaryTableService extends CrudDelegator<
     this.database.disconnect()
 
     return ret
-  }
-
-  /**
-   * Получить конфигурацию хранилища
-   * Пояснение: в системе для промежуточных таблиц должна быть создана конфигурация хранилица,
-   * в которой указаны параметры подключения к базе данных
-   * @returns {Promise<StoreConfig>}
-   */
-  async getStoreConfig(): Promise<StoreConfig> {
-    const storeTargetDatabaseId = await this.prisma.store.findUnique({ where: { name: TARGET_STORE } })
-
-    const targetDatabaseId = storeTargetDatabaseId.data as string
-
-    if (!targetDatabaseId)
-      throw new HttpException(
-        {
-          message: `Create StoreConfig with TARGET_TABLE`,
-          translated: `Создайте Хранилище с названием "TARGET_TABLE"`,
-        },
-        HttpStatus.NOT_FOUND,
-      )
-
-    return storeTargetDatabaseId as unknown as StoreConfig
   }
 }
