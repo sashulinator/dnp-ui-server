@@ -2,7 +2,7 @@ import { Body, Get, Controller as NestJSController, Param, Post, Search } from '
 import { createId } from '@paralleldrive/cuid2'
 import { type Process as PrismaProcess } from '@prisma/client'
 
-import { type CreateProcess, type Process } from './models'
+import { type Process, type ProcessCreateInput } from './models'
 import {
   type OrderByWithRelationInput,
   ProcessService,
@@ -24,7 +24,7 @@ export class ProcessController {
    * @param {CreateProcess} body The data to create the process with
    * @returns {Promise<void>} A promise that resolves when the process is created
    */
-  create(@Body() body: CreateProcess): Promise<PrismaProcess> {
+  create(@Body() body: ProcessCreateInput): Promise<PrismaProcess> {
     return this.service.create({ data: { ...body, id: createId(), createdById: 'tz4a98xxat96iws9zmbrgj3a' } })
   }
 

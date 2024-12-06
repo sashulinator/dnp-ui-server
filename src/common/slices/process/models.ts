@@ -6,7 +6,7 @@ import { userSchema } from '../../entities/user'
 import { getKeys } from '../dictionary'
 
 /**
- * BaseProcess
+ * Base
  */
 
 export const baseProcessSchema = v.object({
@@ -50,17 +50,17 @@ export const processSchema = v.intersect([baseProcessSchema, processRelationsSch
 export type Process = v.InferOutput<typeof processSchema>
 
 /**
- * CreateProcess
+ * CreateInput
  */
 
-export const createProcessSchema = v.omit(baseProcessSchema, ['id', ...getKeys(creatableModel.entries)])
+export const processCreateInputSchema = v.omit(baseProcessSchema, ['id', ...getKeys(creatableModel.entries)])
 
-export type CreateProcess = v.InferOutput<typeof createProcessSchema>
+export type ProcessCreateInput = v.InferOutput<typeof processCreateInputSchema>
 
 /**
- * UpdateProcess
+ * UpdateInput
  */
 
-export const updateProcessSchema = v.omit(baseProcessSchema, ['id', ...getKeys(creatableModel.entries)])
+export const processUpdateInputSchema = v.omit(baseProcessSchema, ['id', ...getKeys(creatableModel.entries)])
 
-export type UpdateProcess = v.InferOutput<typeof updateProcessSchema>
+export type ProcessUpdateInput = v.InferOutput<typeof processUpdateInputSchema>
