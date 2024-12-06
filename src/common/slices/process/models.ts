@@ -12,7 +12,7 @@ import { getKeys } from '../dictionary'
 export const baseProcessSchema = v.object({
   id: v.pipe(v.string(), v.nonEmpty()),
   // можно положить id сущности которая вызвала процесс
-  trackId: v.pipe(v.string(), v.nonEmpty()),
+  track: v.pipe(v.string(), v.nonEmpty()),
   type: v.pipe(v.string(), v.nonEmpty()),
   data: v.object({}),
   ...creatableModel.entries,

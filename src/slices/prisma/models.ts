@@ -10,6 +10,7 @@ import type {
   OperationalTable,
   Prisma,
   Process,
+  QueryFilter,
   RawTable,
   Store,
   StoreConfig,
@@ -31,6 +32,7 @@ export type EntityMap = {
   process: Process
   store: Store
   translation: Translation
+  queryFilter: QueryFilter
   // other
   user: User
   storeConfig: StoreConfig

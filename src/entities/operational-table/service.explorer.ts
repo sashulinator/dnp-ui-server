@@ -217,7 +217,7 @@ export default class OperationalTableService {
         data: {
           id: createId(),
           type: TYPE,
-          trackId: params.operationalTableId,
+          track: params.operationalTableId,
           data: {
             trackingId,
             normalizationConfigFileName,

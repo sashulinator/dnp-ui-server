@@ -133,7 +133,7 @@ export default class Service {
   ): Promise<PrismaNormalizationConfig> {
     const prismaItem = await this.getFirst(where)
 
-    const processes = await this.prisma.process.findFirst({ where: { trackId: prismaItem.id } })
+    const processes = await this.prisma.process.findFirst({ where: { track: prismaItem.id } })
 
     // Если нет процессов, то просто обновляем данные
     if (!processes) {
@@ -202,7 +202,7 @@ export default class Service {
 
     const createdProcess = await this.processService.create({
       data: {
-        trackId: normalizationConfig.id,
+        track: normalizationConfig.id,
         id: createId(),
         type: 'normalization',
       },
