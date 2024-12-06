@@ -17,9 +17,9 @@ datasource db {
 }
 
 model User {
-  id       String @db.VarChar(70)
-  name     String @db.VarChar(70)
-  password String @db.VarChar(70)
+  id       String @db.VarChar(74)
+  name     String @db.VarChar(74)
+  password String @db.VarChar(74)
   avatar   String
 
   storeConfigCreators StoreConfig[] @relation("storeConfigCreators")
@@ -59,7 +59,7 @@ model AnalyticalActions {
 }
 
 model NormalizationConfig {
-  id          String   @db.VarChar(70)
+  id          String   @db.VarChar(74)
   name        String
   v           Int
   last        Boolean  @default(true)
@@ -67,8 +67,8 @@ model NormalizationConfig {
   // meta
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  createdById String   @db.VarChar(70)
-  updatedById String   @db.VarChar(70)
+  createdById String   @db.VarChar(74)
+  updatedById String   @db.VarChar(74)
   createdBy   User     @relation("normalizationConfigCreators", fields: [createdById], references: [id])
   updatedBy   User     @relation("normalizationConfigUpdaters", fields: [updatedById], references: [id])
 
@@ -81,14 +81,14 @@ model NormalizationConfig {
 // ***********************
 
 model StoreConfig {
-  kn          String    @db.VarChar(70)
+  kn          String    @db.VarChar(74)
   type        StoreType
   data        Json
   // meta
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  createdById String    @db.VarChar(70)
-  updatedById String    @db.VarChar(70)
+  createdById String    @db.VarChar(74)
+  updatedById String    @db.VarChar(74)
   createdBy   User      @relation("storeConfigCreators", fields: [createdById], references: [id])
   updatedBy   User      @relation("storeConfigUpdaters", fields: [updatedById], references: [id])
 
@@ -179,9 +179,9 @@ enum StoreType {
 }
 
 model RawTable {
-  kn          String        @db.VarChar(70)
-  display     String        @db.VarChar(70)
-  name        String        @db.VarChar(70)
+  kn          String        @db.VarChar(74)
+  display     String        @db.VarChar(74)
+  name        String        @db.VarChar(74)
   description String
   defaultView TableViewType
   columns     Json
@@ -189,8 +189,8 @@ model RawTable {
   // meta
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  createdById String        @db.VarChar(70)
-  updatedById String        @db.VarChar(70)
+  createdById String        @db.VarChar(74)
+  updatedById String        @db.VarChar(74)
   createdBy   User          @relation("rawTableCreators", fields: [createdById], references: [id])
   updatedBy   User          @relation("rawTableUpdaters", fields: [updatedById], references: [id])
 
@@ -199,9 +199,9 @@ model RawTable {
 }
 
 model DictionaryTable {
-  kn          String        @db.VarChar(70)
-  display     String        @db.VarChar(70)
-  name        String        @db.VarChar(70)
+  kn          String        @db.VarChar(74)
+  display     String        @db.VarChar(74)
+  name        String        @db.VarChar(74)
   description String
   defaultView TableViewType
   columns     Json
@@ -209,8 +209,8 @@ model DictionaryTable {
   // meta
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  createdById String        @db.VarChar(70)
-  updatedById String        @db.VarChar(70)
+  createdById String        @db.VarChar(74)
+  updatedById String        @db.VarChar(74)
   createdBy   User          @relation("dictionaryTableCreators", fields: [createdById], references: [id])
   updatedBy   User          @relation("dictionaryTableUpdaters", fields: [updatedById], references: [id])
 
@@ -219,9 +219,9 @@ model DictionaryTable {
 }
 
 model TargetTable {
-  kn          String        @db.VarChar(70)
-  display     String        @db.VarChar(70)
-  name        String        @db.VarChar(70)
+  kn          String        @db.VarChar(74)
+  display     String        @db.VarChar(74)
+  name        String        @db.VarChar(74)
   description String
   defaultView TableViewType
   columns     Json
@@ -229,8 +229,8 @@ model TargetTable {
   // meta
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  createdById String        @db.VarChar(70)
-  updatedById String        @db.VarChar(70)
+  createdById String        @db.VarChar(74)
+  updatedById String        @db.VarChar(74)
   createdBy   User          @relation("targetTableCreators", fields: [createdById], references: [id])
   updatedBy   User          @relation("targetTableUpdaters", fields: [updatedById], references: [id])
 
@@ -239,9 +239,9 @@ model TargetTable {
 }
 
 model OperationalTable {
-  kn          String        @db.VarChar(70)
-  display     String        @db.VarChar(70)
-  name        String        @db.VarChar(70)
+  kn          String        @db.VarChar(74)
+  display     String        @db.VarChar(74)
+  name        String        @db.VarChar(74)
   description String
   defaultView TableViewType
   columns     Json
@@ -249,8 +249,8 @@ model OperationalTable {
   // meta
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  createdById String        @db.VarChar(70)
-  updatedById String        @db.VarChar(70)
+  createdById String        @db.VarChar(74)
+  updatedById String        @db.VarChar(74)
   createdBy   User          @relation("operationalTableCreators", fields: [createdById], references: [id])
   updatedBy   User          @relation("operationalTableUpdaters", fields: [updatedById], references: [id])
 
@@ -279,14 +279,24 @@ model Store {
 }
 
 model Process {
-  id          String   @db.VarChar(70)
-  type        String   @db.VarChar(70)
+  id          String   @db.VarChar(74)
+  type        String   @db.VarChar(74)
   // можно положить id сущности которая вызвала процесс
-  trackId     String?  @db.VarChar(70)
+  track       String?  @db.VarChar(74)
   data        Json?
   // meta
   createdAt   DateTime @default(now())
-  createdById String?  @db.VarChar(70)
+  createdById String?  @db.VarChar(74)
+
+  @@id([id])
+  @@schema("system")
+}
+
+model QueryFilter {
+  id    String @default(uuid()) @db.VarChar(36)
+  name  String @db.VarChar(74)
+  track String
+  data  Json?
 
   @@id([id])
   @@schema("system")

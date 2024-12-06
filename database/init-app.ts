@@ -8,6 +8,7 @@ import { getEnvVariable } from './_lib/get-env-variables'
 import dcDatabaseList from './seeds/database-containers/database'
 import dcSchemaList, { currentAppOperationalSchema } from './seeds/database-containers/schema'
 import dcServiceList from './seeds/database-containers/service'
+import queryFilters from './seeds/query-filter'
 import { run } from './seeds/run'
 import storeList from './seeds/store'
 
@@ -84,6 +85,8 @@ import storeList from './seeds/store'
       },
     ],
   })
+
+  await prisma.queryFilter.createMany({ data: queryFilters })
 
   await prisma.dcColumn.createMany({
     data: [

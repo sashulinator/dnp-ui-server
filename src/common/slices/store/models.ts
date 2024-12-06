@@ -1,7 +1,7 @@
 import * as v from 'valibot'
 
 /**
- * BaseStore
+ * Store
  */
 
 export const storeSchema = v.object({
@@ -13,7 +13,7 @@ export const storeSchema = v.object({
 export type Store = v.InferOutput<typeof storeSchema>
 
 /**
- * UpdateStoreSchema
+ * UpdateInput
  */
 
 export const storeUpdateInputSchema = storeSchema

@@ -13,6 +13,7 @@ import ExplorerModule from '~/slices/explorer/module'
 import { FileModule } from '~/slices/files'
 import { PrismaModule } from '~/slices/prisma'
 import { ProcessModule } from '~/slices/process/nest.module'
+import { QueryFilterModule } from '~/slices/query-filter'
 import { StoreModule } from '~/slices/store'
 import TranslationsModule from '~/slices/translations/module'
 
@@ -41,6 +42,7 @@ import ExceptionFilter from './exception.filter'
     ProcessModule,
     StoreModule,
     TranslationsModule,
+    QueryFilterModule,
   ],
   providers: [
     {
