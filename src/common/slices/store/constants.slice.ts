@@ -1,1 +1,1 @@
-export const SLICE = 'Store'
+export const SLICE = 'store'
